@@ -1,6 +1,7 @@
 import { PluginInstance } from "./PluginInstance";
 import IApp from "@gluestack/framework/types/app/interface/IApp";
 import IContainerController from "@gluestack/framework/types/plugin/interface/IContainerController";
+const { DockerodeHelper } = require("@gluestack/helpers");
 
 export class PluginInstanceContainerController implements IContainerController {
   app: IApp;
@@ -24,7 +25,7 @@ export class PluginInstanceContainerController implements IContainerController {
   }
 
   installScript() {
-    // do nothing
+    return ["npm", "install"];
   }
 
   runScript() {
@@ -32,7 +33,9 @@ export class PluginInstanceContainerController implements IContainerController {
   }
 
   async getEnv() {
-    // do nothing
+    return {
+      APP_PORT: await this.getPortNumber(),
+    };
   }
 
   getDockerJson() {
@@ -45,7 +48,23 @@ export class PluginInstanceContainerController implements IContainerController {
 
   // @ts-ignore
   async getPortNumber(returnDefault?: boolean) {
-    // do nothing
+    return new Promise((resolve, reject) => {
+      if (this.portNumber) {
+        return resolve(this.portNumber);
+      }
+      let ports =
+        this.callerInstance.callerPlugin.gluePluginStore.get("ports") || [];
+      DockerodeHelper.getPort(4499, ports)
+        .then((port: number) => {
+          this.setPortNumber(port);
+          ports.push(port);
+          this.callerInstance.callerPlugin.gluePluginStore.set("ports", ports);
+          return resolve(this.portNumber);
+        })
+        .catch((e: any) => {
+          reject(e);
+        });
+    });
   }
 
   getContainerId(): string {
@@ -60,7 +79,10 @@ export class PluginInstanceContainerController implements IContainerController {
   }
 
   setPortNumber(portNumber: number) {
-    // do nothing
+    this.callerInstance.gluePluginStore.set("port_number", portNumber || null);
+    this.portNumber = portNumber || null
+
+    return this.portNumber;
   }
 
   setContainerId(containerId: string) {
@@ -70,7 +92,7 @@ export class PluginInstanceContainerController implements IContainerController {
   getConfig(): any {}
 
   async up() {
-    // do nothing
+    console.log("---- up");
   }
 
   async down() {

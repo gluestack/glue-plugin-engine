@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-// const {
-//   GlueStackPlugin: LocalGluePackage,
-// } = require("./");
+const {
+  GlueStackPlugin: LocalGluePackage,
+} = require("./");
 
-require("@gluestack/framework")();
+require("@gluestack/framework")([LocalGluePackage]);

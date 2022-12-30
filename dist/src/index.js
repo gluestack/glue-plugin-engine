@@ -71,17 +71,17 @@ var GlueStackPlugin = (function () {
     };
     GlueStackPlugin.prototype.runPostInstall = function (instanceName, target) {
         return __awaiter(this, void 0, void 0, function () {
-            var functionInstance;
+            var engineInstance;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4, this.app.createPluginInstance(this, instanceName, this.getTemplateFolderPath(), target)];
                     case 1:
-                        functionInstance = _a.sent();
-                        if (!functionInstance) return [3, 4];
-                        return [4, (0, write_env_1.writeEnv)(functionInstance)];
+                        engineInstance = _a.sent();
+                        if (!engineInstance) return [3, 4];
+                        return [4, (0, write_env_1.writeEnv)(engineInstance)];
                     case 2:
                         _a.sent();
-                        return [4, functionInstance.getContainerController().up()];
+                        return [4, engineInstance.getContainerController().up()];
                     case 3:
                         _a.sent();
                         _a.label = 4;

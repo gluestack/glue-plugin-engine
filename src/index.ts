@@ -9,12 +9,25 @@ import IManagesInstances from "@gluestack/framework/types/plugin/interface/IMana
 import IGlueStorePlugin from "@gluestack/framework/types/store/interface/IGluePluginStore";
 import { writeEnv } from "./helpers/write-env";
 
-//Do not edit the name of this class
+interface IGlueEngine {
+  statelessPlugins: IPlugin[];
+
+  start(): Promise<void>;
+  stop(): Promise<void>;
+
+  createDockerCompose(): Promise<void>;
+  startDockerCompose(): Promise<void>;
+  stopDockerCompose(): Promise<void>;
+  cleanDockerVolumes(): Promise<void>;
+}
+
+// Do not edit the name of this class
 export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
   app: IApp;
   instances: IInstance[];
   type: "stateless" | "stateful" | "devonly" = "stateless";
   gluePluginStore: IGlueStorePlugin;
+  glueEngine: IGlueEngine;
 
   constructor(app: IApp, gluePluginStore: IGlueStorePlugin) {
     this.app = app;
@@ -51,16 +64,17 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
   }
 
   async runPostInstall(instanceName: string, target: string) {
-    const functionInstance: PluginInstance =
+    const engineInstance: PluginInstance =
       await this.app.createPluginInstance(
         this,
         instanceName,
         this.getTemplateFolderPath(),
         target,
       );
-    if (functionInstance) {
-      await writeEnv(functionInstance);
-      await functionInstance.getContainerController().up();
+
+    if (engineInstance) {
+      await writeEnv(engineInstance);
+      await engineInstance.getContainerController().up();
     }
   }
 
@@ -76,6 +90,8 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
       gluePluginStore,
       installationPath,
     );
+
+    // console.log('>> 11', this.instances);
     this.instances.push(instance);
     return instance;
   }
