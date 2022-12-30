@@ -35,9 +35,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
 exports.PluginInstanceContainerController = void 0;
 var DockerodeHelper = require("@gluestack/helpers").DockerodeHelper;
+var GluestackEngine_1 = __importDefault(require("./core/GluestackEngine"));
 var PluginInstanceContainerController = (function () {
     function PluginInstanceContainerController(app, callerInstance) {
         this.status = "down";
@@ -115,9 +119,19 @@ var PluginInstanceContainerController = (function () {
     PluginInstanceContainerController.prototype.getConfig = function () { };
     PluginInstanceContainerController.prototype.up = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var engine;
             return __generator(this, function (_a) {
-                console.log("---- up");
-                return [2];
+                switch (_a.label) {
+                    case 0:
+                        console.log("---- up now ----");
+                        engine = new GluestackEngine_1["default"](this.app);
+                        return [4, engine.collectDockerContext()];
+                    case 1:
+                        _a.sent();
+                        console.log(engine.statelessPlugins);
+                        process.exit(1);
+                        return [2];
+                }
             });
         });
     };

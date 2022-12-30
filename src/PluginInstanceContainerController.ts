@@ -2,6 +2,8 @@ import { PluginInstance } from "./PluginInstance";
 import IApp from "@gluestack/framework/types/app/interface/IApp";
 import IContainerController from "@gluestack/framework/types/plugin/interface/IContainerController";
 const { DockerodeHelper } = require("@gluestack/helpers");
+import GluestackEngine from "./core/GluestackEngine";
+import { IGlueEngine } from "./core/types/IGlueEngine";
 
 export class PluginInstanceContainerController implements IContainerController {
   app: IApp;
@@ -92,7 +94,23 @@ export class PluginInstanceContainerController implements IContainerController {
   getConfig(): any {}
 
   async up() {
-    console.log("---- up");
+    // 4. create docker-compose file using
+    //    dockerode-compose & dockerfile
+    console.log("---- up now ----");
+
+    const engine: IGlueEngine = new GluestackEngine(this.app);
+
+    // 1. get all the stateless instances
+    // 2. collect dockerfile from all available
+    // stateles instances assets directory
+    await engine.collectDockerContext();
+
+    console.log(engine.statelessPlugins);
+
+    // 3. generate docker-compose file
+    // await engine.createDockerCompose();
+
+    process.exit(1);
   }
 
   async down() {

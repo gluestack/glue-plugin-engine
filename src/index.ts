@@ -9,25 +9,12 @@ import IManagesInstances from "@gluestack/framework/types/plugin/interface/IMana
 import IGlueStorePlugin from "@gluestack/framework/types/store/interface/IGluePluginStore";
 import { writeEnv } from "./helpers/write-env";
 
-interface IGlueEngine {
-  statelessPlugins: IPlugin[];
-
-  start(): Promise<void>;
-  stop(): Promise<void>;
-
-  createDockerCompose(): Promise<void>;
-  startDockerCompose(): Promise<void>;
-  stopDockerCompose(): Promise<void>;
-  cleanDockerVolumes(): Promise<void>;
-}
-
 // Do not edit the name of this class
 export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
   app: IApp;
   instances: IInstance[];
   type: "stateless" | "stateful" | "devonly" = "stateless";
   gluePluginStore: IGlueStorePlugin;
-  glueEngine: IGlueEngine;
 
   constructor(app: IApp, gluePluginStore: IGlueStorePlugin) {
     this.app = app;
@@ -91,7 +78,6 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
       installationPath,
     );
 
-    // console.log('>> 11', this.instances);
     this.instances.push(instance);
     return instance;
   }
