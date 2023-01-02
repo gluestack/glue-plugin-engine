@@ -7,7 +7,9 @@ export interface IGlueEngine {
   stop(): Promise<void>;
 
   collectDockerContext(): Promise<void>;
-  createDockerCompose(): Promise<void>;
+
+  createDockerCompose(backendInstancePath: string): Promise<void>;
+  createNginxConfig(backendInstancePath: string): Promise<void>;
 
   startDockerCompose(): Promise<void>;
   stopDockerCompose(): Promise<void>;

@@ -94,9 +94,7 @@ export class PluginInstanceContainerController implements IContainerController {
   getConfig(): any {}
 
   async up() {
-    // 4. create docker-compose file using
-    //    dockerode-compose & dockerfile
-    console.log("---- up now ----");
+    console.log("---- Initiating Engine UP ----");
 
     const engine: IGlueEngine = new GluestackEngine(this.app);
 
@@ -105,12 +103,13 @@ export class PluginInstanceContainerController implements IContainerController {
     // stateles instances assets directory
     await engine.collectDockerContext();
 
-    console.log(engine.statelessPlugins);
-
     // 3. generate docker-compose file
-    // await engine.createDockerCompose();
+    await engine.createDockerCompose('backend');
 
-    process.exit(1);
+    // 4. generate nginx config
+    await engine.createNginxConfig('backend');
+
+    console.log("---- Exiting Engine UP ----");
   }
 
   async down() {
@@ -120,4 +119,5 @@ export class PluginInstanceContainerController implements IContainerController {
   async build() {
     // do nothing
   }
+
 }

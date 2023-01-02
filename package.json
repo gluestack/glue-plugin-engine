@@ -12,10 +12,10 @@
   ],
   "license": "ISC",
   "dependencies": {
+    "@gluestack/framework": "^0.0.14",
     "@gluestack/glue-plugin-dev-process-manager": "^0.0.3",
     "@gluestack/glue-plugin-dev-router": "^0.0.6",
-    "@types/node": "^18.11.18",
-    "@gluestack/framework": "^0.0.14"
+    "@types/node": "^18.11.18"
   },
   "peerDependencies": {
     "@gluestack/framework": "^0.0.14",
@@ -28,6 +28,7 @@
     "plugin-build": "tsc"
   },
   "devDependencies": {
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.4",
+    "yaml": "^2.2.1"
   }
 }

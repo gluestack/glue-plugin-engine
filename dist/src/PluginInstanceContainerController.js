@@ -123,13 +123,18 @@ var PluginInstanceContainerController = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log("---- up now ----");
+                        console.log("---- Initiating Engine UP ----");
                         engine = new GluestackEngine_1["default"](this.app);
                         return [4, engine.collectDockerContext()];
                     case 1:
                         _a.sent();
-                        console.log(engine.statelessPlugins);
-                        process.exit(1);
+                        return [4, engine.createDockerCompose('backend')];
+                    case 2:
+                        _a.sent();
+                        return [4, engine.createNginxConfig('backend')];
+                    case 3:
+                        _a.sent();
+                        console.log("---- Exiting Engine UP ----");
                         return [2];
                 }
             });

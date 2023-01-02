@@ -1,0 +1,1 @@
+{"version":3,"file":"add-trailing-slash.js","sourceRoot":"","sources":["../../../src/helpers/add-trailing-slash.ts"],"names":[],"mappings":";;;AAAO,IAAM,gBAAgB,GAAG,UAAC,GAAW;IAC1C,IAAI,GAAG,CAAC,GAAG,CAAC,MAAM,GAAG,CAAC,CAAC,KAAK,GAAG,EAAE;QAC/B,OAAO,GAAG,CAAC;KACZ;SAAM;QACL,OAAO,GAAG,GAAG,GAAG,CAAC;KAClB;AACH,CAAC,CAAC;AANW,QAAA,gBAAgB,oBAM3B"}
