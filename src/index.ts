@@ -8,6 +8,7 @@ import ILifeCycle from "@gluestack/framework/types/plugin/interface/ILifeCycle";
 import IManagesInstances from "@gluestack/framework/types/plugin/interface/IManagesInstances";
 import IGlueStorePlugin from "@gluestack/framework/types/store/interface/IGluePluginStore";
 import { writeEnv } from "./helpers/write-env";
+import { addMainRouter } from "./helpers/add-main-router";
 
 // Do not edit the name of this class
 export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
@@ -62,6 +63,7 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
     if (engineInstance) {
       await writeEnv(engineInstance);
       await engineInstance.getContainerController().up();
+      await addMainRouter(engineInstance);
     }
   }
 

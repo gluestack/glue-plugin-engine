@@ -1,4 +1,4 @@
-import * as fs from "fs";
+import { writeFile } from "./write-file";
 import { PluginInstance } from "../PluginInstance";
 
 export async function constructEnvFromJson(functionInstance: PluginInstance) {
@@ -18,5 +18,5 @@ export async function writeEnv(functionInstance: PluginInstance) {
 `;
   });
 
-  fs.writeFileSync(path, env);
+  await writeFile(path, env);
 }
