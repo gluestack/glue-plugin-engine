@@ -63,6 +63,7 @@ exports.DockerCompose = void 0;
 var path_1 = require("path");
 var yaml = __importStar(require("yaml"));
 var fs_1 = require("fs");
+var spawn_1 = require("../helpers/spawn");
 var DockerCompose = (function () {
     function DockerCompose(backendInstancePath) {
         this.version = '3.9';
@@ -148,6 +149,46 @@ var DockerCompose = (function () {
                 };
                 this.addService(name, service);
                 return [2];
+            });
+        });
+    };
+    DockerCompose.prototype.start = function (projectName, filepath) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, (0, spawn_1.execute)('docker-compose', [
+                            '-p',
+                            projectName,
+                            'up',
+                            '-d'
+                        ], {
+                            cwd: filepath,
+                            stdio: 'inherit'
+                        })];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    DockerCompose.prototype.stop = function (projectName, filepath) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, (0, spawn_1.execute)('docker-compose', [
+                            '-p',
+                            projectName,
+                            'down',
+                            '--volumes'
+                        ], {
+                            cwd: filepath,
+                            stdio: 'inherit'
+                        })];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
             });
         });
     };

@@ -7,12 +7,14 @@ import { IStatelessPlugin } from "./types/IStatelessPlugin";
 import IApp from "@gluestack/framework/types/app/interface/IApp";
 import IInstance from "@gluestack/framework/types/plugin/interface/IInstance";
 import NginxConf from "./NginxConf";
+import { IGlueEngine } from "./types/IGlueEngine";
 
-export default class GluestackEngine {
+export default class GluestackEngine implements IGlueEngine {
+  private backendPlugins: string[];
+  private engineExist: boolean = false;
+
   app: IApp;
-  dockerCompose: DockerCompose;
   statelessPlugins: IStatelessPlugin[];
-  backendPlugins: string[];
 
   constructor(app: IApp) {
     this.app = app;
@@ -23,9 +25,39 @@ export default class GluestackEngine {
     ];
   }
 
-  // Collects all the stateless plugins
-  // and their dockerfiles
-  async collectDockerContext () {
+  // Starts the engine for the backend instance
+  async start(backendInstancePath: string) {
+    /**
+     * 1. Get all the stateless instances
+     * 2. Collect dockerfile from all available
+     * stateles instances assets directory
+     */
+    await this.collectDockerfiles();
+
+    // 3. generate docker-compose file
+    await this.createDockerCompose(backendInstancePath);
+
+    // 4. generate nginx config
+    await this.createNginxConfig(backendInstancePath);
+
+    // 5. start the docker-compose
+    if (this.engineExist) {
+      await this.startDockerCompose(backendInstancePath);
+    } else {
+      console.log('> Engine does not exist. Skipping docker-compose start.');
+    }
+  }
+
+  // Stops the engine for the backend instance
+  async stop(backendInstancePath: string) {
+    this.stopDockerCompose(backendInstancePath);
+  }
+
+  /**
+   * Collects all the stateless plugins
+   * and their dockerfiles
+   */
+  async collectDockerfiles () {
     const app: IApp = this.app;
     const arr: IStatelessPlugin[] = [];
 
@@ -61,7 +93,7 @@ export default class GluestackEngine {
           '@gluestack/glue-plugin-graphql'
         ].includes(details.name)) {
           // Collect the dockerfile & store the context into the instance store
-          await this.collectDockerfiles(details, instance);
+          await this.collectDockerContext(details, instance);
         }
 
         arr.push(details);
@@ -72,7 +104,7 @@ export default class GluestackEngine {
   }
 
   // Collects the dockerfile of the plugin
-  private async collectDockerfiles(
+  private async collectDockerContext(
     details: IStatelessPlugin,
     instance: IInstance
   ) {
@@ -109,6 +141,7 @@ export default class GluestackEngine {
 
       // If and only if the instance is engine plugin
       if (plugin.name === '@gluestack/glue-plugin-engine') {
+        this.engineExist = true;
         dockerCompose.addNginx(plugin);
       }
 
@@ -135,13 +168,41 @@ export default class GluestackEngine {
     await nginxConf.generate();
   }
 
-  async start() {}
+  // Starts the docker-compose
+  async startDockerCompose(backendInstancePath: string) {
+    // constructing the path to engine's router
+    const filepath = join(
+      process.cwd(),
+      backendInstancePath,
+      'engine/router'
+    );
 
-  async stop() {}
+    // constructing project name for docker compose command
+    const folders = process.cwd().split('/');
+    const lastFolder = folders[folders.length - 1];
+    const projectName = `${lastFolder}_${backendInstancePath}`;
 
-  async startDockerCompose() {}
+    // starting docker compose
+    const dockerCompose = new DockerCompose(backendInstancePath);
+    await dockerCompose.start(projectName, filepath);
+  }
 
-  async stopDockerCompose() {}
+  // Stops the docker-compose
+  async stopDockerCompose(backendInstancePath: string) {
+    // constructing the path to engine's router
+    const filepath = join(
+      process.cwd(),
+      backendInstancePath,
+      'engine/router'
+    );
 
-  async cleanDockerVolumes() {}
+    // constructing project name for docker compose command
+    const folders = process.cwd().split('/');
+    const lastFolder = folders[folders.length - 1];
+    const projectName = `${lastFolder}_${backendInstancePath}`;
+
+    // starting docker compose
+    const dockerCompose = new DockerCompose(backendInstancePath);
+    await dockerCompose.stop(projectName, filepath);
+  }
 }

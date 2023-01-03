@@ -3,15 +3,13 @@ import { IStatelessPlugin } from "./IStatelessPlugin";
 export interface IGlueEngine {
   statelessPlugins: IStatelessPlugin[];
 
-  start(): Promise<void>;
-  stop(): Promise<void>;
+  start(backendInstancePath: string): Promise<void>;
+  stop(backendInstancePath: string): Promise<void>;
 
-  collectDockerContext(): Promise<void>;
+  startDockerCompose(backendInstancePath: string): Promise<void>;
+  stopDockerCompose(backendInstancePath: string): Promise<void>;
 
+  collectDockerfiles(): Promise<void>;
   createDockerCompose(backendInstancePath: string): Promise<void>;
   createNginxConfig(backendInstancePath: string): Promise<void>;
-
-  startDockerCompose(): Promise<void>;
-  stopDockerCompose(): Promise<void>;
-  cleanDockerVolumes(): Promise<void>;
 }

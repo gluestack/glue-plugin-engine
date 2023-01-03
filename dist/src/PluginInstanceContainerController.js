@@ -123,18 +123,11 @@ var PluginInstanceContainerController = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log("---- Initiating Engine UP ----");
                         engine = new GluestackEngine_1["default"](this.app);
-                        return [4, engine.collectDockerContext()];
+                        return [4, engine.start('backend')];
                     case 1:
                         _a.sent();
-                        return [4, engine.createDockerCompose('backend')];
-                    case 2:
-                        _a.sent();
-                        return [4, engine.createNginxConfig('backend')];
-                    case 3:
-                        _a.sent();
-                        console.log("---- Exiting Engine UP ----");
+                        console.log('> Note: If you have Hasura plugin installed, please goto hasura directory location and run "npm run synch:hasura"');
                         return [2];
                 }
             });
@@ -142,8 +135,16 @@ var PluginInstanceContainerController = (function () {
     };
     PluginInstanceContainerController.prototype.down = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var engine;
             return __generator(this, function (_a) {
-                return [2];
+                switch (_a.label) {
+                    case 0:
+                        engine = new GluestackEngine_1["default"](this.app);
+                        return [4, engine.stop('backend')];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
             });
         });
     };

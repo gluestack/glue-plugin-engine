@@ -53,6 +53,7 @@ var replace_keyword_1 = require("../helpers/replace-keyword");
 var NginxConf_1 = __importDefault(require("./NginxConf"));
 var GluestackEngine = (function () {
     function GluestackEngine(app) {
+        this.engineExist = false;
         this.app = app;
         this.backendPlugins = [
             '@gluestack/glue-plugin-engine',
@@ -60,7 +61,41 @@ var GluestackEngine = (function () {
             '@gluestack/glue-plugin-functions'
         ];
     }
-    GluestackEngine.prototype.collectDockerContext = function () {
+    GluestackEngine.prototype.start = function (backendInstancePath) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.collectDockerfiles()];
+                    case 1:
+                        _a.sent();
+                        return [4, this.createDockerCompose(backendInstancePath)];
+                    case 2:
+                        _a.sent();
+                        return [4, this.createNginxConfig(backendInstancePath)];
+                    case 3:
+                        _a.sent();
+                        if (!this.engineExist) return [3, 5];
+                        return [4, this.startDockerCompose(backendInstancePath)];
+                    case 4:
+                        _a.sent();
+                        return [3, 6];
+                    case 5:
+                        console.log('> Engine does not exist. Skipping docker-compose start.');
+                        _a.label = 6;
+                    case 6: return [2];
+                }
+            });
+        });
+    };
+    GluestackEngine.prototype.stop = function (backendInstancePath) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.stopDockerCompose(backendInstancePath);
+                return [2];
+            });
+        });
+    };
+    GluestackEngine.prototype.collectDockerfiles = function () {
         var _a, e_1, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
             var app, arr, instances, _d, instances_1, instances_1_1, instance, type, name_1, details, e_1_1;
@@ -101,7 +136,7 @@ var GluestackEngine = (function () {
                         if (!![
                             '@gluestack/glue-plugin-graphql'
                         ].includes(details.name)) return [3, 6];
-                        return [4, this.collectDockerfiles(details, instance)];
+                        return [4, this.collectDockerContext(details, instance)];
                     case 5:
                         _e.sent();
                         _e.label = 6;
@@ -137,7 +172,7 @@ var GluestackEngine = (function () {
             });
         });
     };
-    GluestackEngine.prototype.collectDockerfiles = function (details, instance) {
+    GluestackEngine.prototype.collectDockerContext = function (details, instance) {
         return __awaiter(this, void 0, void 0, function () {
             var dockerfile, context;
             return __generator(this, function (_a) {
@@ -181,6 +216,7 @@ var GluestackEngine = (function () {
                                 return [3, 4];
                             }
                             if (plugin.name === '@gluestack/glue-plugin-engine') {
+                                this.engineExist = true;
                                 dockerCompose.addNginx(plugin);
                             }
                             dockerCompose.addOthers(plugin);
@@ -272,30 +308,43 @@ var GluestackEngine = (function () {
             });
         });
     };
-    GluestackEngine.prototype.start = function () {
-        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
-            return [2];
-        }); });
+    GluestackEngine.prototype.startDockerCompose = function (backendInstancePath) {
+        return __awaiter(this, void 0, void 0, function () {
+            var filepath, folders, lastFolder, projectName, dockerCompose;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        filepath = (0, path_1.join)(process.cwd(), backendInstancePath, 'engine/router');
+                        folders = process.cwd().split('/');
+                        lastFolder = folders[folders.length - 1];
+                        projectName = "".concat(lastFolder, "_").concat(backendInstancePath);
+                        dockerCompose = new DockerCompose_1.DockerCompose(backendInstancePath);
+                        return [4, dockerCompose.start(projectName, filepath)];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
     };
-    GluestackEngine.prototype.stop = function () {
-        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
-            return [2];
-        }); });
-    };
-    GluestackEngine.prototype.startDockerCompose = function () {
-        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
-            return [2];
-        }); });
-    };
-    GluestackEngine.prototype.stopDockerCompose = function () {
-        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
-            return [2];
-        }); });
-    };
-    GluestackEngine.prototype.cleanDockerVolumes = function () {
-        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
-            return [2];
-        }); });
+    GluestackEngine.prototype.stopDockerCompose = function (backendInstancePath) {
+        return __awaiter(this, void 0, void 0, function () {
+            var filepath, folders, lastFolder, projectName, dockerCompose;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        filepath = (0, path_1.join)(process.cwd(), backendInstancePath, 'engine/router');
+                        folders = process.cwd().split('/');
+                        lastFolder = folders[folders.length - 1];
+                        projectName = "".concat(lastFolder, "_").concat(backendInstancePath);
+                        dockerCompose = new DockerCompose_1.DockerCompose(backendInstancePath);
+                        return [4, dockerCompose.stop(projectName, filepath)];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
     };
     return GluestackEngine;
 }());

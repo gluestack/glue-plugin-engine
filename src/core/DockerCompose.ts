@@ -1,10 +1,11 @@
 import { join } from 'path';
 import * as yaml from 'yaml';
 import { writeFileSync } from 'fs';
-import { IService } from './types/IDockerCompose';
+import { execute } from '../helpers/spawn';
 import { IStatelessPlugin } from './types/IStatelessPlugin';
+import { IDockerCompose, IService } from './types/IDockerCompose';
 
-export class DockerCompose {
+export class DockerCompose implements IDockerCompose {
   public backendInstancePath: string;
   public version: string = '3.9';
   public services: { [key: string]: IService };
@@ -95,6 +96,31 @@ export class DockerCompose {
     };
 
     this.addService(name, service);
+  }
+
+  // Executes the docker-compose cli
+  public async start(projectName: string, filepath: string) {
+    await execute('docker-compose', [
+      '-p',
+      projectName,
+      'up',
+      '-d'
+    ], {
+      cwd: filepath,
+      stdio: 'inherit'
+    });
+  }
+
+  public async stop(projectName: string, filepath: string) {
+    await execute('docker-compose', [
+      '-p',
+      projectName,
+      'down',
+      '--volumes'
+    ], {
+      cwd: filepath,
+      stdio: 'inherit'
+    });
   }
 }
 

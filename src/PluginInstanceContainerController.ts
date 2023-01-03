@@ -94,26 +94,15 @@ export class PluginInstanceContainerController implements IContainerController {
   getConfig(): any {}
 
   async up() {
-    console.log("---- Initiating Engine UP ----");
-
     const engine: IGlueEngine = new GluestackEngine(this.app);
+    await engine.start('backend');
 
-    // 1. get all the stateless instances
-    // 2. collect dockerfile from all available
-    // stateles instances assets directory
-    await engine.collectDockerContext();
-
-    // 3. generate docker-compose file
-    await engine.createDockerCompose('backend');
-
-    // 4. generate nginx config
-    await engine.createNginxConfig('backend');
-
-    console.log("---- Exiting Engine UP ----");
+    console.log('> Note: If you have Hasura plugin installed, please goto hasura directory location and run "npm run synch:hasura"');
   }
 
   async down() {
-    // do nothing
+    const engine: IGlueEngine = new GluestackEngine(this.app);
+    await engine.stop('backend');
   }
 
   async build() {
