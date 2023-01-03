@@ -1,0 +1,30 @@
+import { join } from "path";
+import { writeFile } from "./write-file";
+import { fileExists } from "./file-exists";
+import { PluginInstance } from "../PluginInstance";
+
+const construct = async (projectName: string, path: string) => {
+  const content: string = `module.exports = () => {
+    return [{
+      domain: "${projectName}.local.gluestack.app"
+    }]
+  };`;
+
+  await writeFile(path, content);
+};
+
+export async function addMainRouter(engineInstance: PluginInstance) {
+  const installationPath = engineInstance.getInstallationPath();
+
+  const folders = installationPath.split("/");
+  const projectName = folders[folders.length - 1];
+
+  const path = join(installationPath, '..', 'router.js');
+
+  const exist = await fileExists(path);
+  if (!exist) {
+    await construct(projectName, path);
+  }
+
+  Promise.resolve('done');
+};
