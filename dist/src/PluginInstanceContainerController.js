@@ -119,15 +119,16 @@ var PluginInstanceContainerController = (function () {
     PluginInstanceContainerController.prototype.getConfig = function () { };
     PluginInstanceContainerController.prototype.up = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var engine;
+            var app, engine;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        engine = new GluestackEngine_1["default"](this.app);
+                        app = this.app;
+                        engine = new GluestackEngine_1["default"](app);
                         return [4, engine.start('backend')];
                     case 1:
                         _a.sent();
-                        console.log('> Note: If you have Hasura plugin installed, please goto hasura directory location and run "npm run synch:hasura"');
+                        console.log('> Note: If you have Hasura plugin installed, please goto hasura directory location and run "npm run sync:hasura"');
                         return [2];
                 }
             });
@@ -135,11 +136,12 @@ var PluginInstanceContainerController = (function () {
     };
     PluginInstanceContainerController.prototype.down = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var engine;
+            var app, engine;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        engine = new GluestackEngine_1["default"](this.app);
+                        app = this.app;
+                        engine = new GluestackEngine_1["default"](app);
                         return [4, engine.stop('backend')];
                     case 1:
                         _a.sent();
