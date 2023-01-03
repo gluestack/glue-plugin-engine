@@ -2,6 +2,8 @@ import { PluginInstance } from "./PluginInstance";
 import IApp from "@gluestack/framework/types/app/interface/IApp";
 import IContainerController from "@gluestack/framework/types/plugin/interface/IContainerController";
 const { DockerodeHelper } = require("@gluestack/helpers");
+import GluestackEngine from "./core/GluestackEngine";
+import { IGlueEngine } from "./core/types/IGlueEngine";
 
 export class PluginInstanceContainerController implements IContainerController {
   app: IApp;
@@ -92,14 +94,19 @@ export class PluginInstanceContainerController implements IContainerController {
   getConfig(): any {}
 
   async up() {
-    console.log("---- up");
+    const engine: IGlueEngine = new GluestackEngine(this.app);
+    await engine.start('backend');
+
+    console.log('> Note: If you have Hasura plugin installed, please goto hasura directory location and run "npm run synch:hasura"');
   }
 
   async down() {
-    // do nothing
+    const engine: IGlueEngine = new GluestackEngine(this.app);
+    await engine.stop('backend');
   }
 
   async build() {
     // do nothing
   }
+
 }
