@@ -5,7 +5,9 @@ events {
   worker_connections 1024;
 }
 
-http {`;
+http {
+  client_max_body_size 100M;
+  sendfile on;`;
 
 export const endsWith = `
 }`;
@@ -14,6 +16,25 @@ export const setServer = (domain: string, locations: string[]): string => `
   server {
     listen 80;
     server_name ${domain};
+
+    gzip on;
+    gzip_disable "msie6";
+
+    gzip_comp_level 6;
+    gzip_min_length 1100;
+    gzip_buffers 16 8k;
+    gzip_proxied any;
+    gzip_types
+        text/plain
+        text/css
+        text/js
+        text/xml
+        text/javascript
+        application/javascript
+        application/json
+        application/xml
+        application/rss+xml
+        image/svg+xml;
     ${locations.join('\n')}
   }
 `;

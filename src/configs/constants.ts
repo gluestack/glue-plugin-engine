@@ -14,5 +14,6 @@
 export const backendPlugins = (): string[] => [
   '@gluestack/glue-plugin-engine',
   '@gluestack/glue-plugin-graphql',
-  '@gluestack/glue-plugin-functions'
+  '@gluestack/glue-plugin-functions',
+  '@gluestack/glue-plugin-functions.action'
 ];

@@ -11,6 +11,7 @@ import { DockerCompose } from "./DockerCompose";
 import { writeFile } from "../helpers/write-file";
 import { backendPlugins } from "../configs/constants";
 import { replaceKeyword } from "../helpers/replace-keyword";
+import { removeSpecialChars } from "../helpers/remove-special-chars";
 
 /**
  * Gluestack Engine
@@ -208,7 +209,7 @@ export default class GluestackEngine implements IGlueEngine {
     // @ts-ignore
     const context = await replaceKeyword(
       dockerfile,
-      instance.getName(),
+      removeSpecialChars(instance.getName()),
       '{APP_ID}'
     );
 

@@ -53,6 +53,7 @@ var DockerCompose_1 = require("./DockerCompose");
 var write_file_1 = require("../helpers/write-file");
 var constants_1 = require("../configs/constants");
 var replace_keyword_1 = require("../helpers/replace-keyword");
+var remove_special_chars_1 = require("../helpers/remove-special-chars");
 var GluestackEngine = (function () {
     function GluestackEngine(app) {
         this.engineExist = false;
@@ -341,7 +342,7 @@ var GluestackEngine = (function () {
                 switch (_a.label) {
                     case 0:
                         dockerfile = (0, path_1.join)(process.cwd(), 'node_modules', instance.callerPlugin.getName(), 'src/assets/Dockerfile');
-                        return [4, (0, replace_keyword_1.replaceKeyword)(dockerfile, instance.getName(), '{APP_ID}')];
+                        return [4, (0, replace_keyword_1.replaceKeyword)(dockerfile, (0, remove_special_chars_1.removeSpecialChars)(instance.getName()), '{APP_ID}')];
                     case 1:
                         context = _a.sent();
                         return [4, (0, write_file_1.writeFile)((0, path_1.join)(details.path, 'Dockerfile'), context)];

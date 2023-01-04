@@ -88,7 +88,7 @@ var PluginInstanceContainerController = (function () {
                             return resolve(_this.portNumber);
                         }
                         var ports = _this.callerInstance.callerPlugin.gluePluginStore.get("ports") || [];
-                        DockerodeHelper.getPort(4499, ports)
+                        DockerodeHelper.getPort(8080, ports)
                             .then(function (port) {
                             _this.setPortNumber(port);
                             ports.push(port);
