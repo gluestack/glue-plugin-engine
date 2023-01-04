@@ -36,23 +36,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.generateDockerfile = void 0;
-var path_1 = require("path");
-var fs_1 = require("fs");
-var generateDockerfile = function (installationPath) { return __awaiter(void 0, void 0, void 0, function () {
-    var filepath, dockerfile;
-    return __generator(this, function (_a) {
-        filepath = (0, path_1.join)(process.cwd(), installationPath);
-        dockerfile = [];
-        dockerfile.push("FROM node:lts");
-        dockerfile.push("WORKDIR /functions");
-        dockerfile.push("COPY . .");
-        dockerfile.push("RUN npm install");
-        dockerfile.push("COPY . .");
-        dockerfile.push("EXPOSE 3000");
-        (0, fs_1.writeFileSync)((0, path_1.join)(filepath, "Dockerfile"), dockerfile.join("\n"));
-        return [2];
-    });
-}); };
-exports.generateDockerfile = generateDockerfile;
-//# sourceMappingURL=create-dockerfile.js.map
+var GluestackEvent = (function () {
+    function GluestackEvent() {
+    }
+    GluestackEvent.prototype.register = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2];
+            });
+        });
+    };
+    GluestackEvent.prototype.getEvents = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2, this.events];
+            });
+        });
+    };
+    return GluestackEvent;
+}());
+exports["default"] = GluestackEvent;
+//# sourceMappingURL=GluestackEvent.js.map

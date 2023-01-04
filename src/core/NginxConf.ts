@@ -54,19 +54,18 @@ export default class NginxConf {
     try {
       const conf: string = await this.toConf();
 
+      writeFileSync(
+        join(
+          process.cwd(),
+          this.backendInstancePath,
+          'engine/router',
+          'nginx.conf'
+        ),
+        conf
+      );
 
-    writeFileSync(
-      join(
-        process.cwd(),
-        this.backendInstancePath,
-        'engine/router',
-        'nginx.conf'
-      ),
-      conf
-    );
-
-  } catch (err) {
-    console.log(err);
-  }
+    } catch (err) {
+      console.log(err);
+    }
   }
 }

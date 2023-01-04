@@ -36,46 +36,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.addMainRouter = void 0;
-var path_1 = require("path");
-var write_file_1 = require("./write-file");
-var file_exists_1 = require("./file-exists");
-var construct = function (projectName, path) { return __awaiter(void 0, void 0, void 0, function () {
-    var content;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                content = "module.exports = () => {\n    return [{\n      domain: \"".concat(projectName, ".local.gluestack.app\"\n    }]\n  };");
-                return [4, (0, write_file_1.writeFile)(path, content)];
-            case 1:
-                _a.sent();
+var GluestackAction = (function () {
+    function GluestackAction() {
+    }
+    GluestackAction.prototype.register = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
                 return [2];
-        }
-    });
-}); };
-function addMainRouter(engineInstance) {
-    return __awaiter(this, void 0, void 0, function () {
-        var installationPath, folders, projectName, path, exist;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    installationPath = engineInstance.getInstallationPath();
-                    folders = installationPath.split("/");
-                    projectName = folders[folders.length - 1];
-                    path = (0, path_1.join)(installationPath, '..', 'router.js');
-                    return [4, (0, file_exists_1.fileExists)(path)];
-                case 1:
-                    exist = _a.sent();
-                    if (!!exist) return [3, 3];
-                    return [4, construct(projectName, path)];
-                case 2:
-                    _a.sent();
-                    _a.label = 3;
-                case 3: return [2, Promise.resolve('done')];
-            }
+            });
         });
-    });
-}
-exports.addMainRouter = addMainRouter;
-;
-//# sourceMappingURL=add-main-router.js.map
+    };
+    GluestackAction.prototype.getActions = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2, this.actions];
+            });
+        });
+    };
+    return GluestackAction;
+}());
+exports["default"] = GluestackAction;
+//# sourceMappingURL=GluestackAction.js.map

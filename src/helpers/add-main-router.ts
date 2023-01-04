@@ -3,7 +3,7 @@ import { writeFile } from "./write-file";
 import { fileExists } from "./file-exists";
 import { PluginInstance } from "../PluginInstance";
 
-const construct = async (projectName: string, path: string) => {
+const construct = async (projectName: string, path: string): Promise<void> => {
   const content: string = `module.exports = () => {
     return [{
       domain: "${projectName}.local.gluestack.app"
@@ -13,7 +13,7 @@ const construct = async (projectName: string, path: string) => {
   await writeFile(path, content);
 };
 
-export async function addMainRouter(engineInstance: PluginInstance) {
+export async function addMainRouter(engineInstance: PluginInstance): Promise<string> {
   const installationPath = engineInstance.getInstallationPath();
 
   const folders = installationPath.split("/");
@@ -26,5 +26,5 @@ export async function addMainRouter(engineInstance: PluginInstance) {
     await construct(projectName, path);
   }
 
-  Promise.resolve('done');
+  return Promise.resolve('done');
 };

@@ -36,20 +36,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.replaceKeyword = void 0;
-var node_fs_1 = require("node:fs");
-var replaceKeyword = function (filePath, value, key) {
-    if (key === void 0) { key = "{APP_ID}"; }
-    return __awaiter(void 0, void 0, void 0, function () {
-        var data;
-        return __generator(this, function (_a) {
-            data = (0, node_fs_1.readFileSync)(filePath, "utf8");
-            data = data.toString();
-            data = data.replaceAll(key, value);
-            return [2, Promise.resolve(data)];
-        });
+exports.createFolder = void 0;
+var promises_1 = require("node:fs/promises");
+var createFolder = function (path) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4, (0, promises_1.mkdir)(path, { recursive: true })];
+            case 1:
+                _a.sent();
+                return [2];
+        }
     });
-};
-exports.replaceKeyword = replaceKeyword;
-exports["default"] = exports.replaceKeyword;
-//# sourceMappingURL=rewrite-file.js.map
+}); };
+exports.createFolder = createFolder;
+//# sourceMappingURL=create-folder.js.map

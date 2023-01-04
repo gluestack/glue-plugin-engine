@@ -36,23 +36,41 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.generateDockerfile = void 0;
+exports.addMainActions = void 0;
 var path_1 = require("path");
-var fs_1 = require("fs");
-var generateDockerfile = function (installationPath) { return __awaiter(void 0, void 0, void 0, function () {
-    var filepath, dockerfile;
+var file_exists_1 = require("./file-exists");
+var create_folder_1 = require("./create-folder");
+var construct = function (path) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        filepath = (0, path_1.join)(process.cwd(), installationPath);
-        dockerfile = [];
-        dockerfile.push("FROM node:lts");
-        dockerfile.push("WORKDIR /functions");
-        dockerfile.push("COPY . .");
-        dockerfile.push("RUN npm install");
-        dockerfile.push("COPY . .");
-        dockerfile.push("EXPOSE 3000");
-        (0, fs_1.writeFileSync)((0, path_1.join)(filepath, "Dockerfile"), dockerfile.join("\n"));
-        return [2];
+        switch (_a.label) {
+            case 0: return [4, (0, create_folder_1.createFolder)(path)];
+            case 1:
+                _a.sent();
+                return [2];
+        }
     });
 }); };
-exports.generateDockerfile = generateDockerfile;
-//# sourceMappingURL=create-dockerfile.js.map
+function addMainActions(engineInstance) {
+    return __awaiter(this, void 0, void 0, function () {
+        var installationPath, path, exist;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    installationPath = engineInstance.getInstallationPath();
+                    path = (0, path_1.join)(installationPath, '..', 'actions');
+                    return [4, (0, file_exists_1.fileExists)(path)];
+                case 1:
+                    exist = _a.sent();
+                    if (!!exist) return [3, 3];
+                    return [4, construct(path)];
+                case 2:
+                    _a.sent();
+                    _a.label = 3;
+                case 3: return [2, Promise.resolve('done')];
+            }
+        });
+    });
+}
+exports.addMainActions = addMainActions;
+;
+//# sourceMappingURL=add-main-actions.js.map
