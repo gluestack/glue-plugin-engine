@@ -5,6 +5,12 @@ import { execute } from '../helpers/spawn';
 import { IStatelessPlugin } from './types/IStatelessPlugin';
 import { IDockerCompose, IService } from './types/IDockerCompose';
 
+/**
+ * Docker Compose
+ *
+ * This class is responsible for generating the docker-compose.yml file
+ * in your backend instance's engine/router folder.
+ */
 export class DockerCompose implements IDockerCompose {
   public backendInstancePath: string;
   public version: string = '3.9';

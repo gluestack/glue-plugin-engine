@@ -47,19 +47,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 exports.__esModule = true;
 var path_1 = require("path");
+var NginxConf_1 = __importDefault(require("./NginxConf"));
+var spawn_1 = require("../helpers/spawn");
 var DockerCompose_1 = require("./DockerCompose");
 var write_file_1 = require("../helpers/write-file");
+var constants_1 = require("../configs/constants");
 var replace_keyword_1 = require("../helpers/replace-keyword");
-var NginxConf_1 = __importDefault(require("./NginxConf"));
 var GluestackEngine = (function () {
     function GluestackEngine(app) {
         this.engineExist = false;
+        this.hasuraPluginName = '';
         this.app = app;
-        this.backendPlugins = [
-            '@gluestack/glue-plugin-engine',
-            '@gluestack/glue-plugin-graphql',
-            '@gluestack/glue-plugin-functions'
-        ];
+        this.backendPlugins = (0, constants_1.backendPlugins)();
     }
     GluestackEngine.prototype.start = function (backendInstancePath) {
         return __awaiter(this, void 0, void 0, function () {
@@ -82,7 +81,13 @@ var GluestackEngine = (function () {
                     case 5:
                         console.log('> Engine does not exist. Skipping docker-compose start.');
                         _a.label = 6;
-                    case 6: return [2];
+                    case 6:
+                        if (!this.hasuraPluginName) return [3, 8];
+                        return [4, this.applyHasuraMetadata(backendInstancePath)];
+                    case 7:
+                        _a.sent();
+                        _a.label = 8;
+                    case 8: return [2];
                 }
             });
         });
@@ -172,24 +177,6 @@ var GluestackEngine = (function () {
             });
         });
     };
-    GluestackEngine.prototype.collectDockerContext = function (details, instance) {
-        return __awaiter(this, void 0, void 0, function () {
-            var dockerfile, context;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        dockerfile = (0, path_1.join)(process.cwd(), 'node_modules', instance.callerPlugin.getName(), 'src/assets/Dockerfile');
-                        return [4, (0, replace_keyword_1.replaceKeyword)(dockerfile, instance.getName(), '{APP_ID}')];
-                    case 1:
-                        context = _a.sent();
-                        return [4, (0, write_file_1.writeFile)((0, path_1.join)(details.path, 'Dockerfile'), context)];
-                    case 2:
-                        _a.sent();
-                        return [2];
-                }
-            });
-        });
-    };
     GluestackEngine.prototype.createDockerCompose = function (backendInstancePath) {
         var _a, e_2, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
@@ -213,6 +200,7 @@ var GluestackEngine = (function () {
                             plugin = _c;
                             if (plugin.name === '@gluestack/glue-plugin-graphql') {
                                 dockerCompose.addHasura(plugin);
+                                this.hasuraPluginName = plugin.instance;
                                 return [3, 4];
                             }
                             if (plugin.name === '@gluestack/glue-plugin-engine') {
@@ -339,6 +327,46 @@ var GluestackEngine = (function () {
                         projectName = "".concat(lastFolder, "_").concat(backendInstancePath);
                         dockerCompose = new DockerCompose_1.DockerCompose(backendInstancePath);
                         return [4, dockerCompose.stop(projectName, filepath)];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    GluestackEngine.prototype.collectDockerContext = function (details, instance) {
+        return __awaiter(this, void 0, void 0, function () {
+            var dockerfile, context;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        dockerfile = (0, path_1.join)(process.cwd(), 'node_modules', instance.callerPlugin.getName(), 'src/assets/Dockerfile');
+                        return [4, (0, replace_keyword_1.replaceKeyword)(dockerfile, instance.getName(), '{APP_ID}')];
+                    case 1:
+                        context = _a.sent();
+                        return [4, (0, write_file_1.writeFile)((0, path_1.join)(details.path, 'Dockerfile'), context)];
+                    case 2:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    GluestackEngine.prototype.applyHasuraMetadata = function (backendInstancePath) {
+        return __awaiter(this, void 0, void 0, function () {
+            var filepath;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        filepath = (0, path_1.join)(process.cwd(), backendInstancePath, 'functions', this.hasuraPluginName);
+                        return [4, (0, spawn_1.execute)('hasura', [
+                                'metadata',
+                                'apply',
+                                '--skip-update-check'
+                            ], {
+                                cwd: filepath,
+                                stdio: 'inherit'
+                            })];
                     case 1:
                         _a.sent();
                         return [2];

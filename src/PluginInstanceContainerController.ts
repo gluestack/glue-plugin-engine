@@ -98,8 +98,6 @@ export class PluginInstanceContainerController implements IContainerController {
 
     const engine: IGlueEngine = new GluestackEngine(app);
     await engine.start('backend');
-
-    console.log('> Note: If you have Hasura plugin installed, please goto hasura directory location and run "npm run sync:hasura"');
   }
 
   async down() {

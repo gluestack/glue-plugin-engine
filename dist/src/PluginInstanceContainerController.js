@@ -128,7 +128,6 @@ var PluginInstanceContainerController = (function () {
                         return [4, engine.start('backend')];
                     case 1:
                         _a.sent();
-                        console.log('> Note: If you have Hasura plugin installed, please goto hasura directory location and run "npm run sync:hasura"');
                         return [2];
                 }
             });

@@ -5,6 +5,12 @@ import {
   endsWith, startsWith, setServer, setLocation
 } from '../helpers/nginx-literals';
 
+/**
+ * Nginx Conf
+ *
+ * This class is responsible for generating the nginx.conf file
+ * in your backend instance's engine/router folder.
+ */
 export default class NginxConf {
   public data: any[];
   public backendInstancePath: string

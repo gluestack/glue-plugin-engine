@@ -1,32 +1,38 @@
-import { join } from "path";
-import { DockerCompose } from "./DockerCompose";
-import { writeFile } from "../helpers/write-file";
-import { replaceKeyword } from "../helpers/replace-keyword";
-
-import { IStatelessPlugin } from "./types/IStatelessPlugin";
 import IApp from "@gluestack/framework/types/app/interface/IApp";
 import IInstance from "@gluestack/framework/types/plugin/interface/IInstance";
-import NginxConf from "./NginxConf";
-import { IGlueEngine } from "./types/IGlueEngine";
 
+import { IGlueEngine } from "./types/IGlueEngine";
+import { IStatelessPlugin } from "./types/IStatelessPlugin";
+
+import { join } from "path";
+import NginxConf from "./NginxConf";
+import { execute } from "../helpers/spawn";
+import { DockerCompose } from "./DockerCompose";
+import { writeFile } from "../helpers/write-file";
+import { backendPlugins } from "../configs/constants";
+import { replaceKeyword } from "../helpers/replace-keyword";
+
+/**
+ * Gluestack Engine
+ *
+ * This class is responsible for starting and stopping all the backend
+ * plugins and their instances.
+ */
 export default class GluestackEngine implements IGlueEngine {
   private backendPlugins: string[];
   private engineExist: boolean = false;
+  private hasuraPluginName: string = '';
 
   app: IApp;
   statelessPlugins: IStatelessPlugin[];
 
   constructor(app: IApp) {
     this.app = app;
-    this.backendPlugins = [
-      '@gluestack/glue-plugin-engine',
-      '@gluestack/glue-plugin-graphql',
-      '@gluestack/glue-plugin-functions'
-    ];
+    this.backendPlugins = backendPlugins();
   }
 
   // Starts the engine for the backend instance
-  async start(backendInstancePath: string) {
+  async start(backendInstancePath: string): Promise<void> {
     /**
      * 1. Get all the stateless instances
      * 2. Collect dockerfile from all available
@@ -46,18 +52,20 @@ export default class GluestackEngine implements IGlueEngine {
     } else {
       console.log('> Engine does not exist. Skipping docker-compose start.');
     }
+
+    // 6. run hasura metadata apply
+    if (this.hasuraPluginName) {
+      await this.applyHasuraMetadata(backendInstancePath);
+    }
   }
 
   // Stops the engine for the backend instance
-  async stop(backendInstancePath: string) {
+  async stop(backendInstancePath: string): Promise<void> {
     this.stopDockerCompose(backendInstancePath);
   }
 
-  /**
-   * Collects all the stateless plugins
-   * and their dockerfiles
-   */
-  async collectDockerfiles () {
+  // Collects all the stateless plugins and their dockerfiles
+  async collectDockerfiles (): Promise<void> {
     const app: IApp = this.app;
     const arr: IStatelessPlugin[] = [];
 
@@ -103,31 +111,8 @@ export default class GluestackEngine implements IGlueEngine {
     this.statelessPlugins = arr;
   }
 
-  // Collects the dockerfile of the plugin
-  private async collectDockerContext(
-    details: IStatelessPlugin,
-    instance: IInstance
-  ) {
-    // @ts-ignore
-    const dockerfile = join(
-      process.cwd(),
-      'node_modules',
-      instance.callerPlugin.getName(),
-      'src/assets/Dockerfile'
-    );
-
-    // @ts-ignore
-    const context = await replaceKeyword(
-      dockerfile,
-      instance.getName(),
-      '{APP_ID}'
-    );
-
-    await writeFile(join(details.path, 'Dockerfile'), context);
-  }
-
   // Creates the docker-compose file
-  async createDockerCompose(backendInstancePath: string) {
+  async createDockerCompose(backendInstancePath: string): Promise<void> {
     const dockerCompose = new DockerCompose(backendInstancePath);
     const plugins = this.statelessPlugins;
 
@@ -136,6 +121,7 @@ export default class GluestackEngine implements IGlueEngine {
       // If and only if the instance is graphql plugin
       if (plugin.name === '@gluestack/glue-plugin-graphql') {
         dockerCompose.addHasura(plugin);
+        this.hasuraPluginName = plugin.instance;
         continue;
       }
 
@@ -153,7 +139,7 @@ export default class GluestackEngine implements IGlueEngine {
   }
 
   // Creates the nginx config from all available plugins' router.js file
-  async createNginxConfig(backendInstancePath: string) {
+  async createNginxConfig(backendInstancePath: string): Promise<void> {
     const plugins = this.statelessPlugins;
     const nginxConf = new NginxConf(backendInstancePath);
 
@@ -169,7 +155,7 @@ export default class GluestackEngine implements IGlueEngine {
   }
 
   // Starts the docker-compose
-  async startDockerCompose(backendInstancePath: string) {
+  async startDockerCompose(backendInstancePath: string): Promise<void> {
     // constructing the path to engine's router
     const filepath = join(
       process.cwd(),
@@ -188,7 +174,7 @@ export default class GluestackEngine implements IGlueEngine {
   }
 
   // Stops the docker-compose
-  async stopDockerCompose(backendInstancePath: string) {
+  async stopDockerCompose(backendInstancePath: string): Promise<void> {
     // constructing the path to engine's router
     const filepath = join(
       process.cwd(),
@@ -204,5 +190,42 @@ export default class GluestackEngine implements IGlueEngine {
     // starting docker compose
     const dockerCompose = new DockerCompose(backendInstancePath);
     await dockerCompose.stop(projectName, filepath);
+  }
+
+  // Collects the dockerfile of the plugin
+  private async collectDockerContext(
+    details: IStatelessPlugin,
+    instance: IInstance
+  ): Promise<void> {
+    // @ts-ignore
+    const dockerfile = join(
+      process.cwd(),
+      'node_modules',
+      instance.callerPlugin.getName(),
+      'src/assets/Dockerfile'
+    );
+
+    // @ts-ignore
+    const context = await replaceKeyword(
+      dockerfile,
+      instance.getName(),
+      '{APP_ID}'
+    );
+
+    await writeFile(join(details.path, 'Dockerfile'), context);
+  }
+
+  // Sync hasura engine's metadata with the local hasura metadata
+  private async applyHasuraMetadata(backendInstancePath: string): Promise<void> {
+    const filepath = join(process.cwd(), backendInstancePath, 'functions', this.hasuraPluginName);
+
+    await execute('hasura', [
+      'metadata',
+      'apply',
+      '--skip-update-check'
+    ], {
+      cwd: filepath,
+      stdio: 'inherit'
+    });
   }
 }
