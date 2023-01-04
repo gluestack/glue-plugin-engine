@@ -9,7 +9,6 @@ import IManagesInstances from "@gluestack/framework/types/plugin/interface/IMana
 import IGlueStorePlugin from "@gluestack/framework/types/store/interface/IGluePluginStore";
 import { writeEnv } from "./helpers/write-env";
 import { addMainRouter } from "./helpers/add-main-router";
-import { addMainActions } from "./helpers/add-main-actions";
 import { addMainEvents } from "./helpers/add-main-events";
 
 // Do not edit the name of this class
@@ -71,9 +70,6 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
 
       // Adds events directories
       await addMainEvents(engineInstance);
-
-      // Adds actions directories
-      await addMainActions(engineInstance);
 
       // Runs the engine container
       await engineInstance.getContainerController().up();

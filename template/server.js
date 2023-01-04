@@ -4,7 +4,7 @@ const app = express();
 const port = 9000;
 
 app.get('/health-check', (req, res) => {
-  return res.status(200).json({status: true, message: 'Health check performed successfully'});
+  return res.status(200).json({status: true, message: 'Ok'});
 });
 
 app.post('/actions', (req, res) => {
