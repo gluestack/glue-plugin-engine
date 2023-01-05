@@ -59,111 +59,31 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+var axios = require("axios")["default"];
 var path_1 = require("path");
-var yaml = __importStar(require("yaml"));
-var fs_1 = require("fs");
-var spawn_1 = require("../helpers/spawn");
-var DockerCompose = (function () {
-    function DockerCompose(backendInstancePath) {
-        this.version = '3.9';
-        this.services = {};
+var dotenv = __importStar(require("dotenv"));
+var node_fs_1 = require("node:fs");
+var generate_action_custom_types_1 = require("../helpers/generate-action-custom-types");
+var HasuraMetadata = (function () {
+    function HasuraMetadata(backendInstancePath, pluginName) {
+        this.pluginName = pluginName;
         this.backendInstancePath = backendInstancePath;
+        this.hasuraEnvs = this.captureEnvVars();
     }
-    DockerCompose.prototype.toYAML = function () {
-        return yaml.stringify({
-            version: this.version,
-            services: this.services
-        });
-    };
-    DockerCompose.prototype.addService = function (name, service) {
-        this.services[name] = service;
-    };
-    DockerCompose.prototype.generate = function () {
+    HasuraMetadata.prototype.dropAction = function (actionName) {
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                (0, fs_1.writeFileSync)((0, path_1.join)(process.cwd(), this.backendInstancePath, 'engine/router', 'docker-compose.yml'), this.toYAML());
-                return [2];
-            });
-        });
-    };
-    DockerCompose.prototype.addNginx = function (plugin) {
-        return __awaiter(this, void 0, void 0, function () {
-            var nginx;
-            return __generator(this, function (_a) {
-                nginx = {
-                    container_name: 'nginx',
-                    restart: 'always',
-                    build: (0, path_1.join)(plugin.path, 'router'),
-                    ports: [
-                        '9090:80'
-                    ],
-                    volumes: [
-                        "".concat((0, path_1.join)(plugin.path, 'router', 'nginx.conf'), ":/etc/nginx/nginx.conf")
-                    ]
-                };
-                this.addService('nginx', nginx);
-                return [2];
-            });
-        });
-    };
-    DockerCompose.prototype.addHasura = function (plugin) {
-        return __awaiter(this, void 0, void 0, function () {
-            var hasura;
-            return __generator(this, function (_a) {
-                hasura = {
-                    container_name: plugin.instance,
-                    restart: 'always',
-                    image: 'hasura/graphql-engine:v2.16.1',
-                    ports: [
-                        '8080:8080'
-                    ],
-                    volumes: [
-                        "".concat(plugin.path, ":/hasura"),
-                    ],
-                    env_file: [
-                        "".concat(plugin.path, "/.env")
-                    ]
-                };
-                this.addService(plugin.instance, hasura);
-                return [2];
-            });
-        });
-    };
-    DockerCompose.prototype.addOthers = function (plugin) {
-        return __awaiter(this, void 0, void 0, function () {
-            var name, service;
-            return __generator(this, function (_a) {
-                name = plugin.instance;
-                service = {
-                    container_name: plugin.instance,
-                    restart: 'always',
-                    build: plugin.path,
-                    volumes: [
-                        "".concat(plugin.path, ":/server"),
-                        "/server/node_modules"
-                    ],
-                    env_file: [
-                        "".concat(plugin.path, "/.env")
-                    ]
-                };
-                this.addService(name, service);
-                return [2];
-            });
-        });
-    };
-    DockerCompose.prototype.start = function (projectName, filepath) {
-        return __awaiter(this, void 0, void 0, function () {
+            var data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, (0, spawn_1.execute)('docker-compose', [
-                            '-p',
-                            projectName,
-                            'up',
-                            '-d'
-                        ], {
-                            cwd: filepath,
-                            stdio: 'inherit'
-                        })];
+                    case 0:
+                        data = {
+                            "type": "drop_action",
+                            "args": {
+                                "name": actionName,
+                                "clear_data": true
+                            }
+                        };
+                        return [4, this.makeRequest(data)];
                     case 1:
                         _a.sent();
                         return [2];
@@ -171,27 +91,79 @@ var DockerCompose = (function () {
             });
         });
     };
-    DockerCompose.prototype.stop = function (projectName, filepath) {
+    HasuraMetadata.prototype.createActionCustomTypes = function (action) {
         return __awaiter(this, void 0, void 0, function () {
+            var setting, regex, match, kind, schema, payloads;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, (0, spawn_1.execute)('docker-compose', [
-                            '-p',
-                            projectName,
-                            'down',
-                            '--volumes'
-                        ], {
-                            cwd: filepath,
-                            stdio: 'inherit'
-                        })];
+                    case 0:
+                        setting = (0, node_fs_1.readFileSync)(action.setting_path, 'utf8');
+                        regex = /execution="(.*)"/g;
+                        match = regex.exec(setting);
+                        kind = match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+                        schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, 'utf8');
+                        payloads = {};
+                        try {
+                            payloads = (0, generate_action_custom_types_1.generateActionCustomTypes)(schema, kind);
+                        }
+                        catch (error) {
+                            console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
+                            return [2, Promise.resolve('failed')];
+                        }
+                        console.log("\n> Creating action ".concat(action.name, "..."));
+                        console.log("> Creating custom types for action ".concat(action.name, "..."));
+                        return [4, this.makeRequest(payloads.customTypesData)];
                     case 1:
+                        _a.sent();
+                        return [4, this.makeRequest(payloads.actionData)];
+                    case 2:
                         _a.sent();
                         return [2];
                 }
             });
         });
     };
-    return DockerCompose;
+    HasuraMetadata.prototype.captureEnvVars = function () {
+        var envPath = (0, path_1.join)(process.cwd(), this.backendInstancePath, 'functions', this.pluginName, '.env');
+        return dotenv.config({ path: envPath }).parsed;
+    };
+    HasuraMetadata.prototype.makeRequest = function (data, terminateOnError) {
+        if (terminateOnError === void 0) { terminateOnError = false; }
+        return __awaiter(this, void 0, void 0, function () {
+            var hasuraEnvs, options, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        hasuraEnvs = this.hasuraEnvs;
+                        options = {
+                            method: 'POST',
+                            url: "".concat(hasuraEnvs.HASURA_GRAPHQL_URL, "/v1/metadata"),
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'x-hasura-role': 'admin',
+                                'x-hasura-admin-secret': hasuraEnvs.HASURA_GRAPHQL_ADMIN_SECRET
+                            },
+                            data: data
+                        };
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4, axios.request(options)];
+                    case 2:
+                        _a.sent();
+                        return [3, 4];
+                    case 3:
+                        error_1 = _a.sent();
+                        if (error_1.response.data.error) {
+                            console.log('>', error_1.response.data.error);
+                        }
+                        return [3, 4];
+                    case 4: return [2];
+                }
+            });
+        });
+    };
+    return HasuraMetadata;
 }());
-exports["default"] = DockerCompose;
-//# sourceMappingURL=DockerCompose.js.map
+exports["default"] = HasuraMetadata;
+//# sourceMappingURL=HasuraMetadata.js.map

@@ -11,7 +11,7 @@ import { IDockerCompose, IService } from './types/IDockerCompose';
  * This class is responsible for generating the docker-compose.yml file
  * in your backend instance's engine/router folder.
  */
-export class DockerCompose implements IDockerCompose {
+export default class DockerCompose implements IDockerCompose {
   public backendInstancePath: string;
   public version: string = '3.9';
   public services: { [key: string]: IService };
@@ -129,5 +129,3 @@ export class DockerCompose implements IDockerCompose {
     });
   }
 }
-
-export default DockerCompose;

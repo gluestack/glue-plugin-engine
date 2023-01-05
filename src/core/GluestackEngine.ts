@@ -4,12 +4,14 @@ import IInstance from "@gluestack/framework/types/plugin/interface/IInstance";
 import { IGlueEngine } from "./types/IGlueEngine";
 import { IStatelessPlugin } from "./types/IStatelessPlugin";
 
-import { join } from "path";
 import NginxConf from "./NginxConf";
-import { execute } from "../helpers/spawn";
-import { DockerCompose } from "./DockerCompose";
+import HasuraEngine from "./HasuraEngine";
+import DockerCompose from "./DockerCompose";
+
+import { join } from "path";
 import { writeFile } from "../helpers/write-file";
 import { backendPlugins } from "../configs/constants";
+import { waitInSeconds } from "../helpers/wait-in-seconds";
 import { replaceKeyword } from "../helpers/replace-keyword";
 import { removeSpecialChars } from "../helpers/remove-special-chars";
 
@@ -25,10 +27,12 @@ export default class GluestackEngine implements IGlueEngine {
   private hasuraPluginName: string = '';
 
   app: IApp;
+  actionPlugins: IStatelessPlugin[];
   statelessPlugins: IStatelessPlugin[];
 
   constructor(app: IApp) {
     this.app = app;
+    this.actionPlugins = [];
     this.backendPlugins = backendPlugins();
   }
 
@@ -54,15 +58,46 @@ export default class GluestackEngine implements IGlueEngine {
       console.log('> Engine does not exist. Skipping docker-compose start.');
     }
 
-    // 6. run hasura metadata apply
-    if (this.hasuraPluginName) {
-      await this.applyHasuraMetadata(backendInstancePath);
+    if (this.hasuraPluginName && this.hasuraPluginName !== '') {
+      const hasuraEngine = new HasuraEngine(backendInstancePath, this.hasuraPluginName, this.actionPlugins);
+      // 6. run hasura metadata apply
+      await hasuraEngine.applyMetadata();
+
+      // 7. scan for actions plugins
+      console.log('\n> Scanning for actions plugins...');
+      await hasuraEngine.scanActions();
+
+      // 8. drop all actions from hasura engine
+      console.log('\n> Dropping all actions from hasura engine...');
+      await hasuraEngine.dropActions();
+
+      // 9. create all actions plugins into hasura engine
+      console.log('\n> Registering actions plugins into hasura engine...');
+      await hasuraEngine.createActions();
+
+      console.log('\n');
     }
   }
 
   // Stops the engine for the backend instance
   async stop(backendInstancePath: string): Promise<void> {
     this.stopDockerCompose(backendInstancePath);
+  }
+
+  // Creates the nginx config from all available plugins' router.js file
+  async createNginxConfig(backendInstancePath: string): Promise<void> {
+    const plugins = this.statelessPlugins;
+    const nginxConf = new NginxConf(backendInstancePath);
+
+    nginxConf.addRouter(join(process.cwd(), backendInstancePath, 'router.js'));
+
+    for await (const plugin of plugins) {
+      await nginxConf.addRouter(
+        join(plugin.path, 'router.js')
+      );
+    }
+
+    await nginxConf.generate();
   }
 
   // Collects all the stateless plugins and their dockerfiles
@@ -98,11 +133,14 @@ export default class GluestackEngine implements IGlueEngine {
           status: instance.getContainerController().getStatus()
         };
 
-        if (![
-          '@gluestack/glue-plugin-graphql'
-        ].includes(details.name)) {
+        // Ignore graphql plugin
+        if (details.name !== '@gluestack/glue-plugin-graphql') {
           // Collect the dockerfile & store the context into the instance store
           await this.collectDockerContext(details, instance);
+        }
+
+        if (details.name === '@gluestack/glue-plugin-functions.action') {
+          this.actionPlugins.push(details);
         }
 
         arr.push(details);
@@ -139,22 +177,6 @@ export default class GluestackEngine implements IGlueEngine {
     await dockerCompose.generate();
   }
 
-  // Creates the nginx config from all available plugins' router.js file
-  async createNginxConfig(backendInstancePath: string): Promise<void> {
-    const plugins = this.statelessPlugins;
-    const nginxConf = new NginxConf(backendInstancePath);
-
-    nginxConf.addRouter(join(process.cwd(), backendInstancePath, 'router.js'));
-
-    for await (const plugin of plugins) {
-      await nginxConf.addRouter(
-        join(plugin.path, 'router.js')
-      );
-    }
-
-    await nginxConf.generate();
-  }
-
   // Starts the docker-compose
   async startDockerCompose(backendInstancePath: string): Promise<void> {
     // constructing the path to engine's router
@@ -172,6 +194,9 @@ export default class GluestackEngine implements IGlueEngine {
     // starting docker compose
     const dockerCompose = new DockerCompose(backendInstancePath);
     await dockerCompose.start(projectName, filepath);
+
+    // wait for 2 seconds for hasura to get ready
+    await waitInSeconds(2);
   }
 
   // Stops the docker-compose
@@ -214,19 +239,5 @@ export default class GluestackEngine implements IGlueEngine {
     );
 
     await writeFile(join(details.path, 'Dockerfile'), context);
-  }
-
-  // Sync hasura engine's metadata with the local hasura metadata
-  private async applyHasuraMetadata(backendInstancePath: string): Promise<void> {
-    const filepath = join(process.cwd(), backendInstancePath, 'functions', this.hasuraPluginName);
-
-    await execute('hasura', [
-      'metadata',
-      'apply',
-      '--skip-update-check'
-    ], {
-      cwd: filepath,
-      stdio: 'inherit'
-    });
   }
 }
