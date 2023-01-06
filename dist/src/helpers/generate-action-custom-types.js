@@ -52,7 +52,7 @@ var createAction = function (query, type, kind) {
             name: name,
             definition: {
                 arguments: argmnts,
-                handler: 'http://engine:3500/v1.0/invoke/engine/method/actions',
+                handler: '{{ACTION_BASE_URL}}',
                 kind: kind,
                 output_type: output_type,
                 type: type

@@ -61,7 +61,7 @@ const createAction = (query: any, type: string, kind: string = 'synchronous') =>
       name,
       definition: {
         arguments: argmnts,
-        handler: 'http://engine:3500/v1.0/invoke/engine/method/actions',
+        handler: '{{ACTION_BASE_URL}}',
         kind,
         output_type,
         type
