@@ -79,7 +79,7 @@ var GlueStackPlugin = (function () {
                     case 0: return [4, this.app.createPluginInstance(this, instanceName, this.getTemplateFolderPath(), target)];
                     case 1:
                         engineInstance = _a.sent();
-                        if (!engineInstance) return [3, 6];
+                        if (!engineInstance) return [3, 5];
                         return [4, (0, write_env_1.writeEnv)(engineInstance)];
                     case 2:
                         _a.sent();
@@ -89,11 +89,8 @@ var GlueStackPlugin = (function () {
                         return [4, (0, add_main_events_1.addMainEvents)(engineInstance)];
                     case 4:
                         _a.sent();
-                        return [4, engineInstance.getContainerController().up()];
-                    case 5:
-                        _a.sent();
-                        _a.label = 6;
-                    case 6: return [2];
+                        _a.label = 5;
+                    case 5: return [2];
                 }
             });
         });

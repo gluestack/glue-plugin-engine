@@ -70,9 +70,6 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
 
       // Adds events directories
       await addMainEvents(engineInstance);
-
-      // Runs the engine container
-      await engineInstance.getContainerController().up();
     }
   }
 
