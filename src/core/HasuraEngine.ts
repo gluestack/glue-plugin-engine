@@ -30,7 +30,7 @@ export default class HasuraEngine {
   }
 
   // Scan all the actions files and prepares the actions array
-  public async scanActions(): Promise<void>  {
+  private async scanActions(): Promise<void>  {
     for await (const plugin of this.actionPlugins) {
       // Check if the plugin path exists
       let exist = await fileExists(plugin.path);
@@ -57,7 +57,7 @@ export default class HasuraEngine {
   }
 
   // Drops all actions from the hasura engine
-  public async dropActions(): Promise<void | boolean> {
+  private async dropActions(): Promise<void | boolean> {
     if (this.actions.length <= 0) {
       return Promise.resolve(false);
     }
@@ -68,14 +68,23 @@ export default class HasuraEngine {
   }
 
   // Create all actions into the hasura engine
-  public async createActions(): Promise<void | boolean> {
+  private async createActions(): Promise<void | boolean> {
     if (this.actions.length <= 0) {
       return Promise.resolve(false);
     }
 
     for await (const action of this.actions) {
-      await this.metadata.createActionCustomTypes(action);
+      await this.metadata.createAction(action);
     }
+  }
+
+  // Create all custom types into the hasura engine
+  private async createCustomTypes(): Promise<void | boolean> {
+    if (this.actions.length <= 0) {
+      return Promise.resolve(false);
+    }
+
+    await this.metadata.createCustomTypes(this.actions);
   }
 
   // Sync hasura engine's metadata with the local hasura metadata
@@ -90,5 +99,24 @@ export default class HasuraEngine {
       cwd: filepath,
       stdio: 'inherit'
     });
+  }
+
+  // Apply all the actions into the hasura engine
+  public async applyActions(): Promise<void> {
+    // scan for actions plugins
+    console.log('\n> Scanning for actions plugins...');
+    await this.scanActions();
+
+    // drop all actions from hasura engine
+    console.log('\n> Dropping all actions from hasura engine...');
+    await this.dropActions();
+
+    // create all custom types for actions into hasura engine
+    console.log('\n> Creating all custom types for actions into hasura engine...');
+    await this.createCustomTypes();
+
+    // create all actions plugins into hasura engine
+    console.log('\n> Registering actions plugins into hasura engine...');
+    await this.createActions();
   }
 }

@@ -63,17 +63,8 @@ export default class GluestackEngine implements IGlueEngine {
       // 6. run hasura metadata apply
       await hasuraEngine.applyMetadata();
 
-      // 7. scan for actions plugins
-      console.log('\n> Scanning for actions plugins...');
-      await hasuraEngine.scanActions();
-
-      // 8. drop all actions from hasura engine
-      console.log('\n> Dropping all actions from hasura engine...');
-      await hasuraEngine.dropActions();
-
-      // 9. create all actions plugins into hasura engine
-      console.log('\n> Registering actions plugins into hasura engine...');
-      await hasuraEngine.createActions();
+      // 7. run hasura actions
+      await hasuraEngine.applyActions();
 
       console.log('\n');
     }

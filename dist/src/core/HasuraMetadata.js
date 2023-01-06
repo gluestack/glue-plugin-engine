@@ -58,8 +58,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 exports.__esModule = true;
 var axios = require("axios")["default"];
+var unionBy = require('lodash').unionBy;
 var path_1 = require("path");
 var dotenv = __importStar(require("dotenv"));
 var node_fs_1 = require("node:fs");
@@ -91,9 +108,9 @@ var HasuraMetadata = (function () {
             });
         });
     };
-    HasuraMetadata.prototype.createActionCustomTypes = function (action) {
+    HasuraMetadata.prototype.createAction = function (action) {
         return __awaiter(this, void 0, void 0, function () {
-            var setting, regex, match, kind, schema, payloads;
+            var setting, regex, match, kind, schema, actionData;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -102,22 +119,94 @@ var HasuraMetadata = (function () {
                         match = regex.exec(setting);
                         kind = match[1] === 'sync' ? 'synchronous' : 'asynchronous';
                         schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, 'utf8');
-                        payloads = {};
+                        actionData = {};
                         try {
-                            payloads = (0, generate_action_custom_types_1.generateActionCustomTypes)(schema, kind);
+                            actionData = (0, generate_action_custom_types_1.generate)('action', schema, kind);
                         }
                         catch (error) {
                             console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
                             return [2, Promise.resolve('failed')];
                         }
-                        console.log("\n> Creating action ".concat(action.name, "..."));
-                        console.log("> Creating custom types for action ".concat(action.name, "..."));
-                        return [4, this.makeRequest(payloads.customTypesData)];
+                        return [4, this.makeRequest(actionData)];
                     case 1:
                         _a.sent();
-                        return [4, this.makeRequest(payloads.actionData)];
-                    case 2:
-                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    HasuraMetadata.prototype.createCustomTypes = function (actions) {
+        var _a, actions_1, actions_1_1;
+        var _b, e_1, _c, _d;
+        return __awaiter(this, void 0, void 0, function () {
+            var customTypes, action, setting, regex, match, kind, schema, _tmp, e_1_1;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
+                    case 0:
+                        customTypes = {
+                            type: 'set_custom_types',
+                            args: {
+                                scalars: [],
+                                enums: [],
+                                objects: [],
+                                input_objects: []
+                            }
+                        };
+                        _e.label = 1;
+                    case 1:
+                        _e.trys.push([1, 6, 7, 12]);
+                        _a = true, actions_1 = __asyncValues(actions);
+                        _e.label = 2;
+                    case 2: return [4, actions_1.next()];
+                    case 3:
+                        if (!(actions_1_1 = _e.sent(), _b = actions_1_1.done, !_b)) return [3, 5];
+                        _d = actions_1_1.value;
+                        _a = false;
+                        try {
+                            action = _d;
+                            setting = (0, node_fs_1.readFileSync)(action.setting_path, 'utf8');
+                            regex = /execution="(.*)"/g;
+                            match = regex.exec(setting);
+                            kind = match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+                            schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, 'utf8');
+                            try {
+                                _tmp = (0, generate_action_custom_types_1.generate)('custom_types', schema, kind);
+                                customTypes.type = _tmp.type;
+                                customTypes.args.scalars = __spreadArray(__spreadArray([], customTypes.args.scalars, true), _tmp.args.scalars, true);
+                                customTypes.args.enums = __spreadArray(__spreadArray([], customTypes.args.enums, true), _tmp.args.enums, true);
+                                customTypes.args.objects = __spreadArray(__spreadArray([], customTypes.args.objects, true), _tmp.args.objects, true);
+                                customTypes.args.input_objects = __spreadArray(__spreadArray([], customTypes.args.input_objects, true), _tmp.args.input_objects, true);
+                            }
+                            catch (error) {
+                                console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
+                                return [3, 4];
+                            }
+                        }
+                        finally {
+                            _a = true;
+                        }
+                        _e.label = 4;
+                    case 4: return [3, 2];
+                    case 5: return [3, 12];
+                    case 6:
+                        e_1_1 = _e.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3, 12];
+                    case 7:
+                        _e.trys.push([7, , 10, 11]);
+                        if (!(!_a && !_b && (_c = actions_1["return"]))) return [3, 9];
+                        return [4, _c.call(actions_1)];
+                    case 8:
+                        _e.sent();
+                        _e.label = 9;
+                    case 9: return [3, 11];
+                    case 10:
+                        if (e_1) throw e_1.error;
+                        return [7];
+                    case 11: return [7];
+                    case 12: return [4, this.makeRequest(customTypes)];
+                    case 13:
+                        _e.sent();
                         return [2];
                 }
             });
@@ -155,7 +244,7 @@ var HasuraMetadata = (function () {
                     case 3:
                         error_1 = _a.sent();
                         if (error_1.response.data.error) {
-                            console.log('>', error_1.response.data.error);
+                            console.log('> Error:', error_1.response.data.error);
                         }
                         return [3, 4];
                     case 4: return [2];

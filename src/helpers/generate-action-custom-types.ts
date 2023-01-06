@@ -61,7 +61,7 @@ const createAction = (query: any, type: string, kind: string = 'synchronous') =>
       name,
       definition: {
         arguments: argmnts,
-        handler: '{{ACTION_BASE_URL}}',
+        handler: 'http://engine:3500/v1.0/invoke/engine/method/actions',
         kind,
         output_type,
         type
@@ -72,7 +72,7 @@ const createAction = (query: any, type: string, kind: string = 'synchronous') =>
   return body;
 };
 
-export const generateActionCustomTypes = (schema: string, kind: string) => {
+export const generate = (type: string = 'action', schema: string, kind: string) => {
   const jsonSchema: any = graphqlToJsonSchema(schema);
   const { definitions } = jsonSchema;
 
@@ -86,11 +86,11 @@ export const generateActionCustomTypes = (schema: string, kind: string) => {
     process.exit(1);
   }
 
-  const query: string = get(definitions, isMutation ? 'Mutation' : 'Query');
-  delete definitions[isMutation ? 'Mutation' : 'Query'];
-
-  const customTypesData: any = createCustomTypes(definitions);
-  const actionData: any = createAction(query, isMutation ? 'mutation' : 'query', kind);
-
-  return { customTypesData, actionData };
+  if (type === 'action') {
+    const query: string = get(definitions, isMutation ? 'Mutation' : 'Query');
+    return createAction(query, isMutation ? 'mutation' : 'query', kind);
+  } else {
+    delete definitions[isMutation ? 'Mutation' : 'Query'];
+    return createCustomTypes(definitions);
+  }
 };

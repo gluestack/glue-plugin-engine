@@ -86,26 +86,17 @@ var GluestackEngine = (function () {
                         console.log('> Engine does not exist. Skipping docker-compose start.');
                         _a.label = 6;
                     case 6:
-                        if (!(this.hasuraPluginName && this.hasuraPluginName !== '')) return [3, 11];
+                        if (!(this.hasuraPluginName && this.hasuraPluginName !== '')) return [3, 9];
                         hasuraEngine = new HasuraEngine_1["default"](backendInstancePath, this.hasuraPluginName, this.actionPlugins);
                         return [4, hasuraEngine.applyMetadata()];
                     case 7:
                         _a.sent();
-                        console.log('\n> Scanning for actions plugins...');
-                        return [4, hasuraEngine.scanActions()];
+                        return [4, hasuraEngine.applyActions()];
                     case 8:
                         _a.sent();
-                        console.log('\n> Dropping all actions from hasura engine...');
-                        return [4, hasuraEngine.dropActions()];
-                    case 9:
-                        _a.sent();
-                        console.log('\n> Registering actions plugins into hasura engine...');
-                        return [4, hasuraEngine.createActions()];
-                    case 10:
-                        _a.sent();
                         console.log('\n');
-                        _a.label = 11;
-                    case 11: return [2];
+                        _a.label = 9;
+                    case 9: return [2];
                 }
             });
         });

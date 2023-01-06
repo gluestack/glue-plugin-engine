@@ -1,10 +1,11 @@
 const axios = require("axios").default;
+const { unionBy } = require('lodash');
 
 import { join } from 'path';
 import * as dotenv from 'dotenv';
 import { readFileSync } from 'node:fs';
 import { IAction } from '../core/types/IHasuraEngine';
-import { generateActionCustomTypes } from '../helpers/generate-action-custom-types';
+import { generate } from '../helpers/generate-action-custom-types';
 
 export default class HasuraMetadata {
   private hasuraEnvs: any;
@@ -31,8 +32,8 @@ export default class HasuraMetadata {
     await this.makeRequest(data);
   }
 
-  // Creates the given custom-types & action in the hasura engine
-  public async createActionCustomTypes(action: IAction): Promise<string> {
+  // Creates the given action in the hasura engine
+  public async createAction(action: IAction): Promise<string> {
     // Reads the action.setting file
     const setting = readFileSync(action.setting_path, 'utf8');
 
@@ -44,24 +45,64 @@ export default class HasuraMetadata {
     // Reads the action.graphql file
     const schema = readFileSync(action.grapqhl_path, 'utf8');
 
-    let payloads: any = {};
+    let actionData: any = {};
 
     try {
       // Generates the custom types & action data
-      payloads = generateActionCustomTypes(schema, kind);
+      actionData = generate('action', schema, kind);
     } catch (error) {
       console.log(`> Action Instance ${action.name} has invalid graphql schema. Skipping...`);
       return Promise.resolve('failed');
     }
 
-    console.log(`\n> Creating action ${action.name}...`);
-    console.log(`> Creating custom types for action ${action.name}...`);
+    // creating action
+    await this.makeRequest(actionData);
+  }
 
-    // creating custom types
-    await this.makeRequest(payloads.customTypesData);
+  // Creates the given custom-types against all the actions in the hasura engine
+  public async createCustomTypes(actions: IAction[]): Promise<void> {
+    const customTypes: any = {
+      type: 'set_custom_types',
+      args: {
+        scalars: [],
+        enums: [],
+        objects: [],
+        input_objects: []
+      }
+    };
+
+    // prepares custom types for actions
+    for await (const action of actions) {
+      // Reads the action.setting file
+      const setting = readFileSync(action.setting_path, 'utf8');
+
+      const regex = /execution="(.*)"/g;
+      const match = regex.exec(setting);
+
+      const kind = match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+
+      // Reads the action.graphql file
+      const schema: string = readFileSync(action.grapqhl_path, 'utf8');
+
+      try {
+        // Generates the custom types & action data
+        const _tmp: any = generate('custom_types', schema, kind);
+
+        customTypes.type = _tmp.type;
+        customTypes.args.scalars = [...customTypes.args.scalars, ..._tmp.args.scalars];
+        customTypes.args.enums = [...customTypes.args.enums, ..._tmp.args.enums];
+        customTypes.args.objects = [...customTypes.args.objects, ..._tmp.args.objects];
+        customTypes.args.input_objects = [...customTypes.args.input_objects, ..._tmp.args.input_objects];
+
+      } catch (error) {
+        console.log(`> Action Instance ${action.name} has invalid graphql schema. Skipping...`);
+        continue;
+      }
+
+    }
 
     // creating action
-    await this.makeRequest(payloads.actionData);
+    await this.makeRequest(customTypes);
   }
 
   // Capture the hasura envs from the .env file
@@ -92,7 +133,7 @@ export default class HasuraMetadata {
       await axios.request(options);
     } catch (error) {
       if (error.response.data.error) {
-        console.log('>', error.response.data.error);
+        console.log('> Error:', error.response.data.error);
       }
     }
   }

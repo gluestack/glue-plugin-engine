@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-exports.generateActionCustomTypes = void 0;
+exports.generate = void 0;
 var graphqlToJsonSchema = require('@gluestack/graphql-sdl-to-json');
 var _a = require('lodash'), replace = _a.replace, has = _a.has, get = _a.get, objectKeys = _a.keys, capitalize = _a.capitalize;
 var replaceRefDefinition = function (string) {
@@ -52,7 +52,7 @@ var createAction = function (query, type, kind) {
             name: name,
             definition: {
                 arguments: argmnts,
-                handler: '{{ACTION_BASE_URL}}',
+                handler: 'http://engine:3500/v1.0/invoke/engine/method/actions',
                 kind: kind,
                 output_type: output_type,
                 type: type
@@ -61,7 +61,8 @@ var createAction = function (query, type, kind) {
     };
     return body;
 };
-var generateActionCustomTypes = function (schema, kind) {
+var generate = function (type, schema, kind) {
+    if (type === void 0) { type = 'action'; }
     var jsonSchema = graphqlToJsonSchema(schema);
     var definitions = jsonSchema.definitions;
     var isMutation = false, isQuery = false;
@@ -71,11 +72,14 @@ var generateActionCustomTypes = function (schema, kind) {
         console.log('> No Query or Mutation found in schema!');
         process.exit(1);
     }
-    var query = get(definitions, isMutation ? 'Mutation' : 'Query');
-    delete definitions[isMutation ? 'Mutation' : 'Query'];
-    var customTypesData = createCustomTypes(definitions);
-    var actionData = createAction(query, isMutation ? 'mutation' : 'query', kind);
-    return { customTypesData: customTypesData, actionData: actionData };
+    if (type === 'action') {
+        var query = get(definitions, isMutation ? 'Mutation' : 'Query');
+        return createAction(query, isMutation ? 'mutation' : 'query', kind);
+    }
+    else {
+        delete definitions[isMutation ? 'Mutation' : 'Query'];
+        return createCustomTypes(definitions);
+    }
 };
-exports.generateActionCustomTypes = generateActionCustomTypes;
+exports.generate = generate;
 //# sourceMappingURL=generate-action-custom-types.js.map

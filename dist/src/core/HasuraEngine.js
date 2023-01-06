@@ -205,7 +205,7 @@ var HasuraEngine = (function () {
                     case 4:
                         _g.trys.push([4, , 6, 7]);
                         action = _c;
-                        return [4, this.metadata.createActionCustomTypes(action)];
+                        return [4, this.metadata.createAction(action)];
                     case 5:
                         _g.sent();
                         return [3, 7];
@@ -235,6 +235,22 @@ var HasuraEngine = (function () {
             });
         });
     };
+    HasuraEngine.prototype.createCustomTypes = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (this.actions.length <= 0) {
+                            return [2, Promise.resolve(false)];
+                        }
+                        return [4, this.metadata.createCustomTypes(this.actions)];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
     HasuraEngine.prototype.applyMetadata = function () {
         return __awaiter(this, void 0, void 0, function () {
             var filepath;
@@ -251,6 +267,32 @@ var HasuraEngine = (function () {
                                 stdio: 'inherit'
                             })];
                     case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    HasuraEngine.prototype.applyActions = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log('\n> Scanning for actions plugins...');
+                        return [4, this.scanActions()];
+                    case 1:
+                        _a.sent();
+                        console.log('\n> Dropping all actions from hasura engine...');
+                        return [4, this.dropActions()];
+                    case 2:
+                        _a.sent();
+                        console.log('\n> Creating all custom types for actions into hasura engine...');
+                        return [4, this.createCustomTypes()];
+                    case 3:
+                        _a.sent();
+                        console.log('\n> Registering actions plugins into hasura engine...');
+                        return [4, this.createActions()];
+                    case 4:
                         _a.sent();
                         return [2];
                 }
