@@ -97,6 +97,11 @@ var GluestackEngine = (function () {
                         return [4, hasuraEngine.reapplyEvents()];
                     case 9:
                         _a.sent();
+                        console.log('> Note: ');
+                        console.log(">  1. In case a table does not exist in Hasura Engine, Gluestack Engine will skip the event trigger registration.");
+                        console.log(">  2. Gluestack Engine drops all existing event triggers, actions & custom-types and re-register them again.");
+                        console.log("      (This is to prevent any issues with the event trigger, custom types & actions.");
+                        console.log(">  3. Gluestack Engine will not drop any existing event triggers, actions & custom-types that are not registered by Gluestack Engine.\n ");
                         _a.label = 10;
                     case 10: return [2];
                 }

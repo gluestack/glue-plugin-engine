@@ -68,6 +68,12 @@ export default class GluestackEngine implements IGlueEngine {
 
       // 8. clears & registers all events
       await hasuraEngine.reapplyEvents();
+
+      console.log('> Note: ');
+      console.log(`>  1. In case a table does not exist in Hasura Engine, Gluestack Engine will skip the event trigger registration.`);
+      console.log(`>  2. Gluestack Engine drops all existing event triggers, actions & custom-types and re-register them again.`);
+      console.log(`      (This is to prevent any issues with the event trigger, custom types & actions.`);
+      console.log(`>  3. Gluestack Engine will not drop any existing event triggers, actions & custom-types that are not registered by Gluestack Engine.\n `);
     }
   }
 
