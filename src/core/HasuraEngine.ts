@@ -6,7 +6,9 @@ import { removeSpecialChars } from "../helpers/remove-special-chars";
 
 import { IAction } from "./types/IHasuraEngine";
 import { IStatelessPlugin } from "./types/IStatelessPlugin";
+
 import HasuraMetadata from "./HasuraMetadata";
+import GluestackEvent from "./GluestackEvent";
 
 export default class HasuraEngine {
   public pluginName: string;
@@ -14,6 +16,7 @@ export default class HasuraEngine {
   public actionPlugins: IStatelessPlugin[];
 
   private metadata: any;
+  private events: any;
   private actions: IAction[];
   private actionGQLFile: string = 'action.graphql';
   private actionSettingFile: string = 'action.setting';
@@ -27,6 +30,7 @@ export default class HasuraEngine {
     this.backendInstancePath = backendInstancePath;
 
     this.metadata = new HasuraMetadata(this.backendInstancePath, this.pluginName);
+    this.events = new GluestackEvent(this.backendInstancePath, this.pluginName);
   }
 
   // Scan all the actions files and prepares the actions array
@@ -102,21 +106,34 @@ export default class HasuraEngine {
   }
 
   // Apply all the actions into the hasura engine
-  public async applyActions(): Promise<void> {
+  public async reapplyActions(): Promise<void> {
     // scan for actions plugins
     console.log('\n> Scanning for actions plugins...');
     await this.scanActions();
 
     // drop all actions from hasura engine
-    console.log('\n> Dropping all actions from hasura engine...');
+    console.log('> Dropping all actions from hasura engine...');
     await this.dropActions();
 
     // create all custom types for actions into hasura engine
-    console.log('\n> Creating all custom types for actions into hasura engine...');
+    console.log('> Creating all custom types for actions into hasura engine...');
     await this.createCustomTypes();
 
     // create all actions plugins into hasura engine
-    console.log('\n> Registering actions plugins into hasura engine...');
+    console.log('> Registering actions plugins into hasura engine...');
     await this.createActions();
+  }
+
+  // Re-apply all the events into the hasura engine
+  public async reapplyEvents(): Promise<void> {
+    await this.events.scanEvents();
+
+    console.log('> Dropping & Registering all events from hasura engine...');
+
+    const events: any = await this.events.getEventsByType('database');
+    for await (const table of Object.keys(events)) {
+      await this.metadata.dropEvent(table, events[table]);
+      await this.metadata.createEvent(table, events[table]);
+    }
   }
 }

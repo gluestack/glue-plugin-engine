@@ -35,21 +35,127 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
 exports.__esModule = true;
+var path_1 = require("path");
+var promises_1 = require("node:fs/promises");
+var file_exists_1 = require("../helpers/file-exists");
 var GluestackEvent = (function () {
-    function GluestackEvent() {
+    function GluestackEvent(backendInstancePath, hasuraPluginName) {
+        this.events = {};
+        this.events = {};
+        this.backendInstancePath = backendInstancePath;
+        this.hasuraPluginName = hasuraPluginName;
+        this.eventsPath = (0, path_1.join)(this.backendInstancePath, 'events');
     }
-    GluestackEvent.prototype.register = function () {
+    GluestackEvent.prototype.scanEvents = function () {
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2];
+            var _a, _b, _c, _d;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
+                    case 0:
+                        _a = this.events;
+                        _b = 'database';
+                        return [4, this.readEventsDir('database', true)];
+                    case 1:
+                        _a[_b] = _e.sent();
+                        _c = this.events;
+                        _d = 'app';
+                        return [4, this.readEventsDir('app', false)];
+                    case 2:
+                        _c[_d] = _e.sent();
+                        return [2];
+                }
             });
         });
     };
-    GluestackEvent.prototype.getEvents = function () {
+    GluestackEvent.prototype.readEventsDir = function (dirName, scanDirectory) {
+        var _a, e_1, _b, _c;
+        return __awaiter(this, void 0, void 0, function () {
+            var paths, dirPath, exist, dirents, _d, dirents_1, dirents_1_1, dirent, _e, _f, e_1_1;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
+                    case 0:
+                        paths = [];
+                        dirPath = (0, path_1.join)(this.eventsPath, dirName);
+                        return [4, (0, file_exists_1.fileExists)(dirPath)];
+                    case 1:
+                        exist = _g.sent();
+                        if (!exist) {
+                            console.log("> \"".concat(dirName, "\" directory does not exist in \"events\" directory. Skipping..."));
+                            return [2];
+                        }
+                        return [4, (0, promises_1.readdir)(dirPath, {
+                                withFileTypes: true
+                            })];
+                    case 2:
+                        dirents = _g.sent();
+                        _g.label = 3;
+                    case 3:
+                        _g.trys.push([3, 12, 13, 18]);
+                        _d = true, dirents_1 = __asyncValues(dirents);
+                        _g.label = 4;
+                    case 4: return [4, dirents_1.next()];
+                    case 5:
+                        if (!(dirents_1_1 = _g.sent(), _a = dirents_1_1.done, !_a)) return [3, 11];
+                        _c = dirents_1_1.value;
+                        _d = false;
+                        _g.label = 6;
+                    case 6:
+                        _g.trys.push([6, , 9, 10]);
+                        dirent = _c;
+                        if ((scanDirectory && !dirent.isDirectory())
+                            || (!scanDirectory && dirent.isDirectory())) {
+                            return [3, 10];
+                        }
+                        if (!scanDirectory) return [3, 8];
+                        _e = paths;
+                        _f = dirent.name;
+                        return [4, this.readEventsDir((0, path_1.join)(dirName, dirent.name), false)];
+                    case 7:
+                        _e[_f] = _g.sent();
+                        _g.label = 8;
+                    case 8:
+                        if (!scanDirectory) {
+                            paths.push(dirent.name);
+                        }
+                        return [3, 10];
+                    case 9:
+                        _d = true;
+                        return [7];
+                    case 10: return [3, 4];
+                    case 11: return [3, 18];
+                    case 12:
+                        e_1_1 = _g.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3, 18];
+                    case 13:
+                        _g.trys.push([13, , 16, 17]);
+                        if (!(!_d && !_a && (_b = dirents_1["return"]))) return [3, 15];
+                        return [4, _b.call(dirents_1)];
+                    case 14:
+                        _g.sent();
+                        _g.label = 15;
+                    case 15: return [3, 17];
+                    case 16:
+                        if (e_1) throw e_1.error;
+                        return [7];
+                    case 17: return [7];
+                    case 18: return [2, paths];
+                }
+            });
+        });
+    };
+    GluestackEvent.prototype.getEventsByType = function (type) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2, this.events];
+                return [2, this.events[type]];
             });
         });
     };

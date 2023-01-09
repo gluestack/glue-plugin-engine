@@ -58,7 +58,7 @@ var remove_special_chars_1 = require("../helpers/remove-special-chars");
 var GluestackEngine = (function () {
     function GluestackEngine(app) {
         this.engineExist = false;
-        this.hasuraPluginName = '';
+        this.hasuraPluginName = 'graphql';
         this.app = app;
         this.actionPlugins = [];
         this.backendPlugins = (0, constants_1.backendPlugins)();
@@ -86,17 +86,19 @@ var GluestackEngine = (function () {
                         console.log('> Engine does not exist. Skipping docker-compose start.');
                         _a.label = 6;
                     case 6:
-                        if (!(this.hasuraPluginName && this.hasuraPluginName !== '')) return [3, 9];
+                        if (!(this.hasuraPluginName && this.hasuraPluginName !== '')) return [3, 10];
                         hasuraEngine = new HasuraEngine_1["default"](backendInstancePath, this.hasuraPluginName, this.actionPlugins);
                         return [4, hasuraEngine.applyMetadata()];
                     case 7:
                         _a.sent();
-                        return [4, hasuraEngine.applyActions()];
+                        return [4, hasuraEngine.reapplyActions()];
                     case 8:
                         _a.sent();
-                        console.log('\n');
-                        _a.label = 9;
-                    case 9: return [2];
+                        return [4, hasuraEngine.reapplyEvents()];
+                    case 9:
+                        _a.sent();
+                        _a.label = 10;
+                    case 10: return [2];
                 }
             });
         });

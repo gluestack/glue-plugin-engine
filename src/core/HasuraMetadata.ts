@@ -1,11 +1,11 @@
 const axios = require("axios").default;
-const { unionBy } = require('lodash');
 
 import { join } from 'path';
 import * as dotenv from 'dotenv';
 import { readFileSync } from 'node:fs';
 import { IAction } from '../core/types/IHasuraEngine';
-import { generate } from '../helpers/generate-action-custom-types';
+import { generate as generateEvent } from '../helpers/generate-events';
+import { generate as generateActionOrCustomType } from '../helpers/generate-action-custom-types';
 
 export default class HasuraMetadata {
   private hasuraEnvs: any;
@@ -23,9 +23,9 @@ export default class HasuraMetadata {
   public async dropAction(actionName: string): Promise<void> {
     const data = {
       "type": "drop_action",
-        "args":{
-          "name": actionName,
-          "clear_data": true
+      "args": {
+        "name": actionName,
+        "clear_data": true
       }
     };
 
@@ -49,7 +49,7 @@ export default class HasuraMetadata {
 
     try {
       // Generates the custom types & action data
-      actionData = generate('action', schema, kind);
+      actionData = await generateActionOrCustomType(schema, kind, 'action');
     } catch (error) {
       console.log(`> Action Instance ${action.name} has invalid graphql schema. Skipping...`);
       return Promise.resolve('failed');
@@ -86,7 +86,7 @@ export default class HasuraMetadata {
 
       try {
         // Generates the custom types & action data
-        const _tmp: any = generate('custom_types', schema, kind);
+        const _tmp: any = await generateActionOrCustomType(schema, kind, 'custom_types');
 
         customTypes.type = _tmp.type;
         customTypes.args.scalars = [...customTypes.args.scalars, ..._tmp.args.scalars];
@@ -105,6 +105,34 @@ export default class HasuraMetadata {
     await this.makeRequest(customTypes);
   }
 
+  // Creates the given event in the hasura engine
+  public async createEvent(tableName: string, events: string[]) {
+    const hasuraEnvs: any = this.hasuraEnvs;
+    const { HASURA_GRAPHQL_DB_NAME } = hasuraEnvs;
+
+    const payload: any = await generateEvent(tableName, HASURA_GRAPHQL_DB_NAME, events);
+
+    // creating event
+    await this.makeRequest(payload);
+  }
+
+  // Drops the given event from the hasura engine
+  public async dropEvent(tableName: string, events: string[]) {
+    const hasuraEnvs: any = this.hasuraEnvs;
+    const { HASURA_GRAPHQL_DB_NAME } = hasuraEnvs;
+
+    const payload: any = {
+      type: 'pg_delete_event_trigger',
+      args: {
+        name: `${tableName}_trigger`,
+        source: HASURA_GRAPHQL_DB_NAME
+      }
+    };
+
+    // creating event
+    await this.makeRequest(payload);
+  }
+
   // Capture the hasura envs from the .env file
   private captureEnvVars(): any {
     const envPath = join(
@@ -115,7 +143,9 @@ export default class HasuraMetadata {
   }
 
   // Make a request to the hasura engine with the available env vars
-  private async makeRequest(data: any, terminateOnError: boolean = false): Promise<void> {
+  private async makeRequest(
+    data: any, showError: boolean = false
+  ): Promise<void> {
     const hasuraEnvs: any = this.hasuraEnvs;
 
     const options = {
@@ -132,7 +162,7 @@ export default class HasuraMetadata {
     try {
       await axios.request(options);
     } catch (error) {
-      if (error.response.data.error) {
+      if (showError && error.response && error.response.data.error) {
         console.log('> Error:', error.response.data.error);
       }
     }

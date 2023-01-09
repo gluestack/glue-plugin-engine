@@ -24,7 +24,7 @@ import { removeSpecialChars } from "../helpers/remove-special-chars";
 export default class GluestackEngine implements IGlueEngine {
   private backendPlugins: string[];
   private engineExist: boolean = false;
-  private hasuraPluginName: string = '';
+  private hasuraPluginName: string = 'graphql';
 
   app: IApp;
   actionPlugins: IStatelessPlugin[];
@@ -63,10 +63,11 @@ export default class GluestackEngine implements IGlueEngine {
       // 6. run hasura metadata apply
       await hasuraEngine.applyMetadata();
 
-      // 7. run hasura actions
-      await hasuraEngine.applyActions();
+      // 7. clears & registers all actions
+      await hasuraEngine.reapplyActions();
 
-      console.log('\n');
+      // 8. clears & registers all events
+      await hasuraEngine.reapplyEvents();
     }
   }
 

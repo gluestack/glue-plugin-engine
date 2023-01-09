@@ -43,7 +43,9 @@ const createCustomTypes = (definitions: any) => {
   return body;
 };
 
-const createAction = (query: any, type: string, kind: string = 'synchronous') => {
+const createAction = (
+  query: any, type: string, kind: string = 'synchronous'
+) => {
   const name: string = objectKeys(query.properties)[0];
   const property: any = query.properties[name];
   const output_type: string = replaceRefDefinition(property);
@@ -72,7 +74,9 @@ const createAction = (query: any, type: string, kind: string = 'synchronous') =>
   return body;
 };
 
-export const generate = (type: string = 'action', schema: string, kind: string) => {
+export const generate = (
+  schema: string, kind: string, type: string = 'action'
+): Promise<any> => {
   const jsonSchema: any = graphqlToJsonSchema(schema);
   const { definitions } = jsonSchema;
 

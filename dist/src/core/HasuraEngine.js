@@ -51,6 +51,7 @@ var spawn_1 = require("../helpers/spawn");
 var file_exists_1 = require("../helpers/file-exists");
 var remove_special_chars_1 = require("../helpers/remove-special-chars");
 var HasuraMetadata_1 = __importDefault(require("./HasuraMetadata"));
+var GluestackEvent_1 = __importDefault(require("./GluestackEvent"));
 var HasuraEngine = (function () {
     function HasuraEngine(backendInstancePath, pluginName, actionPlugins) {
         this.actionGQLFile = 'action.graphql';
@@ -60,6 +61,7 @@ var HasuraEngine = (function () {
         this.actionPlugins = actionPlugins;
         this.backendInstancePath = backendInstancePath;
         this.metadata = new HasuraMetadata_1["default"](this.backendInstancePath, this.pluginName);
+        this.events = new GluestackEvent_1["default"](this.backendInstancePath, this.pluginName);
     }
     HasuraEngine.prototype.scanActions = function () {
         var _a, e_1, _b, _c;
@@ -273,7 +275,7 @@ var HasuraEngine = (function () {
             });
         });
     };
-    HasuraEngine.prototype.applyActions = function () {
+    HasuraEngine.prototype.reapplyActions = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -282,19 +284,79 @@ var HasuraEngine = (function () {
                         return [4, this.scanActions()];
                     case 1:
                         _a.sent();
-                        console.log('\n> Dropping all actions from hasura engine...');
+                        console.log('> Dropping all actions from hasura engine...');
                         return [4, this.dropActions()];
                     case 2:
                         _a.sent();
-                        console.log('\n> Creating all custom types for actions into hasura engine...');
+                        console.log('> Creating all custom types for actions into hasura engine...');
                         return [4, this.createCustomTypes()];
                     case 3:
                         _a.sent();
-                        console.log('\n> Registering actions plugins into hasura engine...');
+                        console.log('> Registering actions plugins into hasura engine...');
                         return [4, this.createActions()];
                     case 4:
                         _a.sent();
                         return [2];
+                }
+            });
+        });
+    };
+    HasuraEngine.prototype.reapplyEvents = function () {
+        var _a, e_4, _b, _c;
+        return __awaiter(this, void 0, void 0, function () {
+            var events, _d, _e, _f, table, e_4_1;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
+                    case 0: return [4, this.events.scanEvents()];
+                    case 1:
+                        _g.sent();
+                        console.log('> Dropping & Registering all events from hasura engine...');
+                        return [4, this.events.getEventsByType('database')];
+                    case 2:
+                        events = _g.sent();
+                        _g.label = 3;
+                    case 3:
+                        _g.trys.push([3, 12, 13, 18]);
+                        _d = true, _e = __asyncValues(Object.keys(events));
+                        _g.label = 4;
+                    case 4: return [4, _e.next()];
+                    case 5:
+                        if (!(_f = _g.sent(), _a = _f.done, !_a)) return [3, 11];
+                        _c = _f.value;
+                        _d = false;
+                        _g.label = 6;
+                    case 6:
+                        _g.trys.push([6, , 9, 10]);
+                        table = _c;
+                        return [4, this.metadata.dropEvent(table, events[table])];
+                    case 7:
+                        _g.sent();
+                        return [4, this.metadata.createEvent(table, events[table])];
+                    case 8:
+                        _g.sent();
+                        return [3, 10];
+                    case 9:
+                        _d = true;
+                        return [7];
+                    case 10: return [3, 4];
+                    case 11: return [3, 18];
+                    case 12:
+                        e_4_1 = _g.sent();
+                        e_4 = { error: e_4_1 };
+                        return [3, 18];
+                    case 13:
+                        _g.trys.push([13, , 16, 17]);
+                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 15];
+                        return [4, _b.call(_e)];
+                    case 14:
+                        _g.sent();
+                        _g.label = 15;
+                    case 15: return [3, 17];
+                    case 16:
+                        if (e_4) throw e_4.error;
+                        return [7];
+                    case 17: return [7];
+                    case 18: return [2];
                 }
             });
         });

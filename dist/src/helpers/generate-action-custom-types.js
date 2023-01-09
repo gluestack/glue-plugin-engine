@@ -61,7 +61,7 @@ var createAction = function (query, type, kind) {
     };
     return body;
 };
-var generate = function (type, schema, kind) {
+var generate = function (schema, kind, type) {
     if (type === void 0) { type = 'action'; }
     var jsonSchema = graphqlToJsonSchema(schema);
     var definitions = jsonSchema.definitions;

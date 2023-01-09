@@ -76,10 +76,10 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 };
 exports.__esModule = true;
 var axios = require("axios")["default"];
-var unionBy = require('lodash').unionBy;
 var path_1 = require("path");
 var dotenv = __importStar(require("dotenv"));
 var node_fs_1 = require("node:fs");
+var generate_events_1 = require("../helpers/generate-events");
 var generate_action_custom_types_1 = require("../helpers/generate-action-custom-types");
 var HasuraMetadata = (function () {
     function HasuraMetadata(backendInstancePath, pluginName) {
@@ -110,7 +110,7 @@ var HasuraMetadata = (function () {
     };
     HasuraMetadata.prototype.createAction = function (action) {
         return __awaiter(this, void 0, void 0, function () {
-            var setting, regex, match, kind, schema, actionData;
+            var setting, regex, match, kind, schema, actionData, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -120,15 +120,19 @@ var HasuraMetadata = (function () {
                         kind = match[1] === 'sync' ? 'synchronous' : 'asynchronous';
                         schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, 'utf8');
                         actionData = {};
-                        try {
-                            actionData = (0, generate_action_custom_types_1.generate)('action', schema, kind);
-                        }
-                        catch (error) {
-                            console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
-                            return [2, Promise.resolve('failed')];
-                        }
-                        return [4, this.makeRequest(actionData)];
+                        _a.label = 1;
                     case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4, (0, generate_action_custom_types_1.generate)(schema, kind, 'action')];
+                    case 2:
+                        actionData = _a.sent();
+                        return [3, 4];
+                    case 3:
+                        error_1 = _a.sent();
+                        console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
+                        return [2, Promise.resolve('failed')];
+                    case 4: return [4, this.makeRequest(actionData)];
+                    case 5:
                         _a.sent();
                         return [2];
                 }
@@ -139,7 +143,7 @@ var HasuraMetadata = (function () {
         var _a, actions_1, actions_1_1;
         var _b, e_1, _c, _d;
         return __awaiter(this, void 0, void 0, function () {
-            var customTypes, action, setting, regex, match, kind, schema, _tmp, e_1_1;
+            var customTypes, action, setting, regex, match, kind, schema, _tmp, error_2, e_1_1;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
@@ -154,59 +158,106 @@ var HasuraMetadata = (function () {
                         };
                         _e.label = 1;
                     case 1:
-                        _e.trys.push([1, 6, 7, 12]);
+                        _e.trys.push([1, 12, 13, 18]);
                         _a = true, actions_1 = __asyncValues(actions);
                         _e.label = 2;
                     case 2: return [4, actions_1.next()];
                     case 3:
-                        if (!(actions_1_1 = _e.sent(), _b = actions_1_1.done, !_b)) return [3, 5];
+                        if (!(actions_1_1 = _e.sent(), _b = actions_1_1.done, !_b)) return [3, 11];
                         _d = actions_1_1.value;
                         _a = false;
-                        try {
-                            action = _d;
-                            setting = (0, node_fs_1.readFileSync)(action.setting_path, 'utf8');
-                            regex = /execution="(.*)"/g;
-                            match = regex.exec(setting);
-                            kind = match[1] === 'sync' ? 'synchronous' : 'asynchronous';
-                            schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, 'utf8');
-                            try {
-                                _tmp = (0, generate_action_custom_types_1.generate)('custom_types', schema, kind);
-                                customTypes.type = _tmp.type;
-                                customTypes.args.scalars = __spreadArray(__spreadArray([], customTypes.args.scalars, true), _tmp.args.scalars, true);
-                                customTypes.args.enums = __spreadArray(__spreadArray([], customTypes.args.enums, true), _tmp.args.enums, true);
-                                customTypes.args.objects = __spreadArray(__spreadArray([], customTypes.args.objects, true), _tmp.args.objects, true);
-                                customTypes.args.input_objects = __spreadArray(__spreadArray([], customTypes.args.input_objects, true), _tmp.args.input_objects, true);
-                            }
-                            catch (error) {
-                                console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
-                                return [3, 4];
-                            }
-                        }
-                        finally {
-                            _a = true;
-                        }
                         _e.label = 4;
-                    case 4: return [3, 2];
-                    case 5: return [3, 12];
+                    case 4:
+                        _e.trys.push([4, , 9, 10]);
+                        action = _d;
+                        setting = (0, node_fs_1.readFileSync)(action.setting_path, 'utf8');
+                        regex = /execution="(.*)"/g;
+                        match = regex.exec(setting);
+                        kind = match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+                        schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, 'utf8');
+                        _e.label = 5;
+                    case 5:
+                        _e.trys.push([5, 7, , 8]);
+                        return [4, (0, generate_action_custom_types_1.generate)(schema, kind, 'custom_types')];
                     case 6:
+                        _tmp = _e.sent();
+                        customTypes.type = _tmp.type;
+                        customTypes.args.scalars = __spreadArray(__spreadArray([], customTypes.args.scalars, true), _tmp.args.scalars, true);
+                        customTypes.args.enums = __spreadArray(__spreadArray([], customTypes.args.enums, true), _tmp.args.enums, true);
+                        customTypes.args.objects = __spreadArray(__spreadArray([], customTypes.args.objects, true), _tmp.args.objects, true);
+                        customTypes.args.input_objects = __spreadArray(__spreadArray([], customTypes.args.input_objects, true), _tmp.args.input_objects, true);
+                        return [3, 8];
+                    case 7:
+                        error_2 = _e.sent();
+                        console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
+                        return [3, 10];
+                    case 8: return [3, 10];
+                    case 9:
+                        _a = true;
+                        return [7];
+                    case 10: return [3, 2];
+                    case 11: return [3, 18];
+                    case 12:
                         e_1_1 = _e.sent();
                         e_1 = { error: e_1_1 };
-                        return [3, 12];
-                    case 7:
-                        _e.trys.push([7, , 10, 11]);
-                        if (!(!_a && !_b && (_c = actions_1["return"]))) return [3, 9];
+                        return [3, 18];
+                    case 13:
+                        _e.trys.push([13, , 16, 17]);
+                        if (!(!_a && !_b && (_c = actions_1["return"]))) return [3, 15];
                         return [4, _c.call(actions_1)];
-                    case 8:
+                    case 14:
                         _e.sent();
-                        _e.label = 9;
-                    case 9: return [3, 11];
-                    case 10:
+                        _e.label = 15;
+                    case 15: return [3, 17];
+                    case 16:
                         if (e_1) throw e_1.error;
                         return [7];
-                    case 11: return [7];
-                    case 12: return [4, this.makeRequest(customTypes)];
-                    case 13:
+                    case 17: return [7];
+                    case 18: return [4, this.makeRequest(customTypes)];
+                    case 19:
                         _e.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    HasuraMetadata.prototype.createEvent = function (tableName, events) {
+        return __awaiter(this, void 0, void 0, function () {
+            var hasuraEnvs, HASURA_GRAPHQL_DB_NAME, payload;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        hasuraEnvs = this.hasuraEnvs;
+                        HASURA_GRAPHQL_DB_NAME = hasuraEnvs.HASURA_GRAPHQL_DB_NAME;
+                        return [4, (0, generate_events_1.generate)(tableName, HASURA_GRAPHQL_DB_NAME, events)];
+                    case 1:
+                        payload = _a.sent();
+                        return [4, this.makeRequest(payload)];
+                    case 2:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    HasuraMetadata.prototype.dropEvent = function (tableName, events) {
+        return __awaiter(this, void 0, void 0, function () {
+            var hasuraEnvs, HASURA_GRAPHQL_DB_NAME, payload;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        hasuraEnvs = this.hasuraEnvs;
+                        HASURA_GRAPHQL_DB_NAME = hasuraEnvs.HASURA_GRAPHQL_DB_NAME;
+                        payload = {
+                            type: 'pg_delete_event_trigger',
+                            args: {
+                                name: "".concat(tableName, "_trigger"),
+                                source: HASURA_GRAPHQL_DB_NAME
+                            }
+                        };
+                        return [4, this.makeRequest(payload)];
+                    case 1:
+                        _a.sent();
                         return [2];
                 }
             });
@@ -216,10 +267,10 @@ var HasuraMetadata = (function () {
         var envPath = (0, path_1.join)(process.cwd(), this.backendInstancePath, 'functions', this.pluginName, '.env');
         return dotenv.config({ path: envPath }).parsed;
     };
-    HasuraMetadata.prototype.makeRequest = function (data, terminateOnError) {
-        if (terminateOnError === void 0) { terminateOnError = false; }
+    HasuraMetadata.prototype.makeRequest = function (data, showError) {
+        if (showError === void 0) { showError = false; }
         return __awaiter(this, void 0, void 0, function () {
-            var hasuraEnvs, options, error_1;
+            var hasuraEnvs, options, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -242,9 +293,9 @@ var HasuraMetadata = (function () {
                         _a.sent();
                         return [3, 4];
                     case 3:
-                        error_1 = _a.sent();
-                        if (error_1.response.data.error) {
-                            console.log('> Error:', error_1.response.data.error);
+                        error_3 = _a.sent();
+                        if (showError && error_3.response && error_3.response.data.error) {
+                            console.log('> Error:', error_3.response.data.error);
                         }
                         return [3, 4];
                     case 4: return [2];
