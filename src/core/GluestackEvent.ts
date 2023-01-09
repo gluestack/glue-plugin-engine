@@ -1,8 +1,9 @@
 import { join } from 'path';
 import { readdir } from 'node:fs/promises';
 import { fileExists } from '../helpers/file-exists';
+import { IGluestackEvent } from './types/IGluestackEvent';
 
-export default class GluestackEvent {
+export default class GluestackEvent implements IGluestackEvent {
   public events: any = {};
   public eventsPath: string;
   public hasuraPluginName: string;
@@ -16,9 +17,14 @@ export default class GluestackEvent {
   }
 
   // Scans the events directory and prepares the events object
-  public async scanEvents() {
+  public async scanEvents(): Promise<void> {
     this.events['database'] = await this.readEventsDir('database', true);
     this.events['app'] = await this.readEventsDir('app', false);
+  }
+
+  // Applies all the events to the hasura engine
+  public async getEventsByType(type: string): Promise<any> {
+    return this.events[type];
   }
 
   // Reads the events directory and returns the events
@@ -62,10 +68,5 @@ export default class GluestackEvent {
     }
 
     return paths;
-  }
-
-  // Applies all the events to the hasura engine
-  public async getEventsByType(type: string): Promise<any> {
-    return this.events[type];
   }
 }

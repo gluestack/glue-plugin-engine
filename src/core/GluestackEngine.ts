@@ -14,6 +14,7 @@ import { backendPlugins } from "../configs/constants";
 import { waitInSeconds } from "../helpers/wait-in-seconds";
 import { replaceKeyword } from "../helpers/replace-keyword";
 import { removeSpecialChars } from "../helpers/remove-special-chars";
+import { IHasuraEngine } from "./types/IHasuraEngine";
 
 /**
  * Gluestack Engine
@@ -59,7 +60,7 @@ export default class GluestackEngine implements IGlueEngine {
     }
 
     if (this.hasuraPluginName && this.hasuraPluginName !== '') {
-      const hasuraEngine = new HasuraEngine(backendInstancePath, this.hasuraPluginName, this.actionPlugins);
+      const hasuraEngine: IHasuraEngine = new HasuraEngine(backendInstancePath, this.hasuraPluginName, this.actionPlugins);
       // 6. run hasura metadata apply
       await hasuraEngine.applyMetadata();
 

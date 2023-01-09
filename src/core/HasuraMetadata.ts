@@ -3,11 +3,21 @@ const axios = require("axios").default;
 import { join } from 'path';
 import * as dotenv from 'dotenv';
 import { readFileSync } from 'node:fs';
+
 import { IAction } from '../core/types/IHasuraEngine';
+import { IHasuraMetadata } from './types/IHasuraMetadata';
+
 import { generate as generateEvent } from '../helpers/generate-events';
 import { generate as generateActionOrCustomType } from '../helpers/generate-action-custom-types';
 
-export default class HasuraMetadata {
+/**
+ * HasuraMetadata
+ *
+ * This class is responsible for generating the hasura metadata
+ * and uses the hasura engine to create the actions, custom-types
+ * and events.
+ */
+export default class HasuraMetadata implements IHasuraMetadata {
   private hasuraEnvs: any;
   private pluginName: string;
   private backendInstancePath: string
@@ -106,7 +116,7 @@ export default class HasuraMetadata {
   }
 
   // Creates the given event in the hasura engine
-  public async createEvent(tableName: string, events: string[]) {
+  public async createEvent(tableName: string, events: string[]): Promise<void> {
     const hasuraEnvs: any = this.hasuraEnvs;
     const { HASURA_GRAPHQL_DB_NAME } = hasuraEnvs;
 
@@ -117,7 +127,7 @@ export default class HasuraMetadata {
   }
 
   // Drops the given event from the hasura engine
-  public async dropEvent(tableName: string, events: string[]) {
+  public async dropEvent(tableName: string, events: string[]): Promise<void> {
     const hasuraEnvs: any = this.hasuraEnvs;
     const { HASURA_GRAPHQL_DB_NAME } = hasuraEnvs;
 

@@ -75,6 +75,13 @@ var GluestackEvent = (function () {
             });
         });
     };
+    GluestackEvent.prototype.getEventsByType = function (type) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2, this.events[type]];
+            });
+        });
+    };
     GluestackEvent.prototype.readEventsDir = function (dirName, scanDirectory) {
         var _a, e_1, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
@@ -149,13 +156,6 @@ var GluestackEvent = (function () {
                     case 17: return [7];
                     case 18: return [2, paths];
                 }
-            });
-        });
-    };
-    GluestackEvent.prototype.getEventsByType = function (type) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2, this.events[type]];
             });
         });
     };

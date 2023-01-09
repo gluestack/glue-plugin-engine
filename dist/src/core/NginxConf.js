@@ -45,6 +45,27 @@ var NginxConf = (function () {
         this.data = [];
         this.backendInstancePath = backendInstancePath;
     }
+    NginxConf.prototype.generate = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var conf, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4, this.toConf()];
+                    case 1:
+                        conf = _a.sent();
+                        (0, fs_1.writeFileSync)((0, path_1.join)(process.cwd(), this.backendInstancePath, 'engine/router', 'nginx.conf'), conf);
+                        return [3, 3];
+                    case 2:
+                        err_1 = _a.sent();
+                        console.log(err_1);
+                        return [3, 3];
+                    case 3: return [2];
+                }
+            });
+        });
+    };
     NginxConf.prototype.addRouter = function (string) {
         return __awaiter(this, void 0, void 0, function () {
             var data, exist;
@@ -79,27 +100,6 @@ var NginxConf = (function () {
                     }
                 });
                 return [2, Promise.resolve(nginx_literals_1.startsWith + (0, nginx_literals_1.setServer)(domain, locations) + nginx_literals_1.endsWith)];
-            });
-        });
-    };
-    NginxConf.prototype.generate = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var conf, err_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4, this.toConf()];
-                    case 1:
-                        conf = _a.sent();
-                        (0, fs_1.writeFileSync)((0, path_1.join)(process.cwd(), this.backendInstancePath, 'engine/router', 'nginx.conf'), conf);
-                        return [3, 3];
-                    case 2:
-                        err_1 = _a.sent();
-                        console.log(err_1);
-                        return [3, 3];
-                    case 3: return [2];
-                }
             });
         });
     };

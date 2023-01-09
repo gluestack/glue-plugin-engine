@@ -63,196 +63,6 @@ var HasuraEngine = (function () {
         this.metadata = new HasuraMetadata_1["default"](this.backendInstancePath, this.pluginName);
         this.events = new GluestackEvent_1["default"](this.backendInstancePath, this.pluginName);
     }
-    HasuraEngine.prototype.scanActions = function () {
-        var _a, e_1, _b, _c;
-        return __awaiter(this, void 0, void 0, function () {
-            var _d, _e, _f, plugin, exist, e_1_1;
-            return __generator(this, function (_g) {
-                switch (_g.label) {
-                    case 0:
-                        _g.trys.push([0, 9, 10, 15]);
-                        _d = true, _e = __asyncValues(this.actionPlugins);
-                        _g.label = 1;
-                    case 1: return [4, _e.next()];
-                    case 2:
-                        if (!(_f = _g.sent(), _a = _f.done, !_a)) return [3, 8];
-                        _c = _f.value;
-                        _d = false;
-                        _g.label = 3;
-                    case 3:
-                        _g.trys.push([3, , 6, 7]);
-                        plugin = _c;
-                        return [4, (0, file_exists_1.fileExists)(plugin.path)];
-                    case 4:
-                        exist = _g.sent();
-                        if (!exist) {
-                            console.log("> Action Instance ".concat(plugin.instance, " is missing. Skipping..."));
-                            return [3, 7];
-                        }
-                        return [4, (0, file_exists_1.fileExists)((0, path_1.join)(plugin.path, this.actionGQLFile))];
-                    case 5:
-                        exist = _g.sent();
-                        if (!exist) {
-                            console.log("> Action Instance ".concat(plugin.instance, " does not have actions.graphql file. Skipping..."));
-                            return [3, 7];
-                        }
-                        this.actions.push({
-                            name: (0, remove_special_chars_1.removeSpecialChars)(plugin.instance),
-                            path: plugin.path,
-                            grapqhl_path: (0, path_1.join)(plugin.path, this.actionGQLFile),
-                            setting_path: (0, path_1.join)(plugin.path, this.actionSettingFile)
-                        });
-                        return [3, 7];
-                    case 6:
-                        _d = true;
-                        return [7];
-                    case 7: return [3, 1];
-                    case 8: return [3, 15];
-                    case 9:
-                        e_1_1 = _g.sent();
-                        e_1 = { error: e_1_1 };
-                        return [3, 15];
-                    case 10:
-                        _g.trys.push([10, , 13, 14]);
-                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 12];
-                        return [4, _b.call(_e)];
-                    case 11:
-                        _g.sent();
-                        _g.label = 12;
-                    case 12: return [3, 14];
-                    case 13:
-                        if (e_1) throw e_1.error;
-                        return [7];
-                    case 14: return [7];
-                    case 15: return [2];
-                }
-            });
-        });
-    };
-    HasuraEngine.prototype.dropActions = function () {
-        var _a, e_2, _b, _c;
-        return __awaiter(this, void 0, void 0, function () {
-            var _d, _e, _f, action, e_2_1;
-            return __generator(this, function (_g) {
-                switch (_g.label) {
-                    case 0:
-                        if (this.actions.length <= 0) {
-                            return [2, Promise.resolve(false)];
-                        }
-                        _g.label = 1;
-                    case 1:
-                        _g.trys.push([1, 9, 10, 15]);
-                        _d = true, _e = __asyncValues(this.actions);
-                        _g.label = 2;
-                    case 2: return [4, _e.next()];
-                    case 3:
-                        if (!(_f = _g.sent(), _a = _f.done, !_a)) return [3, 8];
-                        _c = _f.value;
-                        _d = false;
-                        _g.label = 4;
-                    case 4:
-                        _g.trys.push([4, , 6, 7]);
-                        action = _c;
-                        return [4, this.metadata.dropAction(action.name)];
-                    case 5:
-                        _g.sent();
-                        return [3, 7];
-                    case 6:
-                        _d = true;
-                        return [7];
-                    case 7: return [3, 2];
-                    case 8: return [3, 15];
-                    case 9:
-                        e_2_1 = _g.sent();
-                        e_2 = { error: e_2_1 };
-                        return [3, 15];
-                    case 10:
-                        _g.trys.push([10, , 13, 14]);
-                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 12];
-                        return [4, _b.call(_e)];
-                    case 11:
-                        _g.sent();
-                        _g.label = 12;
-                    case 12: return [3, 14];
-                    case 13:
-                        if (e_2) throw e_2.error;
-                        return [7];
-                    case 14: return [7];
-                    case 15: return [2];
-                }
-            });
-        });
-    };
-    HasuraEngine.prototype.createActions = function () {
-        var _a, e_3, _b, _c;
-        return __awaiter(this, void 0, void 0, function () {
-            var _d, _e, _f, action, e_3_1;
-            return __generator(this, function (_g) {
-                switch (_g.label) {
-                    case 0:
-                        if (this.actions.length <= 0) {
-                            return [2, Promise.resolve(false)];
-                        }
-                        _g.label = 1;
-                    case 1:
-                        _g.trys.push([1, 9, 10, 15]);
-                        _d = true, _e = __asyncValues(this.actions);
-                        _g.label = 2;
-                    case 2: return [4, _e.next()];
-                    case 3:
-                        if (!(_f = _g.sent(), _a = _f.done, !_a)) return [3, 8];
-                        _c = _f.value;
-                        _d = false;
-                        _g.label = 4;
-                    case 4:
-                        _g.trys.push([4, , 6, 7]);
-                        action = _c;
-                        return [4, this.metadata.createAction(action)];
-                    case 5:
-                        _g.sent();
-                        return [3, 7];
-                    case 6:
-                        _d = true;
-                        return [7];
-                    case 7: return [3, 2];
-                    case 8: return [3, 15];
-                    case 9:
-                        e_3_1 = _g.sent();
-                        e_3 = { error: e_3_1 };
-                        return [3, 15];
-                    case 10:
-                        _g.trys.push([10, , 13, 14]);
-                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 12];
-                        return [4, _b.call(_e)];
-                    case 11:
-                        _g.sent();
-                        _g.label = 12;
-                    case 12: return [3, 14];
-                    case 13:
-                        if (e_3) throw e_3.error;
-                        return [7];
-                    case 14: return [7];
-                    case 15: return [2];
-                }
-            });
-        });
-    };
-    HasuraEngine.prototype.createCustomTypes = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (this.actions.length <= 0) {
-                            return [2, Promise.resolve(false)];
-                        }
-                        return [4, this.metadata.createCustomTypes(this.actions)];
-                    case 1:
-                        _a.sent();
-                        return [2];
-                }
-            });
-        });
-    };
     HasuraEngine.prototype.applyMetadata = function () {
         return __awaiter(this, void 0, void 0, function () {
             var filepath;
@@ -302,9 +112,9 @@ var HasuraEngine = (function () {
         });
     };
     HasuraEngine.prototype.reapplyEvents = function () {
-        var _a, e_4, _b, _c;
+        var _a, e_1, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var events, _d, _e, _f, table, e_4_1;
+            var events, _d, _e, _f, table, e_1_1;
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0: return [4, this.events.scanEvents()];
@@ -341,8 +151,8 @@ var HasuraEngine = (function () {
                     case 10: return [3, 4];
                     case 11: return [3, 18];
                     case 12:
-                        e_4_1 = _g.sent();
-                        e_4 = { error: e_4_1 };
+                        e_1_1 = _g.sent();
+                        e_1 = { error: e_1_1 };
                         return [3, 18];
                     case 13:
                         _g.trys.push([13, , 16, 17]);
@@ -353,10 +163,200 @@ var HasuraEngine = (function () {
                         _g.label = 15;
                     case 15: return [3, 17];
                     case 16:
-                        if (e_4) throw e_4.error;
+                        if (e_1) throw e_1.error;
                         return [7];
                     case 17: return [7];
                     case 18: return [2];
+                }
+            });
+        });
+    };
+    HasuraEngine.prototype.scanActions = function () {
+        var _a, e_2, _b, _c;
+        return __awaiter(this, void 0, void 0, function () {
+            var _d, _e, _f, plugin, exist, e_2_1;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
+                    case 0:
+                        _g.trys.push([0, 9, 10, 15]);
+                        _d = true, _e = __asyncValues(this.actionPlugins);
+                        _g.label = 1;
+                    case 1: return [4, _e.next()];
+                    case 2:
+                        if (!(_f = _g.sent(), _a = _f.done, !_a)) return [3, 8];
+                        _c = _f.value;
+                        _d = false;
+                        _g.label = 3;
+                    case 3:
+                        _g.trys.push([3, , 6, 7]);
+                        plugin = _c;
+                        return [4, (0, file_exists_1.fileExists)(plugin.path)];
+                    case 4:
+                        exist = _g.sent();
+                        if (!exist) {
+                            console.log("> Action Instance ".concat(plugin.instance, " is missing. Skipping..."));
+                            return [3, 7];
+                        }
+                        return [4, (0, file_exists_1.fileExists)((0, path_1.join)(plugin.path, this.actionGQLFile))];
+                    case 5:
+                        exist = _g.sent();
+                        if (!exist) {
+                            console.log("> Action Instance ".concat(plugin.instance, " does not have actions.graphql file. Skipping..."));
+                            return [3, 7];
+                        }
+                        this.actions.push({
+                            name: (0, remove_special_chars_1.removeSpecialChars)(plugin.instance),
+                            path: plugin.path,
+                            grapqhl_path: (0, path_1.join)(plugin.path, this.actionGQLFile),
+                            setting_path: (0, path_1.join)(plugin.path, this.actionSettingFile)
+                        });
+                        return [3, 7];
+                    case 6:
+                        _d = true;
+                        return [7];
+                    case 7: return [3, 1];
+                    case 8: return [3, 15];
+                    case 9:
+                        e_2_1 = _g.sent();
+                        e_2 = { error: e_2_1 };
+                        return [3, 15];
+                    case 10:
+                        _g.trys.push([10, , 13, 14]);
+                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 12];
+                        return [4, _b.call(_e)];
+                    case 11:
+                        _g.sent();
+                        _g.label = 12;
+                    case 12: return [3, 14];
+                    case 13:
+                        if (e_2) throw e_2.error;
+                        return [7];
+                    case 14: return [7];
+                    case 15: return [2];
+                }
+            });
+        });
+    };
+    HasuraEngine.prototype.dropActions = function () {
+        var _a, e_3, _b, _c;
+        return __awaiter(this, void 0, void 0, function () {
+            var _d, _e, _f, action, e_3_1;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
+                    case 0:
+                        if (this.actions.length <= 0) {
+                            return [2, Promise.resolve(false)];
+                        }
+                        _g.label = 1;
+                    case 1:
+                        _g.trys.push([1, 9, 10, 15]);
+                        _d = true, _e = __asyncValues(this.actions);
+                        _g.label = 2;
+                    case 2: return [4, _e.next()];
+                    case 3:
+                        if (!(_f = _g.sent(), _a = _f.done, !_a)) return [3, 8];
+                        _c = _f.value;
+                        _d = false;
+                        _g.label = 4;
+                    case 4:
+                        _g.trys.push([4, , 6, 7]);
+                        action = _c;
+                        return [4, this.metadata.dropAction(action.name)];
+                    case 5:
+                        _g.sent();
+                        return [3, 7];
+                    case 6:
+                        _d = true;
+                        return [7];
+                    case 7: return [3, 2];
+                    case 8: return [3, 15];
+                    case 9:
+                        e_3_1 = _g.sent();
+                        e_3 = { error: e_3_1 };
+                        return [3, 15];
+                    case 10:
+                        _g.trys.push([10, , 13, 14]);
+                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 12];
+                        return [4, _b.call(_e)];
+                    case 11:
+                        _g.sent();
+                        _g.label = 12;
+                    case 12: return [3, 14];
+                    case 13:
+                        if (e_3) throw e_3.error;
+                        return [7];
+                    case 14: return [7];
+                    case 15: return [2];
+                }
+            });
+        });
+    };
+    HasuraEngine.prototype.createActions = function () {
+        var _a, e_4, _b, _c;
+        return __awaiter(this, void 0, void 0, function () {
+            var _d, _e, _f, action, e_4_1;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
+                    case 0:
+                        if (this.actions.length <= 0) {
+                            return [2, Promise.resolve(false)];
+                        }
+                        _g.label = 1;
+                    case 1:
+                        _g.trys.push([1, 9, 10, 15]);
+                        _d = true, _e = __asyncValues(this.actions);
+                        _g.label = 2;
+                    case 2: return [4, _e.next()];
+                    case 3:
+                        if (!(_f = _g.sent(), _a = _f.done, !_a)) return [3, 8];
+                        _c = _f.value;
+                        _d = false;
+                        _g.label = 4;
+                    case 4:
+                        _g.trys.push([4, , 6, 7]);
+                        action = _c;
+                        return [4, this.metadata.createAction(action)];
+                    case 5:
+                        _g.sent();
+                        return [3, 7];
+                    case 6:
+                        _d = true;
+                        return [7];
+                    case 7: return [3, 2];
+                    case 8: return [3, 15];
+                    case 9:
+                        e_4_1 = _g.sent();
+                        e_4 = { error: e_4_1 };
+                        return [3, 15];
+                    case 10:
+                        _g.trys.push([10, , 13, 14]);
+                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 12];
+                        return [4, _b.call(_e)];
+                    case 11:
+                        _g.sent();
+                        _g.label = 12;
+                    case 12: return [3, 14];
+                    case 13:
+                        if (e_4) throw e_4.error;
+                        return [7];
+                    case 14: return [7];
+                    case 15: return [2];
+                }
+            });
+        });
+    };
+    HasuraEngine.prototype.createCustomTypes = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (this.actions.length <= 0) {
+                            return [2, Promise.resolve(false)];
+                        }
+                        return [4, this.metadata.createCustomTypes(this.actions)];
+                    case 1:
+                        _a.sent();
+                        return [2];
                 }
             });
         });

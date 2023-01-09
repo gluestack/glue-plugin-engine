@@ -20,6 +20,26 @@ export default class NginxConf {
     this.backendInstancePath = backendInstancePath;
   }
 
+  // Generates the nginx.conf file
+  public async generate(): Promise<void> {
+    try {
+      const conf: string = await this.toConf();
+
+      writeFileSync(
+        join(
+          process.cwd(),
+          this.backendInstancePath,
+          'engine/router',
+          'nginx.conf'
+        ),
+        conf
+      );
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   // Adds router.js data to the nginx conf data
   // if and only if the given path exists
   public async addRouter(string: string): Promise<boolean> {
@@ -33,6 +53,7 @@ export default class NginxConf {
     return Promise.resolve(true);
   }
 
+  // Converts the nginx conf data to a string
   private async toConf(): Promise<string> {
     let locations: string[] = [];
     let domain: string = '';
@@ -54,24 +75,5 @@ export default class NginxConf {
     return Promise.resolve(
       startsWith + setServer(domain, locations) + endsWith
     );
-  }
-
-  public async generate(): Promise<void> {
-    try {
-      const conf: string = await this.toConf();
-
-      writeFileSync(
-        join(
-          process.cwd(),
-          this.backendInstancePath,
-          'engine/router',
-          'nginx.conf'
-        ),
-        conf
-      );
-
-    } catch (err) {
-      console.log(err);
-    }
   }
 }
