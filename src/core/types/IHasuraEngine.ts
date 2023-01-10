@@ -9,10 +9,11 @@ export interface IAction {
 
 export interface IHasuraEngine {
   pluginName: string;
-  backendInstancePath: string;
   actionPlugins: IStatelessPlugin[];
 
+  exportMetadata(): Promise<void>;
   applyMetadata(): Promise<void>;
+  applyMigrate(): Promise<void>;
   reapplyActions(): Promise<void>;
   reapplyEvents(): Promise<void>;
 }

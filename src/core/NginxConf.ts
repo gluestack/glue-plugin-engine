@@ -5,6 +5,8 @@ import {
   endsWith, startsWith, setServer, setLocation
 } from '../helpers/nginx-literals';
 
+import { getConfig } from './GluestackConfig';
+
 /**
  * Nginx Conf
  *
@@ -13,11 +15,9 @@ import {
  */
 export default class NginxConf {
   public data: any[];
-  public backendInstancePath: string
 
-  constructor(backendInstancePath: string) {
+  constructor() {
     this.data = [];
-    this.backendInstancePath = backendInstancePath;
   }
 
   // Generates the nginx.conf file
@@ -28,7 +28,7 @@ export default class NginxConf {
       writeFileSync(
         join(
           process.cwd(),
-          this.backendInstancePath,
+          getConfig('backendInstancePath'),
           'engine/router',
           'nginx.conf'
         ),

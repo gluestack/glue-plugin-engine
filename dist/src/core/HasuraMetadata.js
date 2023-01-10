@@ -79,13 +79,14 @@ var axios = require("axios")["default"];
 var path_1 = require("path");
 var dotenv = __importStar(require("dotenv"));
 var node_fs_1 = require("node:fs");
+var GluestackConfig_1 = require("./GluestackConfig");
 var generate_events_1 = require("../helpers/generate-events");
 var generate_action_custom_types_1 = require("../helpers/generate-action-custom-types");
 var HasuraMetadata = (function () {
-    function HasuraMetadata(backendInstancePath, pluginName) {
+    function HasuraMetadata(pluginName) {
         this.pluginName = pluginName;
-        this.backendInstancePath = backendInstancePath;
         this.hasuraEnvs = this.captureEnvVars();
+        (0, GluestackConfig_1.setConfig)('hasuraEnvs', this.hasuraEnvs);
     }
     HasuraMetadata.prototype.dropAction = function (actionName) {
         return __awaiter(this, void 0, void 0, function () {
@@ -232,7 +233,7 @@ var HasuraMetadata = (function () {
                         return [4, (0, generate_events_1.generate)(tableName, HASURA_GRAPHQL_DB_NAME, events)];
                     case 1:
                         payload = _a.sent();
-                        return [4, this.makeRequest(payload)];
+                        return [4, this.makeRequest(payload, true)];
                     case 2:
                         _a.sent();
                         return [2];
@@ -264,7 +265,7 @@ var HasuraMetadata = (function () {
         });
     };
     HasuraMetadata.prototype.captureEnvVars = function () {
-        var envPath = (0, path_1.join)(process.cwd(), this.backendInstancePath, 'functions', this.pluginName, '.env');
+        var envPath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)('backendInstancePath'), 'functions', this.pluginName, '.env');
         return dotenv.config({ path: envPath }).parsed;
     };
     HasuraMetadata.prototype.makeRequest = function (data, showError) {

@@ -50,29 +50,76 @@ var path_1 = require("path");
 var spawn_1 = require("../helpers/spawn");
 var file_exists_1 = require("../helpers/file-exists");
 var remove_special_chars_1 = require("../helpers/remove-special-chars");
+var GluestackConfig_1 = require("./GluestackConfig");
 var HasuraMetadata_1 = __importDefault(require("./HasuraMetadata"));
 var GluestackEvent_1 = __importDefault(require("./GluestackEvent"));
 var HasuraEngine = (function () {
-    function HasuraEngine(backendInstancePath, pluginName, actionPlugins) {
+    function HasuraEngine(actionPlugins) {
         this.actionGQLFile = 'action.graphql';
         this.actionSettingFile = 'action.setting';
         this.actions = [];
-        this.pluginName = pluginName;
+        this.pluginName = (0, GluestackConfig_1.getConfig)('hasuraInstancePath');
         this.actionPlugins = actionPlugins;
-        this.backendInstancePath = backendInstancePath;
-        this.metadata = new HasuraMetadata_1["default"](this.backendInstancePath, this.pluginName);
-        this.events = new GluestackEvent_1["default"](this.backendInstancePath, this.pluginName);
+        this.metadata = new HasuraMetadata_1["default"](this.pluginName);
+        this.events = new GluestackEvent_1["default"](this.pluginName);
     }
+    HasuraEngine.prototype.exportMetadata = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var filepath;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        filepath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)('backendInstancePath'), 'functions', this.pluginName);
+                        return [4, (0, spawn_1.execute)('hasura', [
+                                'metadata',
+                                'export',
+                                '--skip-update-check'
+                            ], {
+                                cwd: filepath,
+                                stdio: 'inherit'
+                            })];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
     HasuraEngine.prototype.applyMetadata = function () {
         return __awaiter(this, void 0, void 0, function () {
             var filepath;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        filepath = (0, path_1.join)(process.cwd(), this.backendInstancePath, 'functions', this.pluginName);
+                        filepath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)('backendInstancePath'), 'functions', this.pluginName);
                         return [4, (0, spawn_1.execute)('hasura', [
                                 'metadata',
                                 'apply',
+                                '--skip-update-check'
+                            ], {
+                                cwd: filepath,
+                                stdio: 'inherit'
+                            })];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    HasuraEngine.prototype.applyMigrate = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var hasuraEnvs, filepath;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        hasuraEnvs = this.metadata.hasuraEnvs;
+                        filepath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)('backendInstancePath'), 'functions', this.pluginName);
+                        return [4, (0, spawn_1.execute)('hasura', [
+                                'migrate',
+                                'apply',
+                                '--database-name',
+                                hasuraEnvs.HASURA_GRAPHQL_DB_NAME,
                                 '--skip-update-check'
                             ], {
                                 cwd: filepath,

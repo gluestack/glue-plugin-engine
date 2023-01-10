@@ -7,6 +7,7 @@ import { readFileSync } from 'node:fs';
 import { IAction } from '../core/types/IHasuraEngine';
 import { IHasuraMetadata } from './types/IHasuraMetadata';
 
+import { getConfig, setConfig } from './GluestackConfig';
 import { generate as generateEvent } from '../helpers/generate-events';
 import { generate as generateActionOrCustomType } from '../helpers/generate-action-custom-types';
 
@@ -18,15 +19,14 @@ import { generate as generateActionOrCustomType } from '../helpers/generate-acti
  * and events.
  */
 export default class HasuraMetadata implements IHasuraMetadata {
-  private hasuraEnvs: any;
+  public hasuraEnvs: any;
   private pluginName: string;
-  private backendInstancePath: string
 
-  constructor(backendInstancePath: string, pluginName: any) {
+  constructor(pluginName: any) {
     this.pluginName = pluginName;
-    this.backendInstancePath = backendInstancePath;
-
     this.hasuraEnvs = this.captureEnvVars();
+
+    setConfig('hasuraEnvs', this.hasuraEnvs);
   }
 
   // Drops the given action from the hasura engine
@@ -123,7 +123,7 @@ export default class HasuraMetadata implements IHasuraMetadata {
     const payload: any = await generateEvent(tableName, HASURA_GRAPHQL_DB_NAME, events);
 
     // creating event
-    await this.makeRequest(payload);
+    await this.makeRequest(payload, true);
   }
 
   // Drops the given event from the hasura engine
@@ -146,7 +146,7 @@ export default class HasuraMetadata implements IHasuraMetadata {
   // Capture the hasura envs from the .env file
   private captureEnvVars(): any {
     const envPath = join(
-      process.cwd(), this.backendInstancePath, 'functions', this.pluginName, '.env'
+      process.cwd(), getConfig('backendInstancePath'), 'functions', this.pluginName, '.env'
     );
 
     return dotenv.config({ path: envPath }).parsed;

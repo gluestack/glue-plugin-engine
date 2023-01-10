@@ -49,6 +49,7 @@ exports.__esModule = true;
 var NginxConf_1 = __importDefault(require("./NginxConf"));
 var HasuraEngine_1 = __importDefault(require("./HasuraEngine"));
 var DockerCompose_1 = __importDefault(require("./DockerCompose"));
+var GluestackConfig_1 = require("./GluestackConfig");
 var path_1 = require("path");
 var write_file_1 = require("../helpers/write-file");
 var constants_1 = require("../configs/constants");
@@ -56,29 +57,31 @@ var wait_in_seconds_1 = require("../helpers/wait-in-seconds");
 var replace_keyword_1 = require("../helpers/replace-keyword");
 var remove_special_chars_1 = require("../helpers/remove-special-chars");
 var GluestackEngine = (function () {
-    function GluestackEngine(app) {
+    function GluestackEngine(app, backendInstancePath) {
         this.engineExist = false;
-        this.hasuraPluginName = 'graphql';
         this.app = app;
         this.actionPlugins = [];
         this.backendPlugins = (0, constants_1.backendPlugins)();
+        (0, GluestackConfig_1.setConfig)('backendInstancePath', backendInstancePath);
     }
-    GluestackEngine.prototype.start = function (backendInstancePath) {
+    GluestackEngine.prototype.start = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var hasuraEngine;
+            var backendInstancePath, hasuraPluginName, hasuraEngine;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.collectDockerfiles()];
+                    case 0:
+                        backendInstancePath = (0, GluestackConfig_1.getConfig)('backendInstancePath');
+                        return [4, this.collectPlugins()];
                     case 1:
                         _a.sent();
-                        return [4, this.createDockerCompose(backendInstancePath)];
+                        return [4, this.createDockerCompose()];
                     case 2:
                         _a.sent();
-                        return [4, this.createNginxConfig(backendInstancePath)];
+                        return [4, this.createNginxConfig()];
                     case 3:
                         _a.sent();
                         if (!this.engineExist) return [3, 5];
-                        return [4, this.startDockerCompose(backendInstancePath)];
+                        return [4, this.startDockerCompose()];
                     case 4:
                         _a.sent();
                         return [3, 6];
@@ -86,45 +89,53 @@ var GluestackEngine = (function () {
                         console.log('> Engine does not exist. Skipping docker-compose start.');
                         _a.label = 6;
                     case 6:
-                        if (!(this.hasuraPluginName && this.hasuraPluginName !== '')) return [3, 10];
-                        hasuraEngine = new HasuraEngine_1["default"](backendInstancePath, this.hasuraPluginName, this.actionPlugins);
-                        return [4, hasuraEngine.applyMetadata()];
+                        hasuraPluginName = (0, GluestackConfig_1.getConfig)('hasuraInstancePath');
+                        if (!(hasuraPluginName && hasuraPluginName !== '')) return [3, 12];
+                        hasuraEngine = new HasuraEngine_1["default"](this.actionPlugins);
+                        return [4, hasuraEngine.applyMigrate()];
                     case 7:
                         _a.sent();
-                        return [4, hasuraEngine.reapplyActions()];
+                        return [4, hasuraEngine.applyMetadata()];
                     case 8:
                         _a.sent();
-                        return [4, hasuraEngine.reapplyEvents()];
+                        return [4, hasuraEngine.exportMetadata()];
                     case 9:
                         _a.sent();
-                        console.log('> Note: ');
+                        return [4, hasuraEngine.reapplyActions()];
+                    case 10:
+                        _a.sent();
+                        return [4, hasuraEngine.reapplyEvents()];
+                    case 11:
+                        _a.sent();
+                        console.log('\n> Note: ');
                         console.log(">  1. In case a table does not exist in Hasura Engine, Gluestack Engine will skip the event trigger registration.");
-                        console.log(">  2. Gluestack Engine drops all existing event triggers, actions & custom-types and re-register them again.");
+                        console.log(">  2. Gluestack Engine drops all existing event triggers, actions & custom-types and re-registers them again.");
                         console.log("      (This is to prevent any issues with the event trigger, custom types & actions.");
                         console.log(">  3. Gluestack Engine will not drop any existing event triggers, actions & custom-types that are not registered by Gluestack Engine.\n ");
-                        _a.label = 10;
-                    case 10: return [2];
+                        _a.label = 12;
+                    case 12: return [2];
                 }
             });
         });
     };
-    GluestackEngine.prototype.stop = function (backendInstancePath) {
+    GluestackEngine.prototype.stop = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                this.stopDockerCompose(backendInstancePath);
+                this.stopDockerCompose();
                 return [2];
             });
         });
     };
-    GluestackEngine.prototype.createNginxConfig = function (backendInstancePath) {
+    GluestackEngine.prototype.createNginxConfig = function () {
         var _a, e_1, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var plugins, nginxConf, _d, plugins_1, plugins_1_1, plugin, e_1_1;
+            var backendInstancePath, plugins, nginxConf, _d, plugins_1, plugins_1_1, plugin, e_1_1;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
+                        backendInstancePath = (0, GluestackConfig_1.getConfig)('backendInstancePath');
                         plugins = this.statelessPlugins;
-                        nginxConf = new NginxConf_1["default"](backendInstancePath);
+                        nginxConf = new NginxConf_1["default"]();
                         nginxConf.addRouter((0, path_1.join)(process.cwd(), backendInstancePath, 'router.js'));
                         _e.label = 1;
                     case 1:
@@ -173,7 +184,7 @@ var GluestackEngine = (function () {
             });
         });
     };
-    GluestackEngine.prototype.collectDockerfiles = function () {
+    GluestackEngine.prototype.collectPlugins = function () {
         var _a, e_2, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
             var app, arr, instances, _d, instances_1, instances_1_1, instance, type, name_1, details, e_2_1;
@@ -185,24 +196,24 @@ var GluestackEngine = (function () {
                         instances = app.getContainerTypePluginInstances(false);
                         _e.label = 1;
                     case 1:
-                        _e.trys.push([1, 11, 12, 17]);
+                        _e.trys.push([1, 12, 13, 18]);
                         _d = true, instances_1 = __asyncValues(instances);
                         _e.label = 2;
                     case 2: return [4, instances_1.next()];
                     case 3:
-                        if (!(instances_1_1 = _e.sent(), _a = instances_1_1.done, !_a)) return [3, 10];
+                        if (!(instances_1_1 = _e.sent(), _a = instances_1_1.done, !_a)) return [3, 11];
                         _c = instances_1_1.value;
                         _d = false;
                         _e.label = 4;
                     case 4:
-                        _e.trys.push([4, , 8, 9]);
+                        _e.trys.push([4, , 9, 10]);
                         instance = _c;
                         type = instance === null || instance === void 0 ? void 0 : instance.callerPlugin.getType();
                         name_1 = instance === null || instance === void 0 ? void 0 : instance.callerPlugin.getName();
                         if (!(instance &&
                             (instance === null || instance === void 0 ? void 0 : instance.containerController) &&
                             type && type === 'stateless' &&
-                            name_1 && this.backendPlugins.includes(name_1))) return [3, 7];
+                            name_1 && this.backendPlugins.includes(name_1))) return [3, 8];
                         details = {
                             name: name_1,
                             type: type,
@@ -215,50 +226,56 @@ var GluestackEngine = (function () {
                         return [4, this.collectDockerContext(details, instance)];
                     case 5:
                         _e.sent();
-                        _e.label = 6;
+                        return [3, 7];
                     case 6:
+                        (0, GluestackConfig_1.setConfig)('hasuraInstancePath', details.instance);
+                        _e.label = 7;
+                    case 7:
+                        if (details.name !== '@gluestack/glue-plugin-engine') {
+                            (0, GluestackConfig_1.setConfig)('engineInstancePath', details.instance);
+                        }
                         if (details.name === '@gluestack/glue-plugin-functions.action') {
                             this.actionPlugins.push(details);
                         }
                         arr.push(details);
-                        _e.label = 7;
-                    case 7: return [3, 9];
-                    case 8:
+                        _e.label = 8;
+                    case 8: return [3, 10];
+                    case 9:
                         _d = true;
                         return [7];
-                    case 9: return [3, 2];
-                    case 10: return [3, 17];
-                    case 11:
+                    case 10: return [3, 2];
+                    case 11: return [3, 18];
+                    case 12:
                         e_2_1 = _e.sent();
                         e_2 = { error: e_2_1 };
-                        return [3, 17];
-                    case 12:
-                        _e.trys.push([12, , 15, 16]);
-                        if (!(!_d && !_a && (_b = instances_1["return"]))) return [3, 14];
-                        return [4, _b.call(instances_1)];
+                        return [3, 18];
                     case 13:
+                        _e.trys.push([13, , 16, 17]);
+                        if (!(!_d && !_a && (_b = instances_1["return"]))) return [3, 15];
+                        return [4, _b.call(instances_1)];
+                    case 14:
                         _e.sent();
-                        _e.label = 14;
-                    case 14: return [3, 16];
-                    case 15:
+                        _e.label = 15;
+                    case 15: return [3, 17];
+                    case 16:
                         if (e_2) throw e_2.error;
                         return [7];
-                    case 16: return [7];
-                    case 17:
+                    case 17: return [7];
+                    case 18:
                         this.statelessPlugins = arr;
                         return [2];
                 }
             });
         });
     };
-    GluestackEngine.prototype.createDockerCompose = function (backendInstancePath) {
+    GluestackEngine.prototype.createDockerCompose = function () {
         var _a, e_3, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
             var dockerCompose, plugins, _d, plugins_2, plugins_2_1, plugin, e_3_1;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
-                        dockerCompose = new DockerCompose_1["default"](backendInstancePath);
+                        dockerCompose = new DockerCompose_1["default"]();
                         plugins = this.statelessPlugins;
                         _e.label = 1;
                     case 1:
@@ -274,12 +291,13 @@ var GluestackEngine = (function () {
                             plugin = _c;
                             if (plugin.name === '@gluestack/glue-plugin-graphql') {
                                 dockerCompose.addHasura(plugin);
-                                this.hasuraPluginName = plugin.instance;
+                                (0, GluestackConfig_1.setConfig)('hasuraInstancePath', plugin.instance);
                                 return [3, 4];
                             }
                             if (plugin.name === '@gluestack/glue-plugin-engine') {
                                 this.engineExist = true;
                                 dockerCompose.addNginx(plugin);
+                                (0, GluestackConfig_1.setConfig)('engineInstancePath', plugin.instance);
                             }
                             dockerCompose.addOthers(plugin);
                         }
@@ -313,17 +331,18 @@ var GluestackEngine = (function () {
             });
         });
     };
-    GluestackEngine.prototype.startDockerCompose = function (backendInstancePath) {
+    GluestackEngine.prototype.startDockerCompose = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var filepath, folders, lastFolder, projectName, dockerCompose;
+            var backendInstancePath, filepath, folders, lastFolder, projectName, dockerCompose;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        backendInstancePath = (0, GluestackConfig_1.getConfig)('backendInstancePath');
                         filepath = (0, path_1.join)(process.cwd(), backendInstancePath, 'engine/router');
                         folders = process.cwd().split('/');
                         lastFolder = folders[folders.length - 1];
                         projectName = "".concat(lastFolder, "_").concat(backendInstancePath);
-                        dockerCompose = new DockerCompose_1["default"](backendInstancePath);
+                        dockerCompose = new DockerCompose_1["default"]();
                         return [4, dockerCompose.start(projectName, filepath)];
                     case 1:
                         _a.sent();
@@ -335,17 +354,18 @@ var GluestackEngine = (function () {
             });
         });
     };
-    GluestackEngine.prototype.stopDockerCompose = function (backendInstancePath) {
+    GluestackEngine.prototype.stopDockerCompose = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var filepath, folders, lastFolder, projectName, dockerCompose;
+            var backendInstancePath, filepath, folders, lastFolder, projectName, dockerCompose;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        backendInstancePath = (0, GluestackConfig_1.getConfig)('backendInstancePath');
                         filepath = (0, path_1.join)(process.cwd(), backendInstancePath, 'engine/router');
                         folders = process.cwd().split('/');
                         lastFolder = folders[folders.length - 1];
                         projectName = "".concat(lastFolder, "_").concat(backendInstancePath);
-                        dockerCompose = new DockerCompose_1["default"](backendInstancePath);
+                        dockerCompose = new DockerCompose_1["default"]();
                         return [4, dockerCompose.stop(projectName, filepath)];
                     case 1:
                         _a.sent();

@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const { readFileSync } = require('node:fs');
 
 const actions = require('./actions');
 const events = require('./events');
@@ -16,6 +17,16 @@ app.use(bodyParser.json());
 // Gluestack health-check route
 app.get('/health-check', (_req, res) => {
   res.status(200).json({status: true, message: 'Ok'});
+});
+
+// Gluestack Events Config
+app.get('/config/events', (req, res) => {
+  const content = readFileSync('./config.json');
+  try {
+    return res.status(200).json({status: true, data: JSON.parse(content)});
+  } catch (e) {
+    return res.status(200).json({status: false, data: {}});
+  }
 });
 
 // Gluestack action route

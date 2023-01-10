@@ -45,14 +45,15 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 exports.__esModule = true;
 var path_1 = require("path");
 var promises_1 = require("node:fs/promises");
+var GluestackConfig_1 = require("./GluestackConfig");
+var write_file_1 = require("../helpers/write-file");
 var file_exists_1 = require("../helpers/file-exists");
 var GluestackEvent = (function () {
-    function GluestackEvent(backendInstancePath, hasuraPluginName) {
+    function GluestackEvent(hasuraPluginName) {
         this.events = {};
         this.events = {};
-        this.backendInstancePath = backendInstancePath;
         this.hasuraPluginName = hasuraPluginName;
-        this.eventsPath = (0, path_1.join)(this.backendInstancePath, 'events');
+        this.eventsPath = (0, path_1.join)((0, GluestackConfig_1.getConfig)('backendInstancePath'), 'events');
     }
     GluestackEvent.prototype.scanEvents = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -70,6 +71,9 @@ var GluestackEvent = (function () {
                         return [4, this.readEventsDir('app', false)];
                     case 2:
                         _c[_d] = _e.sent();
+                        return [4, this.prepareConfigJSON()];
+                    case 3:
+                        _e.sent();
                         return [2];
                 }
             });
@@ -82,14 +86,14 @@ var GluestackEvent = (function () {
             });
         });
     };
-    GluestackEvent.prototype.readEventsDir = function (dirName, scanDirectory) {
+    GluestackEvent.prototype.readEventsDir = function (dirName, readDirectory) {
         var _a, e_1, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
             var paths, dirPath, exist, dirents, _d, dirents_1, dirents_1_1, dirent, _e, _f, e_1_1;
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
-                        paths = [];
+                        paths = readDirectory ? {} : [];
                         dirPath = (0, path_1.join)(this.eventsPath, dirName);
                         return [4, (0, file_exists_1.fileExists)(dirPath)];
                     case 1:
@@ -117,11 +121,11 @@ var GluestackEvent = (function () {
                     case 6:
                         _g.trys.push([6, , 9, 10]);
                         dirent = _c;
-                        if ((scanDirectory && !dirent.isDirectory())
-                            || (!scanDirectory && dirent.isDirectory())) {
+                        if ((readDirectory && !dirent.isDirectory())
+                            || (!readDirectory && dirent.isDirectory())) {
                             return [3, 10];
                         }
-                        if (!scanDirectory) return [3, 8];
+                        if (!readDirectory) return [3, 8];
                         _e = paths;
                         _f = dirent.name;
                         return [4, this.readEventsDir((0, path_1.join)(dirName, dirent.name), false)];
@@ -129,8 +133,8 @@ var GluestackEvent = (function () {
                         _e[_f] = _g.sent();
                         _g.label = 8;
                     case 8:
-                        if (!scanDirectory) {
-                            paths.push(dirent.name);
+                        if (!readDirectory) {
+                            paths.push(dirent.name.replace('.js', ''));
                         }
                         return [3, 10];
                     case 9:
@@ -155,6 +159,151 @@ var GluestackEvent = (function () {
                         return [7];
                     case 17: return [7];
                     case 18: return [2, paths];
+                }
+            });
+        });
+    };
+    GluestackEvent.prototype.prepareConfigJSON = function () {
+        var _a, e_2, _b, _c, _d, e_3, _e, _f, _g, e_4, _h, _j;
+        return __awaiter(this, void 0, void 0, function () {
+            var events, app, database, content, engineInstance, backendInstance, _k, _l, _m, table, _o, _p, _q, event_1, filepath_1, e_3_1, e_2_1, _r, _s, _t, event_2, filepath_2, e_4_1, filepath;
+            return __generator(this, function (_u) {
+                switch (_u.label) {
+                    case 0:
+                        events = this.events;
+                        app = events.app, database = events.database;
+                        content = {
+                            database: {},
+                            app: {}
+                        };
+                        engineInstance = (0, GluestackConfig_1.getConfig)('engineInstancePath');
+                        backendInstance = (0, GluestackConfig_1.getConfig)('backendInstancePath');
+                        _u.label = 1;
+                    case 1:
+                        _u.trys.push([1, 20, 21, 26]);
+                        _k = true, _l = __asyncValues(Object.keys(database));
+                        _u.label = 2;
+                    case 2: return [4, _l.next()];
+                    case 3:
+                        if (!(_m = _u.sent(), _a = _m.done, !_a)) return [3, 19];
+                        _c = _m.value;
+                        _k = false;
+                        _u.label = 4;
+                    case 4:
+                        _u.trys.push([4, , 17, 18]);
+                        table = _c;
+                        content.database[table] = {};
+                        _u.label = 5;
+                    case 5:
+                        _u.trys.push([5, 10, 11, 16]);
+                        _o = true, _p = (e_3 = void 0, __asyncValues(database[table]));
+                        _u.label = 6;
+                    case 6: return [4, _p.next()];
+                    case 7:
+                        if (!(_q = _u.sent(), _d = _q.done, !_d)) return [3, 9];
+                        _f = _q.value;
+                        _o = false;
+                        try {
+                            event_1 = _f;
+                            filepath_1 = (0, path_1.join)(process.cwd(), backendInstance, 'events', 'database', table, event_1 + '.js');
+                            try {
+                                content.database[table][event_1] = require(filepath_1)();
+                            }
+                            catch (e) {
+                                return [3, 8];
+                            }
+                        }
+                        finally {
+                            _o = true;
+                        }
+                        _u.label = 8;
+                    case 8: return [3, 6];
+                    case 9: return [3, 16];
+                    case 10:
+                        e_3_1 = _u.sent();
+                        e_3 = { error: e_3_1 };
+                        return [3, 16];
+                    case 11:
+                        _u.trys.push([11, , 14, 15]);
+                        if (!(!_o && !_d && (_e = _p["return"]))) return [3, 13];
+                        return [4, _e.call(_p)];
+                    case 12:
+                        _u.sent();
+                        _u.label = 13;
+                    case 13: return [3, 15];
+                    case 14:
+                        if (e_3) throw e_3.error;
+                        return [7];
+                    case 15: return [7];
+                    case 16: return [3, 18];
+                    case 17:
+                        _k = true;
+                        return [7];
+                    case 18: return [3, 2];
+                    case 19: return [3, 26];
+                    case 20:
+                        e_2_1 = _u.sent();
+                        e_2 = { error: e_2_1 };
+                        return [3, 26];
+                    case 21:
+                        _u.trys.push([21, , 24, 25]);
+                        if (!(!_k && !_a && (_b = _l["return"]))) return [3, 23];
+                        return [4, _b.call(_l)];
+                    case 22:
+                        _u.sent();
+                        _u.label = 23;
+                    case 23: return [3, 25];
+                    case 24:
+                        if (e_2) throw e_2.error;
+                        return [7];
+                    case 25: return [7];
+                    case 26:
+                        _u.trys.push([26, 31, 32, 37]);
+                        _r = true, _s = __asyncValues(this.events.app);
+                        _u.label = 27;
+                    case 27: return [4, _s.next()];
+                    case 28:
+                        if (!(_t = _u.sent(), _g = _t.done, !_g)) return [3, 30];
+                        _j = _t.value;
+                        _r = false;
+                        try {
+                            event_2 = _j;
+                            filepath_2 = (0, path_1.join)(process.cwd(), backendInstance, 'events', 'app', event_2 + '.js');
+                            try {
+                                content.app[event_2] = require(filepath_2)();
+                            }
+                            catch (e) {
+                                return [3, 29];
+                            }
+                        }
+                        finally {
+                            _r = true;
+                        }
+                        _u.label = 29;
+                    case 29: return [3, 27];
+                    case 30: return [3, 37];
+                    case 31:
+                        e_4_1 = _u.sent();
+                        e_4 = { error: e_4_1 };
+                        return [3, 37];
+                    case 32:
+                        _u.trys.push([32, , 35, 36]);
+                        if (!(!_r && !_g && (_h = _s["return"]))) return [3, 34];
+                        return [4, _h.call(_s)];
+                    case 33:
+                        _u.sent();
+                        _u.label = 34;
+                    case 34: return [3, 36];
+                    case 35:
+                        if (e_4) throw e_4.error;
+                        return [7];
+                    case 36: return [7];
+                    case 37:
+                        filepath = (0, path_1.join)(process.cwd(), backendInstance, engineInstance, 'config.json');
+                        return [4, (0, write_file_1.writeFile)(filepath, JSON.stringify(content, null, 2))];
+                    case 38:
+                        _u.sent();
+                        return [2];
                 }
             });
         });

@@ -1,7 +1,11 @@
 import { join } from 'path';
 import * as yaml from 'yaml';
 import { writeFileSync } from 'fs';
+
 import { execute } from '../helpers/spawn';
+import { getConfig } from './GluestackConfig';
+import { removeSpecialChars } from '../helpers/remove-special-chars';
+
 import { IStatelessPlugin } from './types/IStatelessPlugin';
 import { IDockerCompose, IService } from './types/IDockerCompose';
 
@@ -12,13 +16,11 @@ import { IDockerCompose, IService } from './types/IDockerCompose';
  * in your backend instance's engine/router folder.
  */
 export default class DockerCompose implements IDockerCompose {
-  public backendInstancePath: string;
   public version: string = '3.9';
   public services: { [key: string]: IService };
 
-  constructor(backendInstancePath: string) {
+  constructor() {
     this.services = {};
-    this.backendInstancePath = backendInstancePath;
   }
 
   // Converts the docker-compose json data to YAML
@@ -31,7 +33,7 @@ export default class DockerCompose implements IDockerCompose {
 
   // Adds a service to the docker-compose file
   public addService(name: string, service: IService) {
-    this.services[name] = service;
+    this.services[removeSpecialChars(name)] = service;
   }
 
   // Generates the docker-compose file
@@ -39,7 +41,7 @@ export default class DockerCompose implements IDockerCompose {
     writeFileSync(
       join(
         process.cwd(),
-        this.backendInstancePath,
+        getConfig('backendInstancePath'),
         'engine/router',
         'docker-compose.yml'
       ),
@@ -89,7 +91,7 @@ export default class DockerCompose implements IDockerCompose {
     const name: string = plugin.instance;
 
     const service: IService = {
-      container_name: plugin.instance,
+      container_name: removeSpecialChars(plugin.instance),
       restart: 'always',
       build: plugin.path,
       volumes: [
@@ -110,6 +112,7 @@ export default class DockerCompose implements IDockerCompose {
       '-p',
       projectName,
       'up',
+      '--remove-orphans',
       '-d'
     ], {
       cwd: filepath,

@@ -96,15 +96,15 @@ export class PluginInstanceContainerController implements IContainerController {
   async up() {
     const app: IApp = this.app;
 
-    const engine: IGlueEngine = new GluestackEngine(app);
-    await engine.start('backend');
+    const engine: IGlueEngine = new GluestackEngine(app, 'backend');
+    await engine.start();
   }
 
   async down() {
     const app: IApp = this.app;
 
-    const engine: IGlueEngine = new GluestackEngine(app);
-    await engine.stop('backend');
+    const engine: IGlueEngine = new GluestackEngine(app, 'backend');
+    await engine.stop();
   }
 
   async build() {

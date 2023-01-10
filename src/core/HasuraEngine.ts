@@ -7,6 +7,7 @@ import { removeSpecialChars } from "../helpers/remove-special-chars";
 import { IStatelessPlugin } from "./types/IStatelessPlugin";
 import { IAction, IHasuraEngine } from "./types/IHasuraEngine";
 
+import { getConfig } from "./GluestackConfig";
 import HasuraMetadata from "./HasuraMetadata";
 import GluestackEvent from "./GluestackEvent";
 
@@ -18,7 +19,6 @@ import GluestackEvent from "./GluestackEvent";
  */
 export default class HasuraEngine implements IHasuraEngine {
   public pluginName: string;
-  public backendInstancePath: string;
   public actionPlugins: IStatelessPlugin[];
 
   private metadata: any;
@@ -28,24 +28,54 @@ export default class HasuraEngine implements IHasuraEngine {
   private actionSettingFile: string = 'action.setting';
 
   constructor(
-    backendInstancePath: string, pluginName: string, actionPlugins: IStatelessPlugin[]
+    actionPlugins: IStatelessPlugin[]
   ) {
     this.actions = [];
-    this.pluginName = pluginName;
+    this.pluginName = getConfig('hasuraInstancePath');
     this.actionPlugins = actionPlugins;
-    this.backendInstancePath = backendInstancePath;
 
-    this.metadata = new HasuraMetadata(this.backendInstancePath, this.pluginName);
-    this.events = new GluestackEvent(this.backendInstancePath, this.pluginName);
+    this.metadata = new HasuraMetadata(this.pluginName);
+    this.events = new GluestackEvent(this.pluginName);
   }
 
   // Sync hasura engine's metadata with the local hasura metadata
+  public async exportMetadata(): Promise<void> {
+    const filepath = join(process.cwd(), getConfig('backendInstancePath'), 'functions', this.pluginName);
+
+    await execute('hasura', [
+      'metadata',
+      'export',
+      '--skip-update-check'
+    ], {
+      cwd: filepath,
+      stdio: 'inherit'
+    });
+  }
+
+  // Apply local metadata to the hasura engine's metadata
   public async applyMetadata(): Promise<void> {
-    const filepath = join(process.cwd(), this.backendInstancePath, 'functions', this.pluginName);
+    const filepath = join(process.cwd(), getConfig('backendInstancePath'), 'functions', this.pluginName);
 
     await execute('hasura', [
       'metadata',
       'apply',
+      '--skip-update-check'
+    ], {
+      cwd: filepath,
+      stdio: 'inherit'
+    });
+  }
+
+  // Apply local migrations to the hasura engine's migrations
+  public async applyMigrate(): Promise<void> {
+    const hasuraEnvs = this.metadata.hasuraEnvs;
+    const filepath = join(process.cwd(), getConfig('backendInstancePath'), 'functions', this.pluginName);
+
+    await execute('hasura', [
+      'migrate',
+      'apply',
+      '--database-name',
+      hasuraEnvs.HASURA_GRAPHQL_DB_NAME,
       '--skip-update-check'
     ], {
       cwd: filepath,

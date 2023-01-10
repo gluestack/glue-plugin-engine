@@ -1,5 +1,8 @@
 import { join } from 'path';
 import { readdir } from 'node:fs/promises';
+
+import { getConfig } from './GluestackConfig';
+import { writeFile } from '../helpers/write-file';
 import { fileExists } from '../helpers/file-exists';
 import { IGluestackEvent } from './types/IGluestackEvent';
 
@@ -7,19 +10,19 @@ export default class GluestackEvent implements IGluestackEvent {
   public events: any = {};
   public eventsPath: string;
   public hasuraPluginName: string;
-  public backendInstancePath: string;
 
-  constructor(backendInstancePath: string, hasuraPluginName: string) {
+  constructor(hasuraPluginName: string) {
     this.events = {};
-    this.backendInstancePath = backendInstancePath;
     this.hasuraPluginName = hasuraPluginName;
-    this.eventsPath = join(this.backendInstancePath, 'events');
+    this.eventsPath = join(getConfig('backendInstancePath'), 'events');
   }
 
   // Scans the events directory and prepares the events object
   public async scanEvents(): Promise<void> {
     this.events['database'] = await this.readEventsDir('database', true);
     this.events['app'] = await this.readEventsDir('app', false);
+
+    await this.prepareConfigJSON();
   }
 
   // Applies all the events to the hasura engine
@@ -29,9 +32,9 @@ export default class GluestackEvent implements IGluestackEvent {
 
   // Reads the events directory and returns the events
   private async readEventsDir(
-    dirName: string, scanDirectory: boolean
+    dirName: string, readDirectory: boolean
   ): Promise<string[]> {
-    const paths: any = [];
+    const paths: any = readDirectory ? {} : [];
     const dirPath = join(this.eventsPath, dirName);
 
     const exist = await fileExists(dirPath);
@@ -45,28 +48,67 @@ export default class GluestackEvent implements IGluestackEvent {
     });
 
     for await (const dirent of dirents) {
-      // Skip if the dirent is a directory and scanDirectory is false
-      // Skip if the dirent is a file and scanDirectory is false
+      // Skip if the dirent is a directory and readDirectory is false
+      // Skip if the dirent is a file and readDirectory is false
       if (
-        (scanDirectory && !dirent.isDirectory())
-        || (!scanDirectory && dirent.isDirectory())
+        (readDirectory && !dirent.isDirectory())
+        || (!readDirectory && dirent.isDirectory())
       ) {
         continue;
       }
 
-      // Skip if the dirent is a file and scanDirectory is true
-      if (scanDirectory) {
+      // Skip if the dirent is a file and readDirectory is true
+      if (readDirectory) {
         paths[dirent.name] = await this.readEventsDir(
           join(dirName, dirent.name), false
         );
       }
 
-      // Skip if the dirent is a directory and scanDirectory is true
-      if (!scanDirectory) {
-        paths.push(dirent.name);
+      // Skip if the dirent is a directory and readDirectory is true
+      if (!readDirectory) {
+        paths.push(dirent.name.replace('.js', ''));
       }
     }
 
     return paths;
+  }
+
+  // Writes the events object to the engine instance's config.json file
+  private async prepareConfigJSON(): Promise<void> {
+    const events: any = this.events;
+    const { app, database } = events;
+
+    const content: any = {
+      database: {},
+      app: {}
+    };
+
+    const engineInstance: string = getConfig('engineInstancePath');
+    const backendInstance: string = getConfig('backendInstancePath');
+
+    for await (const table of Object.keys(database)) {
+      content.database[table] = {};
+      for await (const event of database[table]) {
+
+        const filepath: string = join(process.cwd(), backendInstance, 'events', 'database', table, event + '.js');
+        try {
+          content.database[table][event] = require(filepath)();
+        } catch (e) {
+          continue;
+        }
+      }
+    }
+
+    for await (const event of this.events.app) {
+      const filepath: string = join(process.cwd(), backendInstance, 'events', 'app', event + '.js');
+      try {
+        content.app[event] = require(filepath)();
+      } catch (e) {
+        continue;
+      }
+    }
+
+    const filepath: string = join(process.cwd(), backendInstance, engineInstance, 'config.json');
+    await writeFile(filepath, JSON.stringify(content, null, 2));
   }
 }

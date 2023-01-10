@@ -7,6 +7,7 @@ import { IStatelessPlugin } from "./types/IStatelessPlugin";
 import NginxConf from "./NginxConf";
 import HasuraEngine from "./HasuraEngine";
 import DockerCompose from "./DockerCompose";
+import { getConfig, setConfig } from "./GluestackConfig";
 
 import { join } from "path";
 import { writeFile } from "../helpers/write-file";
@@ -25,68 +26,80 @@ import { IHasuraEngine } from "./types/IHasuraEngine";
 export default class GluestackEngine implements IGlueEngine {
   private backendPlugins: string[];
   private engineExist: boolean = false;
-  private hasuraPluginName: string = 'graphql';
 
   app: IApp;
   actionPlugins: IStatelessPlugin[];
   statelessPlugins: IStatelessPlugin[];
 
-  constructor(app: IApp) {
+  constructor(app: IApp, backendInstancePath: string) {
     this.app = app;
     this.actionPlugins = [];
     this.backendPlugins = backendPlugins();
+
+    setConfig('backendInstancePath', backendInstancePath);
   }
 
   // Starts the engine for the backend instance
-  async start(backendInstancePath: string): Promise<void> {
+  async start(): Promise<void> {
+    const backendInstancePath: string = getConfig('backendInstancePath');
+
     /**
      * 1. Get all the stateless instances
      * 2. Collect dockerfile from all available
      * stateles instances assets directory
      */
-    await this.collectDockerfiles();
+    await this.collectPlugins();
 
     // 3. generate docker-compose file
-    await this.createDockerCompose(backendInstancePath);
+    await this.createDockerCompose();
 
     // 4. generate nginx config
-    await this.createNginxConfig(backendInstancePath);
+    await this.createNginxConfig();
 
     // 5. start the docker-compose
     if (this.engineExist) {
-      await this.startDockerCompose(backendInstancePath);
+      await this.startDockerCompose();
     } else {
       console.log('> Engine does not exist. Skipping docker-compose start.');
     }
 
-    if (this.hasuraPluginName && this.hasuraPluginName !== '') {
-      const hasuraEngine: IHasuraEngine = new HasuraEngine(backendInstancePath, this.hasuraPluginName, this.actionPlugins);
+    const hasuraPluginName = getConfig('hasuraInstancePath');
+    if (hasuraPluginName && hasuraPluginName !== '') {
+      const hasuraEngine: IHasuraEngine = new HasuraEngine(this.actionPlugins);
       // 6. run hasura metadata apply
+      await hasuraEngine.applyMigrate();
+
+      // 7. run hasura metadata apply
       await hasuraEngine.applyMetadata();
 
-      // 7. clears & registers all actions
+      // 8. run hasura metadata export
+      await hasuraEngine.exportMetadata();
+
+      // 8. clears & registers all actions
       await hasuraEngine.reapplyActions();
 
-      // 8. clears & registers all events
+      // 9. clears & registers all events
       await hasuraEngine.reapplyEvents();
 
-      console.log('> Note: ');
+      console.log('\n> Note: ');
       console.log(`>  1. In case a table does not exist in Hasura Engine, Gluestack Engine will skip the event trigger registration.`);
-      console.log(`>  2. Gluestack Engine drops all existing event triggers, actions & custom-types and re-register them again.`);
+      console.log(`>  2. Gluestack Engine drops all existing event triggers, actions & custom-types and re-registers them again.`);
       console.log(`      (This is to prevent any issues with the event trigger, custom types & actions.`);
       console.log(`>  3. Gluestack Engine will not drop any existing event triggers, actions & custom-types that are not registered by Gluestack Engine.\n `);
     }
   }
 
   // Stops the engine for the backend instance
-  async stop(backendInstancePath: string): Promise<void> {
-    this.stopDockerCompose(backendInstancePath);
+  async stop(): Promise<void> {
+    this.stopDockerCompose();
   }
 
   // Creates the nginx config from all available plugins' router.js file
-  async createNginxConfig(backendInstancePath: string): Promise<void> {
+  async createNginxConfig(): Promise<void> {
+    const backendInstancePath: string = getConfig('backendInstancePath');
+
     const plugins = this.statelessPlugins;
-    const nginxConf = new NginxConf(backendInstancePath);
+    const nginxConf = new NginxConf();
 
     nginxConf.addRouter(join(process.cwd(), backendInstancePath, 'router.js'));
 
@@ -100,7 +113,7 @@ export default class GluestackEngine implements IGlueEngine {
   }
 
   // Collects all the stateless plugins and their dockerfiles
-  async collectDockerfiles (): Promise<void> {
+  async collectPlugins (): Promise<void> {
     const app: IApp = this.app;
     const arr: IStatelessPlugin[] = [];
 
@@ -136,6 +149,12 @@ export default class GluestackEngine implements IGlueEngine {
         if (details.name !== '@gluestack/glue-plugin-graphql') {
           // Collect the dockerfile & store the context into the instance store
           await this.collectDockerContext(details, instance);
+        } else {
+          setConfig('hasuraInstancePath', details.instance);
+        }
+
+        if (details.name !== '@gluestack/glue-plugin-engine') {
+          setConfig('engineInstancePath', details.instance);
         }
 
         if (details.name === '@gluestack/glue-plugin-functions.action') {
@@ -150,8 +169,8 @@ export default class GluestackEngine implements IGlueEngine {
   }
 
   // Creates the docker-compose file
-  async createDockerCompose(backendInstancePath: string): Promise<void> {
-    const dockerCompose = new DockerCompose(backendInstancePath);
+  async createDockerCompose(): Promise<void> {
+    const dockerCompose = new DockerCompose();
     const plugins = this.statelessPlugins;
 
     // Gather all the availables plugin instances
@@ -159,7 +178,8 @@ export default class GluestackEngine implements IGlueEngine {
       // If and only if the instance is graphql plugin
       if (plugin.name === '@gluestack/glue-plugin-graphql') {
         dockerCompose.addHasura(plugin);
-        this.hasuraPluginName = plugin.instance;
+        setConfig('hasuraInstancePath', plugin.instance);
+
         continue;
       }
 
@@ -167,6 +187,8 @@ export default class GluestackEngine implements IGlueEngine {
       if (plugin.name === '@gluestack/glue-plugin-engine') {
         this.engineExist = true;
         dockerCompose.addNginx(plugin);
+
+        setConfig('engineInstancePath', plugin.instance);
       }
 
       // Add the rest of the plugins
@@ -177,7 +199,9 @@ export default class GluestackEngine implements IGlueEngine {
   }
 
   // Starts the docker-compose
-  async startDockerCompose(backendInstancePath: string): Promise<void> {
+  async startDockerCompose(): Promise<void> {
+    const backendInstancePath: string = getConfig('backendInstancePath');
+
     // constructing the path to engine's router
     const filepath = join(
       process.cwd(),
@@ -191,7 +215,7 @@ export default class GluestackEngine implements IGlueEngine {
     const projectName = `${lastFolder}_${backendInstancePath}`;
 
     // starting docker compose
-    const dockerCompose = new DockerCompose(backendInstancePath);
+    const dockerCompose = new DockerCompose();
     await dockerCompose.start(projectName, filepath);
 
     // wait for 2 seconds for hasura to get ready
@@ -199,7 +223,9 @@ export default class GluestackEngine implements IGlueEngine {
   }
 
   // Stops the docker-compose
-  async stopDockerCompose(backendInstancePath: string): Promise<void> {
+  async stopDockerCompose(): Promise<void> {
+    const backendInstancePath: string = getConfig('backendInstancePath');
+
     // constructing the path to engine's router
     const filepath = join(
       process.cwd(),
@@ -213,7 +239,7 @@ export default class GluestackEngine implements IGlueEngine {
     const projectName = `${lastFolder}_${backendInstancePath}`;
 
     // starting docker compose
-    const dockerCompose = new DockerCompose(backendInstancePath);
+    const dockerCompose = new DockerCompose();
     await dockerCompose.stop(projectName, filepath);
   }
 

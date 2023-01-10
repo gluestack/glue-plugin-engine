@@ -124,8 +124,8 @@ var PluginInstanceContainerController = (function () {
                 switch (_a.label) {
                     case 0:
                         app = this.app;
-                        engine = new GluestackEngine_1["default"](app);
-                        return [4, engine.start('backend')];
+                        engine = new GluestackEngine_1["default"](app, 'backend');
+                        return [4, engine.start()];
                     case 1:
                         _a.sent();
                         return [2];
@@ -140,8 +140,8 @@ var PluginInstanceContainerController = (function () {
                 switch (_a.label) {
                     case 0:
                         app = this.app;
-                        engine = new GluestackEngine_1["default"](app);
-                        return [4, engine.stop('backend')];
+                        engine = new GluestackEngine_1["default"](app, 'backend');
+                        return [4, engine.stop()];
                     case 1:
                         _a.sent();
                         return [2];

@@ -12,15 +12,15 @@ const generateEvents = async (events: string[]) => {
 
 
   for await (const event of events) {
-    if (event === 'insert.js') {
+    if (event === 'insert') {
       body.insert = addOrUpdateEvent;
     }
 
-    if (event === 'update.js') {
+    if (event === 'update') {
       body.update = addOrUpdateEvent;
     }
 
-    if (event === 'delete.js') {
+    if (event === 'delete') {
       body.delete = removeEvent;
     }
   }

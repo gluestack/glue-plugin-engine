@@ -81,13 +81,13 @@ var generateEvents = function (events) { var _a, events_1, events_1_1; return __
                 _a = false;
                 try {
                     event_1 = _d;
-                    if (event_1 === 'insert.js') {
+                    if (event_1 === 'insert') {
                         body.insert = addOrUpdateEvent;
                     }
-                    if (event_1 === 'update.js') {
+                    if (event_1 === 'update') {
                         body.update = addOrUpdateEvent;
                     }
-                    if (event_1 === 'delete.js') {
+                    if (event_1 === 'delete') {
                         body["delete"] = removeEvent;
                     }
                 }

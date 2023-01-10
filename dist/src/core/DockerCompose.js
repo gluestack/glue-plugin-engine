@@ -63,11 +63,12 @@ var path_1 = require("path");
 var yaml = __importStar(require("yaml"));
 var fs_1 = require("fs");
 var spawn_1 = require("../helpers/spawn");
+var GluestackConfig_1 = require("./GluestackConfig");
+var remove_special_chars_1 = require("../helpers/remove-special-chars");
 var DockerCompose = (function () {
-    function DockerCompose(backendInstancePath) {
+    function DockerCompose() {
         this.version = '3.9';
         this.services = {};
-        this.backendInstancePath = backendInstancePath;
     }
     DockerCompose.prototype.toYAML = function () {
         return yaml.stringify({
@@ -76,12 +77,12 @@ var DockerCompose = (function () {
         });
     };
     DockerCompose.prototype.addService = function (name, service) {
-        this.services[name] = service;
+        this.services[(0, remove_special_chars_1.removeSpecialChars)(name)] = service;
     };
     DockerCompose.prototype.generate = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                (0, fs_1.writeFileSync)((0, path_1.join)(process.cwd(), this.backendInstancePath, 'engine/router', 'docker-compose.yml'), this.toYAML());
+                (0, fs_1.writeFileSync)((0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)('backendInstancePath'), 'engine/router', 'docker-compose.yml'), this.toYAML());
                 return [2];
             });
         });
@@ -135,7 +136,7 @@ var DockerCompose = (function () {
             return __generator(this, function (_a) {
                 name = plugin.instance;
                 service = {
-                    container_name: plugin.instance,
+                    container_name: (0, remove_special_chars_1.removeSpecialChars)(plugin.instance),
                     restart: 'always',
                     build: plugin.path,
                     volumes: [
@@ -159,6 +160,7 @@ var DockerCompose = (function () {
                             '-p',
                             projectName,
                             'up',
+                            '--remove-orphans',
                             '-d'
                         ], {
                             cwd: filepath,

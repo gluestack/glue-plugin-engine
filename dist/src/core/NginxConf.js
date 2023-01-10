@@ -40,10 +40,10 @@ var path_1 = require("path");
 var fs_1 = require("fs");
 var file_exists_1 = require("../helpers/file-exists");
 var nginx_literals_1 = require("../helpers/nginx-literals");
+var GluestackConfig_1 = require("./GluestackConfig");
 var NginxConf = (function () {
-    function NginxConf(backendInstancePath) {
+    function NginxConf() {
         this.data = [];
-        this.backendInstancePath = backendInstancePath;
     }
     NginxConf.prototype.generate = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -55,7 +55,7 @@ var NginxConf = (function () {
                         return [4, this.toConf()];
                     case 1:
                         conf = _a.sent();
-                        (0, fs_1.writeFileSync)((0, path_1.join)(process.cwd(), this.backendInstancePath, 'engine/router', 'nginx.conf'), conf);
+                        (0, fs_1.writeFileSync)((0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)('backendInstancePath'), 'engine/router', 'nginx.conf'), conf);
                         return [3, 3];
                     case 2:
                         err_1 = _a.sent();
