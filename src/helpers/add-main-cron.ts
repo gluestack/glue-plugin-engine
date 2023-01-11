@@ -29,5 +29,5 @@ export async function addMainCron(engineInstance: PluginInstance): Promise<void>
     value: "function name or webhook url"
   }];
 
-  await checkCreate(installationPath, fileName, JSON.stringify(fileContent));
+  await checkCreate(installationPath, fileName, JSON.stringify(fileContent, null, 2));
 };

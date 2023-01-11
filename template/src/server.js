@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const cronTab = require('./cron');
 const config = require('./handlers/config');
 const events = require('./handlers/events');
 const actions = require('./handlers/actions');
@@ -41,3 +42,6 @@ app.post('/app/events', appEvents);
 app.listen(port, () => {
   console.log(`Engine app listening on port ${port}`)
 });
+
+// Gluestack CRON
+cronTab.init();

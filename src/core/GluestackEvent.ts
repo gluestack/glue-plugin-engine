@@ -1,10 +1,9 @@
 import { join } from 'path';
 import { readdir } from 'node:fs/promises';
 
-import { getConfig } from './GluestackConfig';
-import { writeFile } from '../helpers/write-file';
 import { fileExists } from '../helpers/file-exists';
 import { IGluestackEvent } from './types/IGluestackEvent';
+import { getConfig, prepareConfigJSON } from './GluestackConfig';
 
 export default class GluestackEvent implements IGluestackEvent {
   public events: any = {};
@@ -83,7 +82,6 @@ export default class GluestackEvent implements IGluestackEvent {
       app: {}
     };
 
-    const engineInstance: string = getConfig('engineInstancePath');
     const backendInstance: string = getConfig('backendInstancePath');
 
     for await (const table of Object.keys(database)) {
@@ -108,7 +106,6 @@ export default class GluestackEvent implements IGluestackEvent {
       }
     }
 
-    const filepath: string = join(process.cwd(), backendInstance, engineInstance, 'config.json');
-    await writeFile(filepath, JSON.stringify(content, null, 2));
+    await prepareConfigJSON(content);
   }
 }

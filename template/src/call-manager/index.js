@@ -1,7 +1,7 @@
-const syncCallsWebhook = require('./sync-webhook');
-const syncCallsFunction = require('./sync-function');
-const asyncCallsWebhook = require('./async-webhook');
-const asyncCallsFunction = require('./async-function');
+const syncCallsWebhooks = require('./sync-webhooks');
+const syncCallsFunctions = require('./sync-functions');
+const asyncCallsWebhooks = require('./async-webhooks');
+const asyncCallsFunctions = require('./async-functions');
 
 module.exports = async (callbacks, payload) => {
   const syncCalls = {
@@ -35,18 +35,18 @@ module.exports = async (callbacks, payload) => {
   }
 
   if (syncCalls.webhook.length) {
-    await syncCallsWebhook(syncCalls.webhook, payload);
+    await syncCallsWebhooks(syncCalls.webhook, payload);
   }
 
   if (syncCalls.function.length) {
-    await syncCallsFunction(syncCalls.function, payload);
+    await syncCallsFunctions(syncCalls.function, payload);
   }
 
   if (asyncCalls.webhook.length) {
-    await asyncCallsWebhook(asyncCalls.webhook, payload);
+    await asyncCallsWebhooks(asyncCalls.webhook, payload);
   }
 
   if (asyncCalls.function.length) {
-    await asyncCallsFunction(asyncCalls.function, payload);
+    await asyncCallsFunctions(asyncCalls.function, payload);
   }
 };

@@ -45,9 +45,8 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 exports.__esModule = true;
 var path_1 = require("path");
 var promises_1 = require("node:fs/promises");
-var GluestackConfig_1 = require("./GluestackConfig");
-var write_file_1 = require("../helpers/write-file");
 var file_exists_1 = require("../helpers/file-exists");
+var GluestackConfig_1 = require("./GluestackConfig");
 var GluestackEvent = (function () {
     function GluestackEvent(hasuraPluginName) {
         this.events = {};
@@ -166,7 +165,7 @@ var GluestackEvent = (function () {
     GluestackEvent.prototype.prepareConfigJSON = function () {
         var _a, e_2, _b, _c, _d, e_3, _e, _f, _g, e_4, _h, _j;
         return __awaiter(this, void 0, void 0, function () {
-            var events, app, database, content, engineInstance, backendInstance, _k, _l, _m, table, _o, _p, _q, event_1, filepath_1, e_3_1, e_2_1, _r, _s, _t, event_2, filepath_2, e_4_1, filepath;
+            var events, app, database, content, backendInstance, _k, _l, _m, table, _o, _p, _q, event_1, filepath, e_3_1, e_2_1, _r, _s, _t, event_2, filepath, e_4_1;
             return __generator(this, function (_u) {
                 switch (_u.label) {
                     case 0:
@@ -176,7 +175,6 @@ var GluestackEvent = (function () {
                             database: {},
                             app: {}
                         };
-                        engineInstance = (0, GluestackConfig_1.getConfig)('engineInstancePath');
                         backendInstance = (0, GluestackConfig_1.getConfig)('backendInstancePath');
                         _u.label = 1;
                     case 1:
@@ -205,9 +203,9 @@ var GluestackEvent = (function () {
                         _o = false;
                         try {
                             event_1 = _f;
-                            filepath_1 = (0, path_1.join)(process.cwd(), backendInstance, 'events', 'database', table, event_1 + '.js');
+                            filepath = (0, path_1.join)(process.cwd(), backendInstance, 'events', 'database', table, event_1 + '.js');
                             try {
-                                content.database[table][event_1] = require(filepath_1)();
+                                content.database[table][event_1] = require(filepath)();
                             }
                             catch (e) {
                                 return [3, 8];
@@ -268,9 +266,9 @@ var GluestackEvent = (function () {
                         _r = false;
                         try {
                             event_2 = _j;
-                            filepath_2 = (0, path_1.join)(process.cwd(), backendInstance, 'events', 'app', event_2 + '.js');
+                            filepath = (0, path_1.join)(process.cwd(), backendInstance, 'events', 'app', event_2 + '.js');
                             try {
-                                content.app[event_2] = require(filepath_2)();
+                                content.app[event_2] = require(filepath)();
                             }
                             catch (e) {
                                 return [3, 29];
@@ -298,9 +296,7 @@ var GluestackEvent = (function () {
                         if (e_4) throw e_4.error;
                         return [7];
                     case 36: return [7];
-                    case 37:
-                        filepath = (0, path_1.join)(process.cwd(), backendInstance, engineInstance, 'config.json');
-                        return [4, (0, write_file_1.writeFile)(filepath, JSON.stringify(content, null, 2))];
+                    case 37: return [4, (0, GluestackConfig_1.prepareConfigJSON)(content)];
                     case 38:
                         _u.sent();
                         return [2];

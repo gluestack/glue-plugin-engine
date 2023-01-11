@@ -85,7 +85,7 @@ function addMainCron(engineInstance) {
                             type: "function or webhook",
                             value: "function name or webhook url"
                         }];
-                    return [4, checkCreate(installationPath, fileName, JSON.stringify(fileContent))];
+                    return [4, checkCreate(installationPath, fileName, JSON.stringify(fileContent, null, 2))];
                 case 1:
                     _a.sent();
                     return [2];

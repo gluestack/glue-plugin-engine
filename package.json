@@ -1,6 +1,6 @@
 {
   "name": "@gluestack/glue-plugin-engine",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Create an Application using GlueStack framework",
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
     "plugin-build": "tsc"
   },
   "devDependencies": {
+    "@types/node-cron": "^3.0.7",
     "typescript": "^4.9.4"
   }
 }

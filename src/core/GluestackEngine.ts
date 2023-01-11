@@ -6,6 +6,7 @@ import { IStatelessPlugin } from "./types/IStatelessPlugin";
 
 import NginxConf from "./NginxConf";
 import HasuraEngine from "./HasuraEngine";
+import GluestackCron from "./GluestackCron";
 import DockerCompose from "./DockerCompose";
 import { getConfig, setConfig } from "./GluestackConfig";
 
@@ -16,6 +17,7 @@ import { waitInSeconds } from "../helpers/wait-in-seconds";
 import { replaceKeyword } from "../helpers/replace-keyword";
 import { removeSpecialChars } from "../helpers/remove-special-chars";
 import { IHasuraEngine } from "./types/IHasuraEngine";
+import { IGluestackCron } from "./types/IGluestackCron";
 
 /**
  * Gluestack Engine
@@ -90,6 +92,10 @@ export default class GluestackEngine implements IGlueEngine {
       console.log(`      (This is to prevent any issues with the event trigger, custom types & actions.`);
       console.log(`>  3. Gluestack Engine will not drop any existing event triggers, actions & custom-types that are not registered by Gluestack Engine.\n `);
     }
+
+    // 10. collects, validates & register crons into gluestack cron
+    const cron: IGluestackCron = new GluestackCron();
+    await cron.start();
   }
 
   // Stops the engine for the backend instance

@@ -48,6 +48,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 exports.__esModule = true;
 var NginxConf_1 = __importDefault(require("./NginxConf"));
 var HasuraEngine_1 = __importDefault(require("./HasuraEngine"));
+var GluestackCron_1 = __importDefault(require("./GluestackCron"));
 var DockerCompose_1 = __importDefault(require("./DockerCompose"));
 var GluestackConfig_1 = require("./GluestackConfig");
 var path_1 = require("path");
@@ -66,7 +67,7 @@ var GluestackEngine = (function () {
     }
     GluestackEngine.prototype.start = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var backendInstancePath, hasuraPluginName, hasuraEngine;
+            var backendInstancePath, hasuraPluginName, hasuraEngine, cron;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -113,7 +114,12 @@ var GluestackEngine = (function () {
                         console.log("      (This is to prevent any issues with the event trigger, custom types & actions.");
                         console.log(">  3. Gluestack Engine will not drop any existing event triggers, actions & custom-types that are not registered by Gluestack Engine.\n ");
                         _a.label = 12;
-                    case 12: return [2];
+                    case 12:
+                        cron = new GluestackCron_1["default"]();
+                        return [4, cron.start()];
+                    case 13:
+                        _a.sent();
+                        return [2];
                 }
             });
         });
