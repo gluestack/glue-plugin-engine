@@ -56,7 +56,7 @@ var checkCreate = function (installationPath, fileName, fileContent) { return __
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                path = (0, path_1.join)(installationPath, '..', 'events', fileName);
+                path = (0, path_1.join)(installationPath, '..', 'crons');
                 return [4, (0, file_exists_1.fileExists)(path)];
             case 1:
                 appExist = _a.sent();
@@ -65,7 +65,7 @@ var checkCreate = function (installationPath, fileName, fileContent) { return __
             case 2:
                 _a.sent();
                 _a.label = 3;
-            case 3: return [4, (0, write_file_1.writeFile)(path, fileContent)];
+            case 3: return [4, (0, write_file_1.writeFile)((0, path_1.join)(path + 'crons.json'), fileContent)];
             case 4:
                 _a.sent();
                 return [2];

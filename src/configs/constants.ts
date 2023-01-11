@@ -12,8 +12,10 @@
  * @returns {string[]} - Returns an array of all the plugins that are used in the project
  */
 export const backendPlugins = (): string[] => [
+  '@gluestack/glue-plugin-auth',
   '@gluestack/glue-plugin-engine',
   '@gluestack/glue-plugin-graphql',
+  '@gluestack/glue-plugin-storage',
   '@gluestack/glue-plugin-functions',
   '@gluestack/glue-plugin-functions.action'
 ];
