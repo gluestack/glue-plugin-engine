@@ -1,3 +1,11 @@
+/**
+ * This function is the entry point for the gluestack actions.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ *
+ * @returns {Promise<void>}
+ */
 const { DaprClient, HttpMethod } = require('@dapr/dapr');
 
 module.exports = async (req, res) => {
