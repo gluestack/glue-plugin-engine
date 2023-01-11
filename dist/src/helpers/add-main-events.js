@@ -50,23 +50,38 @@ var construct = function (path) { return __awaiter(void 0, void 0, void 0, funct
         }
     });
 }); };
+var checkCreate = function (installationPath, folderName) { return __awaiter(void 0, void 0, void 0, function () {
+    var path, appExist;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                path = (0, path_1.join)(installationPath, '..', 'events', folderName);
+                return [4, (0, file_exists_1.fileExists)(path)];
+            case 1:
+                appExist = _a.sent();
+                if (!!appExist) return [3, 3];
+                return [4, construct(path)];
+            case 2:
+                _a.sent();
+                _a.label = 3;
+            case 3: return [2];
+        }
+    });
+}); };
 function addMainEvents(engineInstance) {
     return __awaiter(this, void 0, void 0, function () {
-        var installationPath, path, exist;
+        var installationPath;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     installationPath = engineInstance.getInstallationPath();
-                    path = (0, path_1.join)(installationPath, '..', 'events/database');
-                    return [4, (0, file_exists_1.fileExists)(path)];
+                    return [4, checkCreate(installationPath, 'database')];
                 case 1:
-                    exist = _a.sent();
-                    if (!!exist) return [3, 3];
-                    return [4, construct(path)];
+                    _a.sent();
+                    return [4, checkCreate(installationPath, 'app')];
                 case 2:
                     _a.sent();
-                    _a.label = 3;
-                case 3: return [2, Promise.resolve('done')];
+                    return [2];
             }
         });
     });

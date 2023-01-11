@@ -7,15 +7,18 @@ const construct = async (path: string): Promise<void> => {
   await createFolder(path);
 };
 
-export async function addMainEvents(engineInstance: PluginInstance): Promise<string> {
-  const installationPath = engineInstance.getInstallationPath();
+const checkCreate = async (installationPath: string, folderName: string): Promise<void> => {
+  const path: string = join(installationPath, '..', 'events', folderName);
 
-  const path = join(installationPath, '..', 'events/database');
-
-  const exist = await fileExists(path);
-  if (!exist) {
+  const appExist: boolean = await fileExists(path);
+  if (!appExist) {
     await construct(path);
   }
+}
 
-  return Promise.resolve('done');
+export async function addMainEvents(engineInstance: PluginInstance): Promise<void> {
+  const installationPath = engineInstance.getInstallationPath();
+
+  await checkCreate(installationPath, 'database');
+  await checkCreate(installationPath, 'app');
 };

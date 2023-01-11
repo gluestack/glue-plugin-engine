@@ -10,6 +10,7 @@ import IGlueStorePlugin from "@gluestack/framework/types/store/interface/IGluePl
 import { writeEnv } from "./helpers/write-env";
 import { addMainRouter } from "./helpers/add-main-router";
 import { addMainEvents } from "./helpers/add-main-events";
+import { addMainCron } from "./helpers/add-main-cron";
 
 // Do not edit the name of this class
 export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
@@ -70,6 +71,9 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
 
       // Adds events directories
       await addMainEvents(engineInstance);
+
+      // Adds crons directory
+      await addMainCron(engineInstance);
     }
   }
 
