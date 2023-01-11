@@ -65,7 +65,7 @@ var checkCreate = function (installationPath, fileName, fileContent) { return __
             case 2:
                 _a.sent();
                 _a.label = 3;
-            case 3: return [4, (0, write_file_1.writeFile)((0, path_1.join)(path + 'crons.json'), fileContent)];
+            case 3: return [4, (0, write_file_1.writeFile)((0, path_1.join)(path, 'crons.json'), fileContent)];
             case 4:
                 _a.sent();
                 return [2];
@@ -80,7 +80,11 @@ function addMainCron(engineInstance) {
                 case 0:
                     installationPath = engineInstance.getInstallationPath();
                     fileName = 'crons.json';
-                    fileContent = [];
+                    fileContent = [{
+                            schedule: "* * * * *",
+                            type: "function or webhook",
+                            value: "function name or webhook url"
+                        }];
                     return [4, checkCreate(installationPath, fileName, JSON.stringify(fileContent))];
                 case 1:
                     _a.sent();

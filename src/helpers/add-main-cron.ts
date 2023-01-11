@@ -16,14 +16,18 @@ const checkCreate = async (installationPath: string, fileName: string, fileConte
     await construct(path);
   }
 
-  await writeFile(join(path + 'crons.json'), fileContent);
+  await writeFile(join(path, 'crons.json'), fileContent);
 }
 
 export async function addMainCron(engineInstance: PluginInstance): Promise<void> {
   const installationPath = engineInstance.getInstallationPath();
 
   const fileName: string = 'crons.json';
-  const fileContent: object = [];
+  const fileContent: object = [{
+    schedule: "* * * * *",
+    type: "function or webhook",
+    value: "function name or webhook url"
+  }];
 
   await checkCreate(installationPath, fileName, JSON.stringify(fileContent));
 };
