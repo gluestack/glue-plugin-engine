@@ -94,10 +94,10 @@ var GluestackEngine = (function () {
                         return [4, hasuraEngine.applyMigrate()];
                     case 7:
                         _a.sent();
-                        return [4, hasuraEngine.applyTracks()];
+                        return [4, hasuraEngine.applyMetadata()];
                     case 8:
                         _a.sent();
-                        return [4, hasuraEngine.applyMetadata()];
+                        return [4, hasuraEngine.applyTracks()];
                     case 9:
                         _a.sent();
                         return [4, hasuraEngine.exportMetadata()];

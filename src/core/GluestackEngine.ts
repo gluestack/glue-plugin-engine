@@ -44,17 +44,17 @@ export default class GluestackEngine implements IGlueEngine {
 
   // Starts the engine for the backend instance
   async start(): Promise<void> {
-    // 1. Get all the stateless instances and sets some config variables
+    // 1. Gets all the stateless instances and sets some config variables
     // 2. Collect dockerfile from all available stateles instances assets directory
     await this.collectPlugins();
 
-    // 3. generate docker-compose file
+    // 3. generates docker-compose file
     await this.createDockerCompose();
 
-    // 4. generate nginx config
+    // 4. generates nginx config
     await this.createNginxConfig();
 
-    // 5. start the docker-compose
+    // 5. starts the docker-compose
     if (this.engineExist) {
       await this.startDockerCompose();
     } else {
@@ -63,26 +63,24 @@ export default class GluestackEngine implements IGlueEngine {
 
     const hasuraPluginName = getConfig('hasuraInstancePath');
     if (hasuraPluginName && hasuraPluginName !== '') {
-
       const hasuraEngine: IHasuraEngine = new HasuraEngine(this.actionPlugins);
 
-      // // 6. run hasura metadata apply
+      // 6. runs hasura metadata apply
       await hasuraEngine.applyMigrate();
 
-      // if & only if auth plugin is available
-      // then run track files into hasura metadata
-      await hasuraEngine.applyTracks();
-
-      // 7. run hasura metadata apply
+      // 7. runs hasura metadata apply
       await hasuraEngine.applyMetadata();
 
-      // 8. run hasura metadata export
+      // 8. runs track files into hasura metadata
+      await hasuraEngine.applyTracks();
+
+      // 9. runs hasura metadata export
       await hasuraEngine.exportMetadata();
 
-      // 8. clears & registers all actions
+      // 10. clears & registers all actions
       await hasuraEngine.reapplyActions();
 
-      // 9. clears & registers all events
+      // 11. clears & registers all events
       await hasuraEngine.reapplyEvents();
 
       console.log('\n> Note: ');
@@ -95,7 +93,7 @@ export default class GluestackEngine implements IGlueEngine {
       console.log(`>     & custom-types that are not registered by Gluestack Engine.\n`);
     }
 
-    // 10. collects, validates & register crons into gluestack cron
+    // 12. collects, validates & register crons into gluestack cron
     const cron: IGluestackCron = new GluestackCron();
     await cron.start();
   }
