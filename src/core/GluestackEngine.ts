@@ -16,6 +16,7 @@ import { backendPlugins } from "../configs/constants";
 import { waitInSeconds } from "../helpers/wait-in-seconds";
 import { replaceKeyword } from "../helpers/replace-keyword";
 import { removeSpecialChars } from "../helpers/remove-special-chars";
+
 import { IHasuraEngine } from "./types/IHasuraEngine";
 import { IGluestackCron } from "./types/IGluestackCron";
 
@@ -43,13 +44,8 @@ export default class GluestackEngine implements IGlueEngine {
 
   // Starts the engine for the backend instance
   async start(): Promise<void> {
-    const backendInstancePath: string = getConfig('backendInstancePath');
-
-    /**
-     * 1. Get all the stateless instances
-     * 2. Collect dockerfile from all available
-     * stateles instances assets directory
-     */
+    // 1. Get all the stateless instances and sets some config variables
+    // 2. Collect dockerfile from all available stateles instances assets directory
     await this.collectPlugins();
 
     // 3. generate docker-compose file
@@ -67,12 +63,15 @@ export default class GluestackEngine implements IGlueEngine {
 
     const hasuraPluginName = getConfig('hasuraInstancePath');
     if (hasuraPluginName && hasuraPluginName !== '') {
+
       const hasuraEngine: IHasuraEngine = new HasuraEngine(this.actionPlugins);
-      // 6. run hasura metadata apply
+
+      // // 6. run hasura metadata apply
       await hasuraEngine.applyMigrate();
 
-      // if auth plugin is available
-      // run track file
+      // if & only if auth plugin is available
+      // then run track files into hasura metadata
+      await hasuraEngine.applyTracks();
 
       // 7. run hasura metadata apply
       await hasuraEngine.applyMetadata();
@@ -87,10 +86,13 @@ export default class GluestackEngine implements IGlueEngine {
       await hasuraEngine.reapplyEvents();
 
       console.log('\n> Note: ');
-      console.log(`>  1. In case a table does not exist in Hasura Engine, Gluestack Engine will skip the event trigger registration.`);
-      console.log(`>  2. Gluestack Engine drops all existing event triggers, actions & custom-types and re-registers them again.`);
-      console.log(`      (This is to prevent any issues with the event trigger, custom types & actions.`);
-      console.log(`>  3. Gluestack Engine will not drop any existing event triggers, actions & custom-types that are not registered by Gluestack Engine.\n `);
+      console.log(`>  1. In case a table does not exist in Hasura Engine, Gluestack Engine`);
+      console.log(`>     will skip the event trigger registration.`);
+      console.log(`>  2. Gluestack Engine drops all existing event triggers, actions & `);
+      console.log(`>     custom-types and re-registers them again. (This is to prevent any`);
+      console.log(`>     issues with the event trigger, custom types & actions)`);
+      console.log(`>  3. Gluestack Engine will not drop any existing event triggers, actions`);
+      console.log(`>     & custom-types that are not registered by Gluestack Engine.\n`);
     }
 
     // 10. collects, validates & register crons into gluestack cron
@@ -159,11 +161,18 @@ export default class GluestackEngine implements IGlueEngine {
           // Collect the dockerfile & store the context into the instance store
           await this.collectDockerContext(details, instance);
         } else {
+          // store graphql plugin's instance name
           setConfig('hasuraInstancePath', details.instance);
         }
 
+        // store engine plugin's instance name
         if (details.name !== '@gluestack/glue-plugin-engine') {
           setConfig('engineInstancePath', details.instance);
+        }
+
+        // store auth plugin's instance name
+        if (details.name !== '@gluestack/glue-plugin-auth') {
+          setConfig('authInstancePath', details.instance);
         }
 
         if (details.name === '@gluestack/glue-plugin-functions.action') {

@@ -16,4 +16,5 @@ export interface IHasuraEngine {
   applyMigrate(): Promise<void>;
   reapplyActions(): Promise<void>;
   reapplyEvents(): Promise<void>;
+  applyTracks(): Promise<string>;
 }

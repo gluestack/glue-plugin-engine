@@ -97,7 +97,7 @@ export default class GluestackEvent implements IGluestackEvent {
       }
     }
 
-    for await (const event of this.events.app) {
+    for await (const event of app) {
       const filepath: string = join(process.cwd(), backendInstance, 'events', 'app', event + '.js');
       try {
         content.app[event] = require(filepath)();

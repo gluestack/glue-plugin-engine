@@ -47,12 +47,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 exports.__esModule = true;
 var path_1 = require("path");
+var promises_1 = require("node:fs/promises");
 var spawn_1 = require("../helpers/spawn");
 var file_exists_1 = require("../helpers/file-exists");
 var remove_special_chars_1 = require("../helpers/remove-special-chars");
 var GluestackConfig_1 = require("./GluestackConfig");
 var HasuraMetadata_1 = __importDefault(require("./HasuraMetadata"));
 var GluestackEvent_1 = __importDefault(require("./GluestackEvent"));
+var promises_2 = require("fs/promises");
 var HasuraEngine = (function () {
     function HasuraEngine(actionPlugins) {
         this.actionGQLFile = 'action.graphql';
@@ -218,10 +220,89 @@ var HasuraEngine = (function () {
             });
         });
     };
-    HasuraEngine.prototype.scanActions = function () {
+    HasuraEngine.prototype.applyTracks = function () {
         var _a, e_2, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var _d, _e, _f, plugin, exist, e_2_1;
+            var backendInstancePath, authInstancePath, tracksPath, dirents, _d, dirents_1, dirents_1_1, dirent, trackPath, track, trackJSON, error_1, e_2_1;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
+                    case 0:
+                        console.log('> Scanning tracks directory...');
+                        backendInstancePath = (0, GluestackConfig_1.getConfig)('backendInstancePath');
+                        authInstancePath = (0, GluestackConfig_1.getConfig)('authInstancePath');
+                        if (!authInstancePath || authInstancePath === '') {
+                            return [2, Promise.resolve('No auth instance path found')];
+                        }
+                        tracksPath = (0, path_1.join)(process.cwd(), backendInstancePath, 'functions', this.pluginName, 'tracks');
+                        if (!(0, file_exists_1.fileExists)(tracksPath)) {
+                            console.log('> Nothing to track into hasura engine...');
+                            return [2, Promise.resolve('No tracks folder found. Skipping...')];
+                        }
+                        console.log('> Applying all tracks into hasura engine...');
+                        return [4, (0, promises_1.readdir)(tracksPath, { withFileTypes: true })];
+                    case 1:
+                        dirents = _e.sent();
+                        _e.label = 2;
+                    case 2:
+                        _e.trys.push([2, 14, 15, 20]);
+                        _d = true, dirents_1 = __asyncValues(dirents);
+                        _e.label = 3;
+                    case 3: return [4, dirents_1.next()];
+                    case 4:
+                        if (!(dirents_1_1 = _e.sent(), _a = dirents_1_1.done, !_a)) return [3, 13];
+                        _c = dirents_1_1.value;
+                        _d = false;
+                        _e.label = 5;
+                    case 5:
+                        _e.trys.push([5, , 11, 12]);
+                        dirent = _c;
+                        if (!(dirent.isFile() && (0, path_1.extname)(dirent.name).toLowerCase() === '.json')) return [3, 10];
+                        trackPath = (0, path_1.join)(tracksPath, dirent.name);
+                        _e.label = 6;
+                    case 6:
+                        _e.trys.push([6, 9, , 10]);
+                        return [4, (0, promises_2.readFile)(trackPath)];
+                    case 7:
+                        track = _e.sent();
+                        trackJSON = JSON.parse(track.toString());
+                        return [4, this.metadata.tracks(trackJSON)];
+                    case 8:
+                        _e.sent();
+                        return [3, 10];
+                    case 9:
+                        error_1 = _e.sent();
+                        return [3, 12];
+                    case 10: return [3, 12];
+                    case 11:
+                        _d = true;
+                        return [7];
+                    case 12: return [3, 3];
+                    case 13: return [3, 20];
+                    case 14:
+                        e_2_1 = _e.sent();
+                        e_2 = { error: e_2_1 };
+                        return [3, 20];
+                    case 15:
+                        _e.trys.push([15, , 18, 19]);
+                        if (!(!_d && !_a && (_b = dirents_1["return"]))) return [3, 17];
+                        return [4, _b.call(dirents_1)];
+                    case 16:
+                        _e.sent();
+                        _e.label = 17;
+                    case 17: return [3, 19];
+                    case 18:
+                        if (e_2) throw e_2.error;
+                        return [7];
+                    case 19: return [7];
+                    case 20: return [2];
+                }
+            });
+        });
+    };
+    HasuraEngine.prototype.scanActions = function () {
+        var _a, e_3, _b, _c;
+        return __awaiter(this, void 0, void 0, function () {
+            var _d, _e, _f, plugin, exist, e_3_1;
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
@@ -264,8 +345,8 @@ var HasuraEngine = (function () {
                     case 7: return [3, 1];
                     case 8: return [3, 15];
                     case 9:
-                        e_2_1 = _g.sent();
-                        e_2 = { error: e_2_1 };
+                        e_3_1 = _g.sent();
+                        e_3 = { error: e_3_1 };
                         return [3, 15];
                     case 10:
                         _g.trys.push([10, , 13, 14]);
@@ -276,7 +357,7 @@ var HasuraEngine = (function () {
                         _g.label = 12;
                     case 12: return [3, 14];
                     case 13:
-                        if (e_2) throw e_2.error;
+                        if (e_3) throw e_3.error;
                         return [7];
                     case 14: return [7];
                     case 15: return [2];
@@ -285,9 +366,9 @@ var HasuraEngine = (function () {
         });
     };
     HasuraEngine.prototype.dropActions = function () {
-        var _a, e_3, _b, _c;
+        var _a, e_4, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var _d, _e, _f, action, e_3_1;
+            var _d, _e, _f, action, e_4_1;
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
@@ -318,8 +399,8 @@ var HasuraEngine = (function () {
                     case 7: return [3, 2];
                     case 8: return [3, 15];
                     case 9:
-                        e_3_1 = _g.sent();
-                        e_3 = { error: e_3_1 };
+                        e_4_1 = _g.sent();
+                        e_4 = { error: e_4_1 };
                         return [3, 15];
                     case 10:
                         _g.trys.push([10, , 13, 14]);
@@ -330,7 +411,7 @@ var HasuraEngine = (function () {
                         _g.label = 12;
                     case 12: return [3, 14];
                     case 13:
-                        if (e_3) throw e_3.error;
+                        if (e_4) throw e_4.error;
                         return [7];
                     case 14: return [7];
                     case 15: return [2];
@@ -339,9 +420,9 @@ var HasuraEngine = (function () {
         });
     };
     HasuraEngine.prototype.createActions = function () {
-        var _a, e_4, _b, _c;
+        var _a, e_5, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var _d, _e, _f, action, e_4_1;
+            var _d, _e, _f, action, e_5_1;
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
@@ -372,8 +453,8 @@ var HasuraEngine = (function () {
                     case 7: return [3, 2];
                     case 8: return [3, 15];
                     case 9:
-                        e_4_1 = _g.sent();
-                        e_4 = { error: e_4_1 };
+                        e_5_1 = _g.sent();
+                        e_5 = { error: e_5_1 };
                         return [3, 15];
                     case 10:
                         _g.trys.push([10, , 13, 14]);
@@ -384,7 +465,7 @@ var HasuraEngine = (function () {
                         _g.label = 12;
                     case 12: return [3, 14];
                     case 13:
-                        if (e_4) throw e_4.error;
+                        if (e_5) throw e_5.error;
                         return [7];
                     case 14: return [7];
                     case 15: return [2];

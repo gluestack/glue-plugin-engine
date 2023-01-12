@@ -264,9 +264,17 @@ var HasuraMetadata = (function () {
             });
         });
     };
-    HasuraMetadata.prototype.captureEnvVars = function () {
-        var envPath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)('backendInstancePath'), 'functions', this.pluginName, '.env');
-        return dotenv.config({ path: envPath }).parsed;
+    HasuraMetadata.prototype.tracks = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.makeRequest(data)];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
     };
     HasuraMetadata.prototype.makeRequest = function (data, showError) {
         if (showError === void 0) { showError = false; }
@@ -303,6 +311,10 @@ var HasuraMetadata = (function () {
                 }
             });
         });
+    };
+    HasuraMetadata.prototype.captureEnvVars = function () {
+        var envPath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)('backendInstancePath'), 'functions', this.pluginName, '.env');
+        return dotenv.config({ path: envPath }).parsed;
     };
     return HasuraMetadata;
 }());

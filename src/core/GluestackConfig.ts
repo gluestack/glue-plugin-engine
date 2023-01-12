@@ -5,6 +5,8 @@ import { fileExists } from '../helpers/file-exists';
 import { writeFile } from '../helpers/write-file';
 
 export const config: any = {
+  authInstancePath: '',
+
   backendInstancePath: '',
 
   engineInstancePath: '',

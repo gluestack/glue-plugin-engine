@@ -143,13 +143,9 @@ export default class HasuraMetadata implements IHasuraMetadata {
     await this.makeRequest(payload);
   }
 
-  // Capture the hasura envs from the .env file
-  private captureEnvVars(): any {
-    const envPath = join(
-      process.cwd(), getConfig('backendInstancePath'), 'functions', this.pluginName, '.env'
-    );
-
-    return dotenv.config({ path: envPath }).parsed;
+  // Tracks array of json objects into hasura engine
+  public async tracks(data: any): Promise<void> {
+    await this.makeRequest(data);
   }
 
   // Make a request to the hasura engine with the available env vars
@@ -176,5 +172,14 @@ export default class HasuraMetadata implements IHasuraMetadata {
         console.log('> Error:', error.response.data.error);
       }
     }
+  }
+
+  // Capture the hasura envs from the .env file
+  private captureEnvVars(): any {
+    const envPath = join(
+      process.cwd(), getConfig('backendInstancePath'), 'functions', this.pluginName, '.env'
+    );
+
+    return dotenv.config({ path: envPath }).parsed;
   }
 }

@@ -1,4 +1,5 @@
-import { join } from "path";
+import { extname, join } from "path";
+import { readdir } from 'node:fs/promises';
 
 import { execute } from "../helpers/spawn";
 import { fileExists } from "../helpers/file-exists";
@@ -10,6 +11,7 @@ import { IAction, IHasuraEngine } from "./types/IHasuraEngine";
 import { getConfig } from "./GluestackConfig";
 import HasuraMetadata from "./HasuraMetadata";
 import GluestackEvent from "./GluestackEvent";
+import { readFile } from "fs/promises";
 
 /**
  * HasuraEngine class
@@ -112,6 +114,48 @@ export default class HasuraEngine implements IHasuraEngine {
     for await (const table of Object.keys(events)) {
       await this.metadata.dropEvent(table, events[table]);
       await this.metadata.createEvent(table, events[table]);
+    }
+  }
+
+  // Applies all the track json files into the hasura engine
+  public async applyTracks(): Promise<string> {
+    console.log('> Scanning tracks directory...');
+
+    const backendInstancePath: string = getConfig('backendInstancePath');
+
+    // Check if the auth instance path exists
+    const authInstancePath: string = getConfig('authInstancePath');
+    if (!authInstancePath || authInstancePath === '') {
+      return Promise.resolve('No auth instance path found');
+    }
+
+    // Check if tracks directory exist in the auth instance
+    const tracksPath = join(
+      process.cwd(), backendInstancePath, 'functions', this.pluginName, 'tracks'
+    );
+    if (!fileExists(tracksPath)) {
+      console.log('> Nothing to track into hasura engine...');
+      return Promise.resolve('No tracks folder found. Skipping...');
+    }
+
+    console.log('> Applying all tracks into hasura engine...');
+
+    // Scan & read all the json files in the tracks folder
+    const dirents = await readdir(tracksPath, {withFileTypes: true});
+    for await (const dirent of dirents) {
+      if (dirent.isFile() && extname(dirent.name).toLowerCase() === '.json') {
+        const trackPath: string = join(tracksPath, dirent.name);
+
+        try {
+          const track: Buffer = await readFile(trackPath);
+          const trackJSON: any = JSON.parse(track.toString());
+
+          await this.metadata.tracks(trackJSON);
+        } catch (error) {
+          // console.log(`Error reading track file ${trackPath}: ${error.message}`);
+          continue;
+        }
+      }
     }
   }
 

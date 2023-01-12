@@ -165,9 +165,9 @@ var GluestackEvent = (function () {
     GluestackEvent.prototype.prepareConfigJSON = function () {
         var _a, e_2, _b, _c, _d, e_3, _e, _f, _g, e_4, _h, _j;
         return __awaiter(this, void 0, void 0, function () {
-            var events, app, database, content, backendInstance, _k, _l, _m, table, _o, _p, _q, event_1, filepath, e_3_1, e_2_1, _r, _s, _t, event_2, filepath, e_4_1;
-            return __generator(this, function (_u) {
-                switch (_u.label) {
+            var events, app, database, content, backendInstance, _k, _l, _m, table, _o, _p, _q, event_1, filepath, e_3_1, e_2_1, _r, app_1, app_1_1, event_2, filepath, e_4_1;
+            return __generator(this, function (_s) {
+                switch (_s.label) {
                     case 0:
                         events = this.events;
                         app = events.app, database = events.database;
@@ -176,29 +176,29 @@ var GluestackEvent = (function () {
                             app: {}
                         };
                         backendInstance = (0, GluestackConfig_1.getConfig)('backendInstancePath');
-                        _u.label = 1;
+                        _s.label = 1;
                     case 1:
-                        _u.trys.push([1, 20, 21, 26]);
+                        _s.trys.push([1, 20, 21, 26]);
                         _k = true, _l = __asyncValues(Object.keys(database));
-                        _u.label = 2;
+                        _s.label = 2;
                     case 2: return [4, _l.next()];
                     case 3:
-                        if (!(_m = _u.sent(), _a = _m.done, !_a)) return [3, 19];
+                        if (!(_m = _s.sent(), _a = _m.done, !_a)) return [3, 19];
                         _c = _m.value;
                         _k = false;
-                        _u.label = 4;
+                        _s.label = 4;
                     case 4:
-                        _u.trys.push([4, , 17, 18]);
+                        _s.trys.push([4, , 17, 18]);
                         table = _c;
                         content.database[table] = {};
-                        _u.label = 5;
+                        _s.label = 5;
                     case 5:
-                        _u.trys.push([5, 10, 11, 16]);
+                        _s.trys.push([5, 10, 11, 16]);
                         _o = true, _p = (e_3 = void 0, __asyncValues(database[table]));
-                        _u.label = 6;
+                        _s.label = 6;
                     case 6: return [4, _p.next()];
                     case 7:
-                        if (!(_q = _u.sent(), _d = _q.done, !_d)) return [3, 9];
+                        if (!(_q = _s.sent(), _d = _q.done, !_d)) return [3, 9];
                         _f = _q.value;
                         _o = false;
                         try {
@@ -214,20 +214,20 @@ var GluestackEvent = (function () {
                         finally {
                             _o = true;
                         }
-                        _u.label = 8;
+                        _s.label = 8;
                     case 8: return [3, 6];
                     case 9: return [3, 16];
                     case 10:
-                        e_3_1 = _u.sent();
+                        e_3_1 = _s.sent();
                         e_3 = { error: e_3_1 };
                         return [3, 16];
                     case 11:
-                        _u.trys.push([11, , 14, 15]);
+                        _s.trys.push([11, , 14, 15]);
                         if (!(!_o && !_d && (_e = _p["return"]))) return [3, 13];
                         return [4, _e.call(_p)];
                     case 12:
-                        _u.sent();
-                        _u.label = 13;
+                        _s.sent();
+                        _s.label = 13;
                     case 13: return [3, 15];
                     case 14:
                         if (e_3) throw e_3.error;
@@ -240,29 +240,29 @@ var GluestackEvent = (function () {
                     case 18: return [3, 2];
                     case 19: return [3, 26];
                     case 20:
-                        e_2_1 = _u.sent();
+                        e_2_1 = _s.sent();
                         e_2 = { error: e_2_1 };
                         return [3, 26];
                     case 21:
-                        _u.trys.push([21, , 24, 25]);
+                        _s.trys.push([21, , 24, 25]);
                         if (!(!_k && !_a && (_b = _l["return"]))) return [3, 23];
                         return [4, _b.call(_l)];
                     case 22:
-                        _u.sent();
-                        _u.label = 23;
+                        _s.sent();
+                        _s.label = 23;
                     case 23: return [3, 25];
                     case 24:
                         if (e_2) throw e_2.error;
                         return [7];
                     case 25: return [7];
                     case 26:
-                        _u.trys.push([26, 31, 32, 37]);
-                        _r = true, _s = __asyncValues(this.events.app);
-                        _u.label = 27;
-                    case 27: return [4, _s.next()];
+                        _s.trys.push([26, 31, 32, 37]);
+                        _r = true, app_1 = __asyncValues(app);
+                        _s.label = 27;
+                    case 27: return [4, app_1.next()];
                     case 28:
-                        if (!(_t = _u.sent(), _g = _t.done, !_g)) return [3, 30];
-                        _j = _t.value;
+                        if (!(app_1_1 = _s.sent(), _g = app_1_1.done, !_g)) return [3, 30];
+                        _j = app_1_1.value;
                         _r = false;
                         try {
                             event_2 = _j;
@@ -277,20 +277,20 @@ var GluestackEvent = (function () {
                         finally {
                             _r = true;
                         }
-                        _u.label = 29;
+                        _s.label = 29;
                     case 29: return [3, 27];
                     case 30: return [3, 37];
                     case 31:
-                        e_4_1 = _u.sent();
+                        e_4_1 = _s.sent();
                         e_4 = { error: e_4_1 };
                         return [3, 37];
                     case 32:
-                        _u.trys.push([32, , 35, 36]);
-                        if (!(!_r && !_g && (_h = _s["return"]))) return [3, 34];
-                        return [4, _h.call(_s)];
+                        _s.trys.push([32, , 35, 36]);
+                        if (!(!_r && !_g && (_h = app_1["return"]))) return [3, 34];
+                        return [4, _h.call(app_1)];
                     case 33:
-                        _u.sent();
-                        _u.label = 34;
+                        _s.sent();
+                        _s.label = 34;
                     case 34: return [3, 36];
                     case 35:
                         if (e_4) throw e_4.error;
@@ -298,7 +298,7 @@ var GluestackEvent = (function () {
                     case 36: return [7];
                     case 37: return [4, (0, GluestackConfig_1.prepareConfigJSON)(content)];
                     case 38:
-                        _u.sent();
+                        _s.sent();
                         return [2];
                 }
             });

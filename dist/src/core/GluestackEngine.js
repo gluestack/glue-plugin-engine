@@ -67,12 +67,10 @@ var GluestackEngine = (function () {
     }
     GluestackEngine.prototype.start = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var backendInstancePath, hasuraPluginName, hasuraEngine, cron;
+            var hasuraPluginName, hasuraEngine, cron;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        backendInstancePath = (0, GluestackConfig_1.getConfig)('backendInstancePath');
-                        return [4, this.collectPlugins()];
+                    case 0: return [4, this.collectPlugins()];
                     case 1:
                         _a.sent();
                         return [4, this.createDockerCompose()];
@@ -91,33 +89,39 @@ var GluestackEngine = (function () {
                         _a.label = 6;
                     case 6:
                         hasuraPluginName = (0, GluestackConfig_1.getConfig)('hasuraInstancePath');
-                        if (!(hasuraPluginName && hasuraPluginName !== '')) return [3, 12];
+                        if (!(hasuraPluginName && hasuraPluginName !== '')) return [3, 13];
                         hasuraEngine = new HasuraEngine_1["default"](this.actionPlugins);
                         return [4, hasuraEngine.applyMigrate()];
                     case 7:
                         _a.sent();
-                        return [4, hasuraEngine.applyMetadata()];
+                        return [4, hasuraEngine.applyTracks()];
                     case 8:
                         _a.sent();
-                        return [4, hasuraEngine.exportMetadata()];
+                        return [4, hasuraEngine.applyMetadata()];
                     case 9:
                         _a.sent();
-                        return [4, hasuraEngine.reapplyActions()];
+                        return [4, hasuraEngine.exportMetadata()];
                     case 10:
                         _a.sent();
-                        return [4, hasuraEngine.reapplyEvents()];
+                        return [4, hasuraEngine.reapplyActions()];
                     case 11:
                         _a.sent();
-                        console.log('\n> Note: ');
-                        console.log(">  1. In case a table does not exist in Hasura Engine, Gluestack Engine will skip the event trigger registration.");
-                        console.log(">  2. Gluestack Engine drops all existing event triggers, actions & custom-types and re-registers them again.");
-                        console.log("      (This is to prevent any issues with the event trigger, custom types & actions.");
-                        console.log(">  3. Gluestack Engine will not drop any existing event triggers, actions & custom-types that are not registered by Gluestack Engine.\n ");
-                        _a.label = 12;
+                        return [4, hasuraEngine.reapplyEvents()];
                     case 12:
+                        _a.sent();
+                        console.log('\n> Note: ');
+                        console.log(">  1. In case a table does not exist in Hasura Engine, Gluestack Engine");
+                        console.log(">     will skip the event trigger registration.");
+                        console.log(">  2. Gluestack Engine drops all existing event triggers, actions & ");
+                        console.log(">     custom-types and re-registers them again. (This is to prevent any");
+                        console.log(">     issues with the event trigger, custom types & actions)");
+                        console.log(">  3. Gluestack Engine will not drop any existing event triggers, actions");
+                        console.log(">     & custom-types that are not registered by Gluestack Engine.\n");
+                        _a.label = 13;
+                    case 13:
                         cron = new GluestackCron_1["default"]();
                         return [4, cron.start()];
-                    case 13:
+                    case 14:
                         _a.sent();
                         return [2];
                 }
@@ -239,6 +243,9 @@ var GluestackEngine = (function () {
                     case 7:
                         if (details.name !== '@gluestack/glue-plugin-engine') {
                             (0, GluestackConfig_1.setConfig)('engineInstancePath', details.instance);
+                        }
+                        if (details.name !== '@gluestack/glue-plugin-auth') {
+                            (0, GluestackConfig_1.setConfig)('authInstancePath', details.instance);
                         }
                         if (details.name === '@gluestack/glue-plugin-functions.action') {
                             this.actionPlugins.push(details);

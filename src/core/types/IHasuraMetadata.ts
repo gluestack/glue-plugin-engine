@@ -7,4 +7,6 @@ export interface IHasuraMetadata {
 
   createEvent(tableName: string, events: string[]): Promise<void>;
   dropEvent(tableName: string, events: string[]): Promise<void>;
+
+  tracks(data: any): Promise<void>;
 }
