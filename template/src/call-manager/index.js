@@ -43,10 +43,10 @@ module.exports = async (callbacks, payload) => {
   }
 
   if (asyncCalls.webhook.length) {
-    await asyncCallsWebhooks(asyncCalls.webhook, payload);
+    asyncCallsWebhooks(asyncCalls.webhook, payload);
   }
 
   if (asyncCalls.function.length) {
-    await asyncCallsFunctions(asyncCalls.function, payload);
+    asyncCallsFunctions(asyncCalls.function, payload);
   }
 };

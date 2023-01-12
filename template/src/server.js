@@ -2,13 +2,18 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const cronTab = require('./cron');
+const job = require('./queue/job');
 const config = require('./handlers/config');
 const events = require('./handlers/events');
 const actions = require('./handlers/actions');
 const appEvents = require('./handlers/app-events');
+const queuePush = require('./handlers/queue-push');
 
 const app = express();
 const port = 9000;
+
+// Gluestack Queue
+job.init();
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -37,6 +42,9 @@ app.post('/events', events);
 
 // Gluestack app events route
 app.post('/app/events', appEvents);
+
+// Gluestack queue job push route
+app.post('/queue/push', queuePush);
 
 // Gluestack Engine
 app.listen(port, () => {
