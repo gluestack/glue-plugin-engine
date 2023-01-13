@@ -35,7 +35,10 @@ app.post('/events', events);
 app.post('/app/events', appEvents);
 
 // Gluestack invoke route
-app.post('/invoke', invoke);
+app.post('/client/invoke', invoke);
+
+// server invoke
+// GLUE_PUBLIC (.env boolean)
 
 // Gluestack Config
 app.get('/glue/config', config);

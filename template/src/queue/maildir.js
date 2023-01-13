@@ -62,13 +62,13 @@ class Maildir extends events.EventEmitter {
 
   // Creates all folders required for maildir
   create = (persistent, cb) => {
-    var that = this;
+    const that = this;
     async.each(this.dirPaths, (path, callback) => {
-      that.fs.exists(path, (exists) => {
-        if (exists) {
-          callback();
-        } else {
+      that.fs.access(path, (error) => {
+        if (error) {
           that.fs.mkdir(path, callback);
+        } else {
+          callback();
         }
       });
     }, () => {
