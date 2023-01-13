@@ -1,3 +1,31 @@
+/**
+ * Current implementation is for our alpha release. We will add a
+ * full blown release of Queue & Jobs management as a plugin using
+ * dapr's pub-sub in future.
+ *
+ * Queue system in our current application is based on file-system.
+ * It uses a maildir implementation to store the messages.
+ *
+ * The queue is a FIFO queue. It is not possible to push messages
+ * into the queue in a specific order. The queue is not persistent
+ * and will be lost on restart.
+ *
+ * This implementation is not thread-safe. It is not possible to
+ * push messages into the queue from multiple threads.
+ *
+ *
+ * The queue is implemented as a class. It can be used like this:
+ *
+ *  const Queue = require('./queue');
+ *  const queue = new Queue('.queue', (err) => {
+ *    if (err) {
+ *      throw err;
+ *    } else {
+ *      queue.push({ type: 'webhook', value: 'http://localhost:3000' });
+ *    }
+ *  });
+ *
+ */
 const Maildir = require('./maildir').Maildir;
 
 class Queue {
@@ -8,20 +36,13 @@ class Queue {
     path = (typeof options === 'string') ? options : options.path;
 
     // determine if maildir has a persistent watcher (default true)
-    // if
     if (typeof options.persistent !== 'undefined') {
       persistent = options.persistent;
     }
 
-    this.maildir = new Maildir(path);
     this.laterPop = [];
-
-    // determine if different fs access library is used
-    if (typeof options.fs !== 'undefined') {
-      this.maildir.fs = options.fs;
-    } else {
-      this.maildir.fs = require('fs');
-    }
+    this.maildir = new Maildir(path);
+    this.maildir.fs = require('graceful-fs');
 
     // be notified, when new messages are available
     this.maildir.on('new', function(messages) {

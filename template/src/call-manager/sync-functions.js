@@ -10,8 +10,6 @@ module.exports = async (callbacks, payload) => {
   for await (const callback of callbacks) {
     const { value } = callback;
 
-    console.log({ value, payload });
-
     const serviceAppId = value;
 
     await client.invoker.invoke(

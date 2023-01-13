@@ -5,6 +5,7 @@ const cronTab = require('./cron');
 const job = require('./queue/job');
 const config = require('./handlers/config');
 const events = require('./handlers/events');
+const invoke = require('./handlers/invoke');
 const actions = require('./handlers/actions');
 const appEvents = require('./handlers/app-events');
 const queuePush = require('./handlers/queue-push');
@@ -22,17 +23,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Gluestack health-check route
-app.get('/health-check', (_req, res) =>
-  res
-    .status(200)
-    .json({
-      status: true,
-      message: 'Ok'
-    })
-);
-
-// Gluestack Events Config
-app.get('/config/events', config);
+app.get('/health-check', (_req, res) => res.status(200).json({ status: true, message: 'Ok' }));
 
 // Gluestack action route
 app.post('/actions', actions);
@@ -42,6 +33,12 @@ app.post('/events', events);
 
 // Gluestack app events route
 app.post('/app/events', appEvents);
+
+// Gluestack invoke route
+app.post('/invoke', invoke);
+
+// Gluestack Config
+app.get('/glue/config', config);
 
 // Gluestack queue job push route
 app.post('/queue/push', queuePush);

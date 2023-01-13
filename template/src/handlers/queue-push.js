@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
     data: body.hasOwnProperty('data') ? body.data : {}
   });
 
-  res.status(200).json({
+  return res.status(200).json({
     status: true,
     message: 'OK'
   });

@@ -25,10 +25,13 @@ job.runner = (queue) => {
     }
 
     if (
-      message && message.hasOwnProperty('type') && message.hasOwnProperty('value')
+      message
+        && message.hasOwnProperty('type')
+        && message.hasOwnProperty('value')
     ) {
       const { type, value } = message;
-      const data = message.hasOwnProperty('data') ? message.data : {};
+      const data = message.hasOwnProperty('data')
+        ? message.data : {};
 
       if (type === 'webhook') {
         syncCallsWebhooks([{ type, value }], data);
@@ -44,6 +47,8 @@ job.runner = (queue) => {
       if (err) {
         throw err;
       }
+
+      job.runner(queue);
     });
   });
 };
@@ -62,7 +67,9 @@ job.init = () => {
  */
 job.push = ({ type, value, data }) => {
   job.worker.push({ type, value, data }, (err) => {
-    console.log('[job::push]', err);
+    if (err) {
+      console.log('[job::push]', err);
+    }
   });
 };
 
