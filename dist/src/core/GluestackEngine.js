@@ -14,7 +14,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+        while (_) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -137,93 +137,80 @@ var GluestackEngine = (function () {
         });
     };
     GluestackEngine.prototype.createNginxConfig = function () {
-        var _a, e_1, _b, _c;
+        var e_1, _a;
         return __awaiter(this, void 0, void 0, function () {
-            var backendInstancePath, plugins, nginxConf, _d, plugins_1, plugins_1_1, plugin, e_1_1;
-            return __generator(this, function (_e) {
-                switch (_e.label) {
+            var backendInstancePath, plugins, nginxConf, plugins_1, plugins_1_1, plugin, e_1_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         backendInstancePath = (0, GluestackConfig_1.getConfig)('backendInstancePath');
                         plugins = this.statelessPlugins;
                         nginxConf = new NginxConf_1["default"]();
                         nginxConf.addRouter((0, path_1.join)(process.cwd(), backendInstancePath, 'router.js'));
-                        _e.label = 1;
+                        _b.label = 1;
                     case 1:
-                        _e.trys.push([1, 9, 10, 15]);
-                        _d = true, plugins_1 = __asyncValues(plugins);
-                        _e.label = 2;
+                        _b.trys.push([1, 7, 8, 13]);
+                        plugins_1 = __asyncValues(plugins);
+                        _b.label = 2;
                     case 2: return [4, plugins_1.next()];
                     case 3:
-                        if (!(plugins_1_1 = _e.sent(), _a = plugins_1_1.done, !_a)) return [3, 8];
-                        _c = plugins_1_1.value;
-                        _d = false;
-                        _e.label = 4;
-                    case 4:
-                        _e.trys.push([4, , 6, 7]);
-                        plugin = _c;
+                        if (!(plugins_1_1 = _b.sent(), !plugins_1_1.done)) return [3, 6];
+                        plugin = plugins_1_1.value;
                         return [4, nginxConf.addRouter((0, path_1.join)(plugin.path, 'router.js'))];
-                    case 5:
-                        _e.sent();
-                        return [3, 7];
-                    case 6:
-                        _d = true;
-                        return [7];
-                    case 7: return [3, 2];
-                    case 8: return [3, 15];
-                    case 9:
-                        e_1_1 = _e.sent();
+                    case 4:
+                        _b.sent();
+                        _b.label = 5;
+                    case 5: return [3, 2];
+                    case 6: return [3, 13];
+                    case 7:
+                        e_1_1 = _b.sent();
                         e_1 = { error: e_1_1 };
-                        return [3, 15];
-                    case 10:
-                        _e.trys.push([10, , 13, 14]);
-                        if (!(!_d && !_a && (_b = plugins_1["return"]))) return [3, 12];
-                        return [4, _b.call(plugins_1)];
+                        return [3, 13];
+                    case 8:
+                        _b.trys.push([8, , 11, 12]);
+                        if (!(plugins_1_1 && !plugins_1_1.done && (_a = plugins_1["return"]))) return [3, 10];
+                        return [4, _a.call(plugins_1)];
+                    case 9:
+                        _b.sent();
+                        _b.label = 10;
+                    case 10: return [3, 12];
                     case 11:
-                        _e.sent();
-                        _e.label = 12;
-                    case 12: return [3, 14];
-                    case 13:
                         if (e_1) throw e_1.error;
                         return [7];
-                    case 14: return [7];
-                    case 15: return [4, nginxConf.generate()];
-                    case 16:
-                        _e.sent();
+                    case 12: return [7];
+                    case 13: return [4, nginxConf.generate()];
+                    case 14:
+                        _b.sent();
                         return [2];
                 }
             });
         });
     };
     GluestackEngine.prototype.collectPlugins = function () {
-        var _a, e_2, _b, _c;
+        var e_2, _a;
         return __awaiter(this, void 0, void 0, function () {
-            var app, arr, instances, _d, instances_1, instances_1_1, instance, type, name_1, details, e_2_1;
-            return __generator(this, function (_e) {
-                switch (_e.label) {
+            var app, arr, instances, instances_1, instances_1_1, instance, type, name_1, details, e_2_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         app = this.app;
                         arr = [];
                         instances = app.getContainerTypePluginInstances(false);
-                        _e.label = 1;
+                        _b.label = 1;
                     case 1:
-                        _e.trys.push([1, 12, 13, 18]);
-                        _d = true, instances_1 = __asyncValues(instances);
-                        _e.label = 2;
+                        _b.trys.push([1, 9, 10, 15]);
+                        instances_1 = __asyncValues(instances);
+                        _b.label = 2;
                     case 2: return [4, instances_1.next()];
                     case 3:
-                        if (!(instances_1_1 = _e.sent(), _a = instances_1_1.done, !_a)) return [3, 11];
-                        _c = instances_1_1.value;
-                        _d = false;
-                        _e.label = 4;
-                    case 4:
-                        _e.trys.push([4, , 9, 10]);
-                        instance = _c;
+                        if (!(instances_1_1 = _b.sent(), !instances_1_1.done)) return [3, 8];
+                        instance = instances_1_1.value;
                         type = instance === null || instance === void 0 ? void 0 : instance.callerPlugin.getType();
                         name_1 = instance === null || instance === void 0 ? void 0 : instance.callerPlugin.getName();
                         if (!(instance &&
                             (instance === null || instance === void 0 ? void 0 : instance.containerController) &&
                             type && type === 'stateless' &&
-                            name_1 && this.backendPlugins.includes(name_1))) return [3, 8];
+                            name_1 && this.backendPlugins.includes(name_1))) return [3, 7];
                         details = {
                             name: name_1,
                             type: type,
@@ -232,15 +219,15 @@ var GluestackEngine = (function () {
                             path: (0, path_1.join)(process.cwd(), instance.getInstallationPath()),
                             status: instance.getContainerController().getStatus()
                         };
-                        if (!(details.name !== '@gluestack/glue-plugin-graphql')) return [3, 6];
+                        if (!(details.name !== '@gluestack/glue-plugin-graphql')) return [3, 5];
                         return [4, this.collectDockerContext(details, instance)];
+                    case 4:
+                        _b.sent();
+                        return [3, 6];
                     case 5:
-                        _e.sent();
-                        return [3, 7];
-                    case 6:
                         (0, GluestackConfig_1.setConfig)('hasuraInstancePath', details.instance);
-                        _e.label = 7;
-                    case 7:
+                        _b.label = 6;
+                    case 6:
                         if (details.name !== '@gluestack/glue-plugin-engine') {
                             (0, GluestackConfig_1.setConfig)('engineInstancePath', details.instance);
                         }
@@ -251,30 +238,26 @@ var GluestackEngine = (function () {
                             this.actionPlugins.push(details);
                         }
                         arr.push(details);
-                        _e.label = 8;
-                    case 8: return [3, 10];
+                        _b.label = 7;
+                    case 7: return [3, 2];
+                    case 8: return [3, 15];
                     case 9:
-                        _d = true;
-                        return [7];
-                    case 10: return [3, 2];
-                    case 11: return [3, 18];
-                    case 12:
-                        e_2_1 = _e.sent();
+                        e_2_1 = _b.sent();
                         e_2 = { error: e_2_1 };
-                        return [3, 18];
+                        return [3, 15];
+                    case 10:
+                        _b.trys.push([10, , 13, 14]);
+                        if (!(instances_1_1 && !instances_1_1.done && (_a = instances_1["return"]))) return [3, 12];
+                        return [4, _a.call(instances_1)];
+                    case 11:
+                        _b.sent();
+                        _b.label = 12;
+                    case 12: return [3, 14];
                     case 13:
-                        _e.trys.push([13, , 16, 17]);
-                        if (!(!_d && !_a && (_b = instances_1["return"]))) return [3, 15];
-                        return [4, _b.call(instances_1)];
-                    case 14:
-                        _e.sent();
-                        _e.label = 15;
-                    case 15: return [3, 17];
-                    case 16:
                         if (e_2) throw e_2.error;
                         return [7];
-                    case 17: return [7];
-                    case 18:
+                    case 14: return [7];
+                    case 15:
                         this.statelessPlugins = arr;
                         return [2];
                 }
@@ -282,55 +265,48 @@ var GluestackEngine = (function () {
         });
     };
     GluestackEngine.prototype.createDockerCompose = function () {
-        var _a, e_3, _b, _c;
+        var e_3, _a;
         return __awaiter(this, void 0, void 0, function () {
-            var dockerCompose, plugins, _d, plugins_2, plugins_2_1, plugin, e_3_1;
-            return __generator(this, function (_e) {
-                switch (_e.label) {
+            var dockerCompose, plugins, plugins_2, plugins_2_1, plugin, e_3_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         dockerCompose = new DockerCompose_1["default"]();
                         plugins = this.statelessPlugins;
-                        _e.label = 1;
+                        _b.label = 1;
                     case 1:
-                        _e.trys.push([1, 6, 7, 12]);
-                        _d = true, plugins_2 = __asyncValues(plugins);
-                        _e.label = 2;
+                        _b.trys.push([1, 6, 7, 12]);
+                        plugins_2 = __asyncValues(plugins);
+                        _b.label = 2;
                     case 2: return [4, plugins_2.next()];
                     case 3:
-                        if (!(plugins_2_1 = _e.sent(), _a = plugins_2_1.done, !_a)) return [3, 5];
-                        _c = plugins_2_1.value;
-                        _d = false;
-                        try {
-                            plugin = _c;
-                            if (plugin.name === '@gluestack/glue-plugin-graphql') {
-                                dockerCompose.addHasura(plugin);
-                                (0, GluestackConfig_1.setConfig)('hasuraInstancePath', plugin.instance);
-                                return [3, 4];
-                            }
-                            if (plugin.name === '@gluestack/glue-plugin-engine') {
-                                this.engineExist = true;
-                                dockerCompose.addNginx(plugin);
-                                (0, GluestackConfig_1.setConfig)('engineInstancePath', plugin.instance);
-                            }
-                            dockerCompose.addOthers(plugin);
+                        if (!(plugins_2_1 = _b.sent(), !plugins_2_1.done)) return [3, 5];
+                        plugin = plugins_2_1.value;
+                        if (plugin.name === '@gluestack/glue-plugin-graphql') {
+                            dockerCompose.addHasura(plugin);
+                            (0, GluestackConfig_1.setConfig)('hasuraInstancePath', plugin.instance);
+                            return [3, 4];
                         }
-                        finally {
-                            _d = true;
+                        if (plugin.name === '@gluestack/glue-plugin-engine') {
+                            this.engineExist = true;
+                            dockerCompose.addNginx(plugin);
+                            (0, GluestackConfig_1.setConfig)('engineInstancePath', plugin.instance);
                         }
-                        _e.label = 4;
+                        dockerCompose.addOthers(plugin);
+                        _b.label = 4;
                     case 4: return [3, 2];
                     case 5: return [3, 12];
                     case 6:
-                        e_3_1 = _e.sent();
+                        e_3_1 = _b.sent();
                         e_3 = { error: e_3_1 };
                         return [3, 12];
                     case 7:
-                        _e.trys.push([7, , 10, 11]);
-                        if (!(!_d && !_a && (_b = plugins_2["return"]))) return [3, 9];
-                        return [4, _b.call(plugins_2)];
+                        _b.trys.push([7, , 10, 11]);
+                        if (!(plugins_2_1 && !plugins_2_1.done && (_a = plugins_2["return"]))) return [3, 9];
+                        return [4, _a.call(plugins_2)];
                     case 8:
-                        _e.sent();
-                        _e.label = 9;
+                        _b.sent();
+                        _b.label = 9;
                     case 9: return [3, 11];
                     case 10:
                         if (e_3) throw e_3.error;
@@ -338,7 +314,7 @@ var GluestackEngine = (function () {
                     case 11: return [7];
                     case 12: return [4, dockerCompose.generate()];
                     case 13:
-                        _e.sent();
+                        _b.sent();
                         return [2];
                 }
             });
