@@ -48,7 +48,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -118,46 +118,53 @@ var GluestackCron = (function () {
         });
     };
     GluestackCron.prototype.validate = function (collection) {
-        var collection_1, collection_1_1;
-        var e_1, _a;
+        var _a, collection_1, collection_1_1;
+        var _b, e_1, _c, _d;
         return __awaiter(this, void 0, void 0, function () {
             var object, schedule, type, value, e_1_1;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            return __generator(this, function (_e) {
+                switch (_e.label) {
                     case 0:
-                        _b.trys.push([0, 5, 6, 11]);
-                        collection_1 = __asyncValues(collection);
-                        _b.label = 1;
+                        _e.trys.push([0, 5, 6, 11]);
+                        _a = true, collection_1 = __asyncValues(collection);
+                        _e.label = 1;
                     case 1: return [4, collection_1.next()];
                     case 2:
-                        if (!(collection_1_1 = _b.sent(), !collection_1_1.done)) return [3, 4];
-                        object = collection_1_1.value;
-                        schedule = get(object, 'schedule', '');
-                        type = get(object, 'type', '');
-                        value = get(object, 'value', '');
-                        if (!schedule || !type || !value
-                            || !cron.validate(schedule)) {
-                            console.log('> Found invalid schedule. Skipping...');
-                            console.log(__assign({}, object));
-                            return [3, 3];
+                        if (!(collection_1_1 = _e.sent(), _b = collection_1_1.done, !_b)) return [3, 4];
+                        _d = collection_1_1.value;
+                        _a = false;
+                        try {
+                            object = _d;
+                            schedule = get(object, 'schedule', '');
+                            type = get(object, 'type', '');
+                            value = get(object, 'value', '');
+                            if (!schedule || !type || !value
+                                || !cron.validate(schedule)) {
+                                console.log('> Found invalid schedule. Skipping...');
+                                console.log(__assign({}, object));
+                                return [3, 3];
+                            }
+                            else {
+                                this.collection.push(object);
+                            }
                         }
-                        else {
-                            this.collection.push(object);
+                        finally {
+                            _a = true;
                         }
-                        _b.label = 3;
+                        _e.label = 3;
                     case 3: return [3, 1];
                     case 4: return [3, 11];
                     case 5:
-                        e_1_1 = _b.sent();
+                        e_1_1 = _e.sent();
                         e_1 = { error: e_1_1 };
                         return [3, 11];
                     case 6:
-                        _b.trys.push([6, , 9, 10]);
-                        if (!(collection_1_1 && !collection_1_1.done && (_a = collection_1["return"]))) return [3, 8];
-                        return [4, _a.call(collection_1)];
+                        _e.trys.push([6, , 9, 10]);
+                        if (!(!_a && !_b && (_c = collection_1["return"]))) return [3, 8];
+                        return [4, _c.call(collection_1)];
                     case 7:
-                        _b.sent();
-                        _b.label = 8;
+                        _e.sent();
+                        _e.label = 8;
                     case 8: return [3, 10];
                     case 9:
                         if (e_1) throw e_1.error;

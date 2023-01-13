@@ -14,7 +14,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -161,63 +161,71 @@ var HasuraEngine = (function () {
         });
     };
     HasuraEngine.prototype.reapplyEvents = function () {
-        var e_1, _a;
+        var _a, e_1, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var events, _b, _c, table, e_1_1;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var events, _d, _e, _f, table, e_1_1;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
                     case 0: return [4, this.events.scanEvents()];
                     case 1:
-                        _d.sent();
+                        _g.sent();
                         console.log('> Dropping & Registering all events from hasura engine...');
                         return [4, this.events.getEventsByType('database')];
                     case 2:
-                        events = _d.sent();
-                        _d.label = 3;
+                        events = _g.sent();
+                        _g.label = 3;
                     case 3:
-                        _d.trys.push([3, 10, 11, 16]);
-                        _b = __asyncValues(Object.keys(events));
-                        _d.label = 4;
-                    case 4: return [4, _b.next()];
+                        _g.trys.push([3, 12, 13, 18]);
+                        _d = true, _e = __asyncValues(Object.keys(events));
+                        _g.label = 4;
+                    case 4: return [4, _e.next()];
                     case 5:
-                        if (!(_c = _d.sent(), !_c.done)) return [3, 9];
-                        table = _c.value;
-                        return [4, this.metadata.dropEvent(table, events[table])];
+                        if (!(_f = _g.sent(), _a = _f.done, !_a)) return [3, 11];
+                        _c = _f.value;
+                        _d = false;
+                        _g.label = 6;
                     case 6:
-                        _d.sent();
-                        return [4, this.metadata.createEvent(table, events[table])];
+                        _g.trys.push([6, , 9, 10]);
+                        table = _c;
+                        return [4, this.metadata.dropEvent(table, events[table])];
                     case 7:
-                        _d.sent();
-                        _d.label = 8;
-                    case 8: return [3, 4];
-                    case 9: return [3, 16];
-                    case 10:
-                        e_1_1 = _d.sent();
-                        e_1 = { error: e_1_1 };
-                        return [3, 16];
-                    case 11:
-                        _d.trys.push([11, , 14, 15]);
-                        if (!(_c && !_c.done && (_a = _b["return"]))) return [3, 13];
-                        return [4, _a.call(_b)];
+                        _g.sent();
+                        return [4, this.metadata.createEvent(table, events[table])];
+                    case 8:
+                        _g.sent();
+                        return [3, 10];
+                    case 9:
+                        _d = true;
+                        return [7];
+                    case 10: return [3, 4];
+                    case 11: return [3, 18];
                     case 12:
-                        _d.sent();
-                        _d.label = 13;
-                    case 13: return [3, 15];
+                        e_1_1 = _g.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3, 18];
+                    case 13:
+                        _g.trys.push([13, , 16, 17]);
+                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 15];
+                        return [4, _b.call(_e)];
                     case 14:
+                        _g.sent();
+                        _g.label = 15;
+                    case 15: return [3, 17];
+                    case 16:
                         if (e_1) throw e_1.error;
                         return [7];
-                    case 15: return [7];
-                    case 16: return [2];
+                    case 17: return [7];
+                    case 18: return [2];
                 }
             });
         });
     };
     HasuraEngine.prototype.applyTracks = function () {
-        var e_2, _a;
+        var _a, e_2, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var backendInstancePath, authInstancePath, tracksPath, dirents, dirents_1, dirents_1_1, dirent, trackPath, track, trackJSON, error_1, e_2_1;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var backendInstancePath, authInstancePath, tracksPath, dirents, _d, dirents_1, dirents_1_1, dirent, trackPath, track, trackJSON, error_1, e_2_1;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
                     case 0:
                         console.log('> Scanning tracks directory...');
                         backendInstancePath = (0, GluestackConfig_1.getConfig)('backendInstancePath');
@@ -233,82 +241,96 @@ var HasuraEngine = (function () {
                         console.log('> Applying all tracks into hasura engine...');
                         return [4, (0, promises_1.readdir)(tracksPath, { withFileTypes: true })];
                     case 1:
-                        dirents = _b.sent();
-                        _b.label = 2;
+                        dirents = _e.sent();
+                        _e.label = 2;
                     case 2:
-                        _b.trys.push([2, 11, 12, 17]);
-                        dirents_1 = __asyncValues(dirents);
-                        _b.label = 3;
+                        _e.trys.push([2, 14, 15, 20]);
+                        _d = true, dirents_1 = __asyncValues(dirents);
+                        _e.label = 3;
                     case 3: return [4, dirents_1.next()];
                     case 4:
-                        if (!(dirents_1_1 = _b.sent(), !dirents_1_1.done)) return [3, 10];
-                        dirent = dirents_1_1.value;
-                        if (!(dirent.isFile() && (0, path_1.extname)(dirent.name).toLowerCase() === '.json')) return [3, 9];
-                        trackPath = (0, path_1.join)(tracksPath, dirent.name);
-                        _b.label = 5;
+                        if (!(dirents_1_1 = _e.sent(), _a = dirents_1_1.done, !_a)) return [3, 13];
+                        _c = dirents_1_1.value;
+                        _d = false;
+                        _e.label = 5;
                     case 5:
-                        _b.trys.push([5, 8, , 9]);
-                        return [4, (0, promises_2.readFile)(trackPath)];
+                        _e.trys.push([5, , 11, 12]);
+                        dirent = _c;
+                        if (!(dirent.isFile() && (0, path_1.extname)(dirent.name).toLowerCase() === '.json')) return [3, 10];
+                        trackPath = (0, path_1.join)(tracksPath, dirent.name);
+                        _e.label = 6;
                     case 6:
-                        track = _b.sent();
+                        _e.trys.push([6, 9, , 10]);
+                        return [4, (0, promises_2.readFile)(trackPath)];
+                    case 7:
+                        track = _e.sent();
                         trackJSON = JSON.parse(track.toString());
                         return [4, this.metadata.tracks(trackJSON)];
-                    case 7:
-                        _b.sent();
-                        return [3, 9];
                     case 8:
-                        error_1 = _b.sent();
-                        return [3, 9];
-                    case 9: return [3, 3];
-                    case 10: return [3, 17];
+                        _e.sent();
+                        return [3, 10];
+                    case 9:
+                        error_1 = _e.sent();
+                        return [3, 12];
+                    case 10: return [3, 12];
                     case 11:
-                        e_2_1 = _b.sent();
+                        _d = true;
+                        return [7];
+                    case 12: return [3, 3];
+                    case 13: return [3, 20];
+                    case 14:
+                        e_2_1 = _e.sent();
                         e_2 = { error: e_2_1 };
-                        return [3, 17];
-                    case 12:
-                        _b.trys.push([12, , 15, 16]);
-                        if (!(dirents_1_1 && !dirents_1_1.done && (_a = dirents_1["return"]))) return [3, 14];
-                        return [4, _a.call(dirents_1)];
-                    case 13:
-                        _b.sent();
-                        _b.label = 14;
-                    case 14: return [3, 16];
+                        return [3, 20];
                     case 15:
+                        _e.trys.push([15, , 18, 19]);
+                        if (!(!_d && !_a && (_b = dirents_1["return"]))) return [3, 17];
+                        return [4, _b.call(dirents_1)];
+                    case 16:
+                        _e.sent();
+                        _e.label = 17;
+                    case 17: return [3, 19];
+                    case 18:
                         if (e_2) throw e_2.error;
                         return [7];
-                    case 16: return [7];
-                    case 17: return [2];
+                    case 19: return [7];
+                    case 20: return [2];
                 }
             });
         });
     };
     HasuraEngine.prototype.scanActions = function () {
-        var e_3, _a;
+        var _a, e_3, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var _b, _c, plugin, exist, e_3_1;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var _d, _e, _f, plugin, exist, e_3_1;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
                     case 0:
-                        _d.trys.push([0, 7, 8, 13]);
-                        _b = __asyncValues(this.actionPlugins);
-                        _d.label = 1;
-                    case 1: return [4, _b.next()];
+                        _g.trys.push([0, 9, 10, 15]);
+                        _d = true, _e = __asyncValues(this.actionPlugins);
+                        _g.label = 1;
+                    case 1: return [4, _e.next()];
                     case 2:
-                        if (!(_c = _d.sent(), !_c.done)) return [3, 6];
-                        plugin = _c.value;
-                        return [4, (0, file_exists_1.fileExists)(plugin.path)];
+                        if (!(_f = _g.sent(), _a = _f.done, !_a)) return [3, 8];
+                        _c = _f.value;
+                        _d = false;
+                        _g.label = 3;
                     case 3:
-                        exist = _d.sent();
+                        _g.trys.push([3, , 6, 7]);
+                        plugin = _c;
+                        return [4, (0, file_exists_1.fileExists)(plugin.path)];
+                    case 4:
+                        exist = _g.sent();
                         if (!exist) {
                             console.log("> Action Instance ".concat(plugin.instance, " is missing. Skipping..."));
-                            return [3, 5];
+                            return [3, 7];
                         }
                         return [4, (0, file_exists_1.fileExists)((0, path_1.join)(plugin.path, this.actionGQLFile))];
-                    case 4:
-                        exist = _d.sent();
+                    case 5:
+                        exist = _g.sent();
                         if (!exist) {
                             console.log("> Action Instance ".concat(plugin.instance, " does not have actions.graphql file. Skipping..."));
-                            return [3, 5];
+                            return [3, 7];
                         }
                         this.actions.push({
                             name: (0, remove_special_chars_1.removeSpecialChars)(plugin.instance),
@@ -316,118 +338,137 @@ var HasuraEngine = (function () {
                             grapqhl_path: (0, path_1.join)(plugin.path, this.actionGQLFile),
                             setting_path: (0, path_1.join)(plugin.path, this.actionSettingFile)
                         });
-                        _d.label = 5;
-                    case 5: return [3, 1];
-                    case 6: return [3, 13];
-                    case 7:
-                        e_3_1 = _d.sent();
-                        e_3 = { error: e_3_1 };
-                        return [3, 13];
-                    case 8:
-                        _d.trys.push([8, , 11, 12]);
-                        if (!(_c && !_c.done && (_a = _b["return"]))) return [3, 10];
-                        return [4, _a.call(_b)];
+                        return [3, 7];
+                    case 6:
+                        _d = true;
+                        return [7];
+                    case 7: return [3, 1];
+                    case 8: return [3, 15];
                     case 9:
-                        _d.sent();
-                        _d.label = 10;
-                    case 10: return [3, 12];
+                        e_3_1 = _g.sent();
+                        e_3 = { error: e_3_1 };
+                        return [3, 15];
+                    case 10:
+                        _g.trys.push([10, , 13, 14]);
+                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 12];
+                        return [4, _b.call(_e)];
                     case 11:
+                        _g.sent();
+                        _g.label = 12;
+                    case 12: return [3, 14];
+                    case 13:
                         if (e_3) throw e_3.error;
                         return [7];
-                    case 12: return [7];
-                    case 13: return [2];
+                    case 14: return [7];
+                    case 15: return [2];
                 }
             });
         });
     };
     HasuraEngine.prototype.dropActions = function () {
-        var e_4, _a;
+        var _a, e_4, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var _b, _c, action, e_4_1;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var _d, _e, _f, action, e_4_1;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
                     case 0:
                         if (this.actions.length <= 0) {
                             return [2, Promise.resolve(false)];
                         }
-                        _d.label = 1;
+                        _g.label = 1;
                     case 1:
-                        _d.trys.push([1, 7, 8, 13]);
-                        _b = __asyncValues(this.actions);
-                        _d.label = 2;
-                    case 2: return [4, _b.next()];
+                        _g.trys.push([1, 9, 10, 15]);
+                        _d = true, _e = __asyncValues(this.actions);
+                        _g.label = 2;
+                    case 2: return [4, _e.next()];
                     case 3:
-                        if (!(_c = _d.sent(), !_c.done)) return [3, 6];
-                        action = _c.value;
-                        return [4, this.metadata.dropAction(action.name)];
+                        if (!(_f = _g.sent(), _a = _f.done, !_a)) return [3, 8];
+                        _c = _f.value;
+                        _d = false;
+                        _g.label = 4;
                     case 4:
-                        _d.sent();
-                        _d.label = 5;
-                    case 5: return [3, 2];
-                    case 6: return [3, 13];
-                    case 7:
-                        e_4_1 = _d.sent();
-                        e_4 = { error: e_4_1 };
-                        return [3, 13];
-                    case 8:
-                        _d.trys.push([8, , 11, 12]);
-                        if (!(_c && !_c.done && (_a = _b["return"]))) return [3, 10];
-                        return [4, _a.call(_b)];
+                        _g.trys.push([4, , 6, 7]);
+                        action = _c;
+                        return [4, this.metadata.dropAction(action.name)];
+                    case 5:
+                        _g.sent();
+                        return [3, 7];
+                    case 6:
+                        _d = true;
+                        return [7];
+                    case 7: return [3, 2];
+                    case 8: return [3, 15];
                     case 9:
-                        _d.sent();
-                        _d.label = 10;
-                    case 10: return [3, 12];
+                        e_4_1 = _g.sent();
+                        e_4 = { error: e_4_1 };
+                        return [3, 15];
+                    case 10:
+                        _g.trys.push([10, , 13, 14]);
+                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 12];
+                        return [4, _b.call(_e)];
                     case 11:
+                        _g.sent();
+                        _g.label = 12;
+                    case 12: return [3, 14];
+                    case 13:
                         if (e_4) throw e_4.error;
                         return [7];
-                    case 12: return [7];
-                    case 13: return [2];
+                    case 14: return [7];
+                    case 15: return [2];
                 }
             });
         });
     };
     HasuraEngine.prototype.createActions = function () {
-        var e_5, _a;
+        var _a, e_5, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var _b, _c, action, e_5_1;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var _d, _e, _f, action, e_5_1;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
                     case 0:
                         if (this.actions.length <= 0) {
                             return [2, Promise.resolve(false)];
                         }
-                        _d.label = 1;
+                        _g.label = 1;
                     case 1:
-                        _d.trys.push([1, 7, 8, 13]);
-                        _b = __asyncValues(this.actions);
-                        _d.label = 2;
-                    case 2: return [4, _b.next()];
+                        _g.trys.push([1, 9, 10, 15]);
+                        _d = true, _e = __asyncValues(this.actions);
+                        _g.label = 2;
+                    case 2: return [4, _e.next()];
                     case 3:
-                        if (!(_c = _d.sent(), !_c.done)) return [3, 6];
-                        action = _c.value;
-                        return [4, this.metadata.createAction(action)];
+                        if (!(_f = _g.sent(), _a = _f.done, !_a)) return [3, 8];
+                        _c = _f.value;
+                        _d = false;
+                        _g.label = 4;
                     case 4:
-                        _d.sent();
-                        _d.label = 5;
-                    case 5: return [3, 2];
-                    case 6: return [3, 13];
-                    case 7:
-                        e_5_1 = _d.sent();
-                        e_5 = { error: e_5_1 };
-                        return [3, 13];
-                    case 8:
-                        _d.trys.push([8, , 11, 12]);
-                        if (!(_c && !_c.done && (_a = _b["return"]))) return [3, 10];
-                        return [4, _a.call(_b)];
+                        _g.trys.push([4, , 6, 7]);
+                        action = _c;
+                        return [4, this.metadata.createAction(action)];
+                    case 5:
+                        _g.sent();
+                        return [3, 7];
+                    case 6:
+                        _d = true;
+                        return [7];
+                    case 7: return [3, 2];
+                    case 8: return [3, 15];
                     case 9:
-                        _d.sent();
-                        _d.label = 10;
-                    case 10: return [3, 12];
+                        e_5_1 = _g.sent();
+                        e_5 = { error: e_5_1 };
+                        return [3, 15];
+                    case 10:
+                        _g.trys.push([10, , 13, 14]);
+                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 12];
+                        return [4, _b.call(_e)];
                     case 11:
+                        _g.sent();
+                        _g.label = 12;
+                    case 12: return [3, 14];
+                    case 13:
                         if (e_5) throw e_5.error;
                         return [7];
-                    case 12: return [7];
-                    case 13: return [2];
+                    case 14: return [7];
+                    case 15: return [2];
                 }
             });
         });

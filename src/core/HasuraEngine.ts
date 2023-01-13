@@ -152,7 +152,6 @@ export default class HasuraEngine implements IHasuraEngine {
 
           await this.metadata.tracks(trackJSON);
         } catch (error) {
-          // console.log(`Error reading track file ${trackPath}: ${error.message}`);
           continue;
         }
       }

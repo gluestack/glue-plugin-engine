@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -141,12 +141,12 @@ var HasuraMetadata = (function () {
         });
     };
     HasuraMetadata.prototype.createCustomTypes = function (actions) {
-        var actions_1, actions_1_1;
-        var e_1, _a;
+        var _a, actions_1, actions_1_1;
+        var _b, e_1, _c, _d;
         return __awaiter(this, void 0, void 0, function () {
             var customTypes, action, setting, regex, match, kind, schema, _tmp, error_2, e_1_1;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            return __generator(this, function (_e) {
+                switch (_e.label) {
                     case 0:
                         customTypes = {
                             type: 'set_custom_types',
@@ -157,57 +157,66 @@ var HasuraMetadata = (function () {
                                 input_objects: []
                             }
                         };
-                        _b.label = 1;
+                        _e.label = 1;
                     case 1:
-                        _b.trys.push([1, 9, 10, 15]);
-                        actions_1 = __asyncValues(actions);
-                        _b.label = 2;
+                        _e.trys.push([1, 12, 13, 18]);
+                        _a = true, actions_1 = __asyncValues(actions);
+                        _e.label = 2;
                     case 2: return [4, actions_1.next()];
                     case 3:
-                        if (!(actions_1_1 = _b.sent(), !actions_1_1.done)) return [3, 8];
-                        action = actions_1_1.value;
+                        if (!(actions_1_1 = _e.sent(), _b = actions_1_1.done, !_b)) return [3, 11];
+                        _d = actions_1_1.value;
+                        _a = false;
+                        _e.label = 4;
+                    case 4:
+                        _e.trys.push([4, , 9, 10]);
+                        action = _d;
                         setting = (0, node_fs_1.readFileSync)(action.setting_path, 'utf8');
                         regex = /execution="(.*)"/g;
                         match = regex.exec(setting);
                         kind = match[1] === 'sync' ? 'synchronous' : 'asynchronous';
                         schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, 'utf8');
-                        _b.label = 4;
-                    case 4:
-                        _b.trys.push([4, 6, , 7]);
-                        return [4, (0, generate_action_custom_types_1.generate)(schema, kind, 'custom_types')];
+                        _e.label = 5;
                     case 5:
-                        _tmp = _b.sent();
+                        _e.trys.push([5, 7, , 8]);
+                        return [4, (0, generate_action_custom_types_1.generate)(schema, kind, 'custom_types')];
+                    case 6:
+                        _tmp = _e.sent();
                         customTypes.type = _tmp.type;
                         customTypes.args.scalars = __spreadArray(__spreadArray([], customTypes.args.scalars, true), _tmp.args.scalars, true);
                         customTypes.args.enums = __spreadArray(__spreadArray([], customTypes.args.enums, true), _tmp.args.enums, true);
                         customTypes.args.objects = __spreadArray(__spreadArray([], customTypes.args.objects, true), _tmp.args.objects, true);
                         customTypes.args.input_objects = __spreadArray(__spreadArray([], customTypes.args.input_objects, true), _tmp.args.input_objects, true);
-                        return [3, 7];
-                    case 6:
-                        error_2 = _b.sent();
+                        return [3, 8];
+                    case 7:
+                        error_2 = _e.sent();
                         console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
-                        return [3, 7];
-                    case 7: return [3, 2];
-                    case 8: return [3, 15];
+                        return [3, 10];
+                    case 8: return [3, 10];
                     case 9:
-                        e_1_1 = _b.sent();
+                        _a = true;
+                        return [7];
+                    case 10: return [3, 2];
+                    case 11: return [3, 18];
+                    case 12:
+                        e_1_1 = _e.sent();
                         e_1 = { error: e_1_1 };
-                        return [3, 15];
-                    case 10:
-                        _b.trys.push([10, , 13, 14]);
-                        if (!(actions_1_1 && !actions_1_1.done && (_a = actions_1["return"]))) return [3, 12];
-                        return [4, _a.call(actions_1)];
-                    case 11:
-                        _b.sent();
-                        _b.label = 12;
-                    case 12: return [3, 14];
+                        return [3, 18];
                     case 13:
+                        _e.trys.push([13, , 16, 17]);
+                        if (!(!_a && !_b && (_c = actions_1["return"]))) return [3, 15];
+                        return [4, _c.call(actions_1)];
+                    case 14:
+                        _e.sent();
+                        _e.label = 15;
+                    case 15: return [3, 17];
+                    case 16:
                         if (e_1) throw e_1.error;
                         return [7];
-                    case 14: return [7];
-                    case 15: return [4, this.makeRequest(customTypes)];
-                    case 16:
-                        _b.sent();
+                    case 17: return [7];
+                    case 18: return [4, this.makeRequest(customTypes)];
+                    case 19:
+                        _e.sent();
                         return [2];
                 }
             });
