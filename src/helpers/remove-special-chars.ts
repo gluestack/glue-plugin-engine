@@ -1,2 +1,2 @@
 export const removeSpecialChars = (str: string): string =>
-  str.replace(/[^a-z0-9]/g, "").toLowerCase();
+  str.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();

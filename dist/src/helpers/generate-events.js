@@ -25,7 +25,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+        while (_) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -55,11 +55,11 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 };
 exports.__esModule = true;
 exports.generate = void 0;
-var generateEvents = function (events) { var _a, events_1, events_1_1; return __awaiter(void 0, void 0, void 0, function () {
+var generateEvents = function (events) { var events_1, events_1_1; return __awaiter(void 0, void 0, void 0, function () {
     var body, addOrUpdateEvent, removeEvent, event_1, e_1_1;
-    var _b, e_1, _c, _d;
-    return __generator(this, function (_e) {
-        switch (_e.label) {
+    var e_1, _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 body = {};
                 addOrUpdateEvent = {
@@ -69,45 +69,38 @@ var generateEvents = function (events) { var _a, events_1, events_1_1; return __
                 removeEvent = {
                     columns: '*'
                 };
-                _e.label = 1;
+                _b.label = 1;
             case 1:
-                _e.trys.push([1, 6, 7, 12]);
-                _a = true, events_1 = __asyncValues(events);
-                _e.label = 2;
+                _b.trys.push([1, 6, 7, 12]);
+                events_1 = __asyncValues(events);
+                _b.label = 2;
             case 2: return [4, events_1.next()];
             case 3:
-                if (!(events_1_1 = _e.sent(), _b = events_1_1.done, !_b)) return [3, 5];
-                _d = events_1_1.value;
-                _a = false;
-                try {
-                    event_1 = _d;
-                    if (event_1 === 'insert') {
-                        body.insert = addOrUpdateEvent;
-                    }
-                    if (event_1 === 'update') {
-                        body.update = addOrUpdateEvent;
-                    }
-                    if (event_1 === 'delete') {
-                        body["delete"] = removeEvent;
-                    }
+                if (!(events_1_1 = _b.sent(), !events_1_1.done)) return [3, 5];
+                event_1 = events_1_1.value;
+                if (event_1 === 'insert') {
+                    body.insert = addOrUpdateEvent;
                 }
-                finally {
-                    _a = true;
+                if (event_1 === 'update') {
+                    body.update = addOrUpdateEvent;
                 }
-                _e.label = 4;
+                if (event_1 === 'delete') {
+                    body["delete"] = removeEvent;
+                }
+                _b.label = 4;
             case 4: return [3, 2];
             case 5: return [3, 12];
             case 6:
-                e_1_1 = _e.sent();
+                e_1_1 = _b.sent();
                 e_1 = { error: e_1_1 };
                 return [3, 12];
             case 7:
-                _e.trys.push([7, , 10, 11]);
-                if (!(!_a && !_b && (_c = events_1["return"]))) return [3, 9];
-                return [4, _c.call(events_1)];
+                _b.trys.push([7, , 10, 11]);
+                if (!(events_1_1 && !events_1_1.done && (_a = events_1["return"]))) return [3, 9];
+                return [4, _a.call(events_1)];
             case 8:
-                _e.sent();
-                _e.label = 9;
+                _b.sent();
+                _b.label = 9;
             case 9: return [3, 11];
             case 10:
                 if (e_1) throw e_1.error;
