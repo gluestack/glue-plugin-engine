@@ -67,7 +67,7 @@ export default class NginxConf {
 
       if (routes.hasOwnProperty('path')) {
         locations.push(setLocation(
-          routes.path, routes.proxy.instance, routes.proxy.path
+          routes.path, routes.proxy.instance, routes.proxy.path, routes.host, routes.size_in_mb
         ));
       }
     });

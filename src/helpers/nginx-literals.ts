@@ -42,17 +42,21 @@ export const setServer = (domain: string, locations: string[]): string => `
 export const setLocation = (
   path: string,
   proxy_instance: string,
-  proxy_path: string
+  proxy_path: string,
+  host?: string,
+  size_in_mb?: number,
 ): string => `
     location ${path} {
       rewrite ^${addTrailingSlash(path)}(.*) ${addTrailingSlash(proxy_path)}$1 break;
+
+      client_max_body_size ${size_in_mb || 1}M
 
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
       proxy_cache_bypass $http_upgrade;
 
-      proxy_set_header Host $host;
+      proxy_set_header Host ${host || "$host"};
       proxy_set_header X-Real-IP $remote_addr;
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header X-Forwarded-Proto $scheme;
