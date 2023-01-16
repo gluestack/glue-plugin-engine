@@ -24,16 +24,27 @@ module.exports = async (req, res) => {
   const serviceAppId = body.action_name;
   const data = body.hasOwnProperty('data') ? { ...body.data } : {};
 
-  await client.invoker.invoke(
-    serviceAppId,
-    serviceMethod,
-    HttpMethod.POST,
-    data,
-    { headers }
-  );
+  try {
+    await client.invoker.invoke(
+      serviceAppId,
+      serviceMethod,
+      HttpMethod.POST,
+      data,
+      { headers: { ...headers, "X-Glue-Invoke": "client" } }
+    );
 
-  return res.status(200).json({
-    status: true,
-    message: 'OK'
-  });
+    return res.status(200).json({
+      status: true,
+      message: 'OK'
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).json({
+      status: false,
+      message: 'Something went wrong!'
+    });
+  }
 };

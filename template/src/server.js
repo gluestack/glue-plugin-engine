@@ -3,18 +3,17 @@ const bodyParser = require('body-parser');
 
 const cronTab = require('./cron');
 const job = require('./queue/job');
+
 const config = require('./handlers/config');
-const events = require('./handlers/events');
-const invoke = require('./handlers/invoke');
 const actions = require('./handlers/actions');
-const appEvents = require('./handlers/app-events');
-const queuePush = require('./handlers/queue-push');
+const dbEvents = require('./handlers/events.db');
+const appEvents = require('./handlers/events.app');
+const queuePush = require('./handlers/queue.push');
+const invokeClient = require('./handlers/invoke.client');
+const invokeServer = require('./handlers/invoke.server');
 
 const app = express();
 const port = 9000;
-
-// Gluestack Queue
-job.init();
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -22,34 +21,50 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-// Gluestack health-check route
-app.get('/health-check', (_req, res) => res.status(200).json({ status: true, message: 'Ok' }));
+// Engine health-check route
+app.get('/health-check',
+  (_req, res) =>
+    res
+      .status(200)
+      .json({ status: true, message: 'Ok' })
+  );
 
-// Gluestack action route
+// Engine action route
 app.post('/actions', actions);
 
-// Gluestack db events route
-app.post('/events', events);
+// Engine db events route
+app.post('/events', dbEvents);
 
-// Gluestack app events route
+// Engine app events route
 app.post('/app/events', appEvents);
 
-// Gluestack invoke route
-app.post('/client/invoke', invoke);
+// Engine Client SDK's Invoke route
+app.post('/client/invoke', invokeClient);
 
-// server invoke
-// GLUE_PUBLIC (.env boolean)
+// Engine Server SDK's Invoke route
+app.post('/server/invoke', invokeServer);
 
-// Gluestack Config
+// Engine Config
 app.get('/glue/config', config);
 
-// Gluestack queue job push route
+// Engine queue job push route
 app.post('/queue/push', queuePush);
 
-// Gluestack Engine
+app.use((err, req, res, next) => {
+  res.status(500).json({
+    status: false,
+    message: 'Something broke!',
+    stack: err.stack
+  });
+});
+
+// Engine Queue
+job.init();
+
+// Engine server
 app.listen(port, () => {
   console.log(`Engine app listening on port ${port}`)
 });
 
-// Gluestack CRON
+// Engine CRON
 cronTab.init();

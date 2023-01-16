@@ -1,7 +1,6 @@
 const Queue = require('./queue').Queue;
 
 const { join } = require('path');
-const { mkdirSync } = require('fs');
 const fsExists = require('../helpers/fs-exists');
 const syncCallsWebhooks = require('../call-manager/sync-webhooks');
 const syncCallsFunctions = require('../call-manager/sync-functions');
@@ -61,7 +60,7 @@ job.runner = (queue) => {
 job.init = () => {
   const filePath = join(__dirname, './../..', '.queue');
   if (!fsExists(filePath)) {
-    mkdirSync(filePath);
+    fs.mkdirSync(filePath);
   }
 
   job.worker = new Queue('.queue', (err) => {
