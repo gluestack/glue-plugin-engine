@@ -81,7 +81,7 @@ var prepareConfigJSON = function (newContent) { return __awaiter(void 0, void 0,
                 content = JSON.parse(content.toString());
                 _a.label = 3;
             case 3:
-                content = __assign(__assign({}, content), content);
+                content = __assign(__assign({}, content), newContent);
                 return [4, (0, write_file_1.writeFile)(filepath, JSON.stringify(content, null, 2))];
             case 4:
                 _a.sent();

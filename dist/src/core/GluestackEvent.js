@@ -43,6 +43,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
 exports.__esModule = true;
+var get = require('lodash').get;
 var path_1 = require("path");
 var promises_1 = require("node:fs/promises");
 var file_exists_1 = require("../helpers/file-exists");
@@ -170,7 +171,8 @@ var GluestackEvent = (function () {
                 switch (_s.label) {
                     case 0:
                         events = this.events;
-                        app = events.app, database = events.database;
+                        app = get(events, 'app', {});
+                        database = get(events, 'database', {});
                         content = {
                             database: {},
                             app: {}

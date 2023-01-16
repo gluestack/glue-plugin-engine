@@ -36,7 +36,7 @@ export const prepareConfigJSON = async (newContent: any): Promise<void> => {
     content = JSON.parse(content.toString());
   }
 
-  content = {...content, ...content};
+  content = {...content, ...newContent};
 
   await writeFile(filepath, JSON.stringify(content, null, 2));
 };

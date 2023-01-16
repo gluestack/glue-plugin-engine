@@ -1,3 +1,5 @@
+const { get } = require('lodash');
+
 import { join } from 'path';
 import { readdir } from 'node:fs/promises';
 
@@ -75,7 +77,8 @@ export default class GluestackEvent implements IGluestackEvent {
   // Writes the events object to the engine instance's config.json file
   private async prepareConfigJSON(): Promise<void> {
     const events: any = this.events;
-    const { app, database } = events;
+    const app = get(events, 'app', {});
+    const database = get(events, 'database', {});
 
     const content: any = {
       database: {},
