@@ -58,7 +58,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var path_1 = require("path");
 var yaml = __importStar(require("yaml"));
 var fs_1 = require("fs");
@@ -195,5 +195,5 @@ var DockerCompose = (function () {
     };
     return DockerCompose;
 }());
-exports["default"] = DockerCompose;
+exports.default = DockerCompose;
 //# sourceMappingURL=DockerCompose.js.map

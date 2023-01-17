@@ -110,5 +110,4 @@ export class PluginInstanceContainerController implements IContainerController {
   async build() {
     // do nothing
   }
-
 }

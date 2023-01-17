@@ -53,7 +53,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.generate = void 0;
 var generateEvents = function (events) { var _a, events_1, events_1_1; return __awaiter(void 0, void 0, void 0, function () {
     var body, addOrUpdateEvent, removeEvent, event_1, e_1_1;
@@ -88,7 +88,7 @@ var generateEvents = function (events) { var _a, events_1, events_1_1; return __
                         body.update = addOrUpdateEvent;
                     }
                     if (event_1 === 'delete') {
-                        body["delete"] = removeEvent;
+                        body.delete = removeEvent;
                     }
                 }
                 finally {
@@ -103,7 +103,7 @@ var generateEvents = function (events) { var _a, events_1, events_1_1; return __
                 return [3, 12];
             case 7:
                 _e.trys.push([7, , 10, 11]);
-                if (!(!_a && !_b && (_c = events_1["return"]))) return [3, 9];
+                if (!(!_a && !_b && (_c = events_1.return))) return [3, 9];
                 return [4, _c.call(events_1)];
             case 8:
                 _e.sent();

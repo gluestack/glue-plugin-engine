@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.removeSpecialChars = void 0;
 var removeSpecialChars = function (str) {
     return str.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();

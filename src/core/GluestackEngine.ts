@@ -100,7 +100,18 @@ export default class GluestackEngine implements IGlueEngine {
 
   // Stops the engine for the backend instance
   async stop(): Promise<void> {
+    // Gather plugins
+    this.collectPlugins();
+
+    // Stop docker-compose
     this.stopDockerCompose();
+
+    // Export Hasura Metadata
+    const hasuraPluginName = getConfig('hasuraInstancePath');
+    if (hasuraPluginName && hasuraPluginName !== '') {
+      const hasuraEngine: IHasuraEngine = new HasuraEngine(this.actionPlugins);
+      await hasuraEngine.exportMetadata();
+    }
   }
 
   // Creates the nginx config from all available plugins' router.js file

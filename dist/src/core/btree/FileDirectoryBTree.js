@@ -39,75 +39,84 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GlueStackPlugin = void 0;
-var package_json_1 = __importDefault(require("../package.json"));
-var PluginInstance_1 = require("./PluginInstance");
-var write_env_1 = require("./helpers/write-env");
-var add_main_router_1 = require("./helpers/add-main-router");
-var add_main_events_1 = require("./helpers/add-main-events");
-var add_main_cron_1 = require("./helpers/add-main-cron");
-var GlueStackPlugin = (function () {
-    function GlueStackPlugin(app, gluePluginStore) {
-        this.type = "stateless";
-        this.app = app;
-        this.instances = [];
-        this.gluePluginStore = gluePluginStore;
+var fs_1 = require("fs");
+var BTree_1 = __importDefault(require("./BTree"));
+var FileDirectoryBTree = (function () {
+    function FileDirectoryBTree(order) {
+        this.tree = new BTree_1.default(order);
     }
-    GlueStackPlugin.prototype.init = function () {
+    FileDirectoryBTree.prototype.isFull = function () {
+        return this.tree.root.values.length === this.tree.order;
     };
-    GlueStackPlugin.prototype.destroy = function () {
-    };
-    GlueStackPlugin.prototype.getName = function () {
-        return package_json_1.default.name;
-    };
-    GlueStackPlugin.prototype.getVersion = function () {
-        return package_json_1.default.version;
-    };
-    GlueStackPlugin.prototype.getType = function () {
-        return this.type;
-    };
-    GlueStackPlugin.prototype.getTemplateFolderPath = function () {
-        return "".concat(process.cwd(), "/node_modules/").concat(this.getName(), "/template");
-    };
-    GlueStackPlugin.prototype.getInstallationPath = function (target) {
-        return "./backend/".concat(target);
-    };
-    GlueStackPlugin.prototype.runPostInstall = function (instanceName, target) {
+    FileDirectoryBTree.prototype.insert = function (path) {
         return __awaiter(this, void 0, void 0, function () {
-            var engineInstance;
+            var stat, isDirectory;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.app.createPluginInstance(this, instanceName, this.getTemplateFolderPath(), target)];
+                    case 0: return [4, fs_1.promises.stat(path)];
                     case 1:
-                        engineInstance = _a.sent();
-                        if (!engineInstance) return [3, 6];
-                        return [4, (0, write_env_1.writeEnv)(engineInstance)];
-                    case 2:
-                        _a.sent();
-                        return [4, (0, add_main_router_1.addMainRouter)(engineInstance)];
-                    case 3:
-                        _a.sent();
-                        return [4, (0, add_main_events_1.addMainEvents)(engineInstance)];
-                    case 4:
-                        _a.sent();
-                        return [4, (0, add_main_cron_1.addMainCron)(engineInstance)];
-                    case 5:
-                        _a.sent();
-                        _a.label = 6;
-                    case 6: return [2];
+                        stat = _a.sent();
+                        isDirectory = stat.isDirectory();
+                        this.tree.insert({ path: path, isDirectory: isDirectory });
+                        return [2];
                 }
             });
         });
     };
-    GlueStackPlugin.prototype.createInstance = function (key, gluePluginStore, installationPath) {
-        var instance = new PluginInstance_1.PluginInstance(this.app, this, key, gluePluginStore, installationPath);
-        this.instances.push(instance);
-        return instance;
+    FileDirectoryBTree.prototype.search = function (path) {
+        var currentNode = this.tree.root;
+        while (!currentNode.leaf) {
+            var i = 0;
+            while (i < currentNode.values.length && currentNode.values[i].path < path) {
+                i++;
+            }
+            currentNode = currentNode.children[i];
+        }
+        for (var _i = 0, _a = currentNode.values; _i < _a.length; _i++) {
+            var element = _a[_i];
+            if (element.path === path) {
+                return element;
+            }
+        }
+        return null;
     };
-    GlueStackPlugin.prototype.getInstances = function () {
-        return this.instances;
+    FileDirectoryBTree.prototype.delete = function (path) {
+        return __awaiter(this, void 0, void 0, function () {
+            var currentNode, i_1, i;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        currentNode = this.tree.root;
+                        while (!currentNode.leaf) {
+                            i_1 = 0;
+                            while (i_1 < currentNode.values.length && currentNode.values[i_1].path < path) {
+                                i_1++;
+                            }
+                            currentNode = currentNode.children[i_1];
+                        }
+                        i = 0;
+                        while (i < currentNode.values.length && currentNode.values[i].path !== path) {
+                            i++;
+                        }
+                        if (i === currentNode.values.length) {
+                            return [2];
+                        }
+                        currentNode.values.splice(i, 1);
+                        if (!currentNode.values[i].isDirectory) return [3, 2];
+                        return [4, fs_1.promises.rmdir(path)];
+                    case 1:
+                        _a.sent();
+                        return [3, 4];
+                    case 2: return [4, fs_1.promises.unlink(path)];
+                    case 3:
+                        _a.sent();
+                        _a.label = 4;
+                    case 4: return [2];
+                }
+            });
+        });
     };
-    return GlueStackPlugin;
+    return FileDirectoryBTree;
 }());
-exports.GlueStackPlugin = GlueStackPlugin;
-//# sourceMappingURL=index.js.map
+exports.default = FileDirectoryBTree;
+//# sourceMappingURL=FileDirectoryBTree.js.map

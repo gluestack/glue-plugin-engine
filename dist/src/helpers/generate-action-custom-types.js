@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.generate = void 0;
 var graphqlToJsonSchema = require('@gluestack/graphql-sdl-to-json');
 var _a = require('lodash'), replace = _a.replace, has = _a.has, get = _a.get, objectKeys = _a.keys, capitalize = _a.capitalize;

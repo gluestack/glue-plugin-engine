@@ -12,7 +12,8 @@
 		"esModuleInterop": true,
 		"paths": {
 			"@gluestack/framework": ["node_modules/@gluestack/framework"]
-		}
+		},
+		"target": "ES5"
 	},
 	"include": [
 		"src/**/*.ts"

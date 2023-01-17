@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.waitInSeconds = void 0;
 var waitInSeconds = function (seconds) {
     return new Promise(function (resolve) {

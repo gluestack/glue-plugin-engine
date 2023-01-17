@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.PluginInstanceContainerController = void 0;
 var DockerodeHelper = require("@gluestack/helpers").DockerodeHelper;
 var GluestackEngine_1 = __importDefault(require("./core/GluestackEngine"));
@@ -94,7 +94,8 @@ var PluginInstanceContainerController = (function () {
                             ports.push(port);
                             _this.callerInstance.callerPlugin.gluePluginStore.set("ports", ports);
                             return resolve(_this.portNumber);
-                        })["catch"](function (e) {
+                        })
+                            .catch(function (e) {
                             reject(e);
                         });
                     })];
@@ -124,7 +125,7 @@ var PluginInstanceContainerController = (function () {
                 switch (_a.label) {
                     case 0:
                         app = this.app;
-                        engine = new GluestackEngine_1["default"](app, 'backend');
+                        engine = new GluestackEngine_1.default(app, 'backend');
                         return [4, engine.start()];
                     case 1:
                         _a.sent();
@@ -140,7 +141,7 @@ var PluginInstanceContainerController = (function () {
                 switch (_a.label) {
                     case 0:
                         app = this.app;
-                        engine = new GluestackEngine_1["default"](app, 'backend');
+                        engine = new GluestackEngine_1.default(app, 'backend');
                         return [4, engine.stop()];
                     case 1:
                         _a.sent();

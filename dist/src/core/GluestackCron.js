@@ -76,7 +76,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var get = require('lodash').get;
 var path_1 = require("path");
 var cron = __importStar(require("node-cron"));
@@ -160,7 +160,7 @@ var GluestackCron = (function () {
                         return [3, 11];
                     case 6:
                         _e.trys.push([6, , 9, 10]);
-                        if (!(!_a && !_b && (_c = collection_1["return"]))) return [3, 8];
+                        if (!(!_a && !_b && (_c = collection_1.return))) return [3, 8];
                         return [4, _c.call(collection_1)];
                     case 7:
                         _e.sent();
@@ -192,5 +192,5 @@ var GluestackCron = (function () {
     };
     return GluestackCron;
 }());
-exports["default"] = GluestackCron;
+exports.default = GluestackCron;
 //# sourceMappingURL=GluestackCron.js.map

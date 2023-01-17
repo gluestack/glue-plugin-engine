@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.setLocation = exports.setServer = exports.endsWith = exports.startsWith = void 0;
 var add_trailing_slash_1 = require("./add-trailing-slash");
 exports.startsWith = "\nevents {\n  worker_connections 1024;\n}\n\nhttp {\n  client_max_body_size 100M;\n  sendfile on;";
