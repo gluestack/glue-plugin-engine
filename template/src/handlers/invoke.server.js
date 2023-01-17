@@ -20,17 +20,22 @@ module.exports = async (req, res) => {
 
   const client = new DaprClient(daprHost, daprPort);
 
-  const serviceAppId = body.action_name;
-  const data = body.hasOwnProperty('data') ? { ...body.data } : {};
-  const serviceMethod = body.hasOwnProperty('method_name')
-    ? body.method_name : 'functions';
+  let data = undefined;
+  const appId = body.action_name;
+  const options = { headers: { ...headers, "X-Glue-Invoke": "server" } };
+  const methodName = body.hasOwnProperty('method_uri') ? body.method_uri : 'functions';
+  const method = body.hasOwnProperty('method_name') ? body.method_name.toUpperCase() : HttpMethod.POST;
+
+  if (method !== 'GET') {
+    data = body.hasOwnProperty('data') ? { ...body.data } : {};
+  }
 
   await client.invoker.invoke(
-    serviceAppId,
-    serviceMethod,
-    HttpMethod.POST,
+    appId,
+    methodName,
+    method,
     data,
-    { headers: { ...headers, "X-Glue-Invoke": "server" } }
+    options
   );
 
   return res.status(200).json({
