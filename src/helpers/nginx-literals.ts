@@ -49,7 +49,7 @@ export const setLocation = (
     location ${path} {
       rewrite ^${addTrailingSlash(path)}(.*) ${addTrailingSlash(proxy_path)}$1 break;
 
-      client_max_body_size ${size_in_mb || 1}M
+      client_max_body_size ${size_in_mb || 1}M;
 
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
