@@ -107,6 +107,14 @@ export class PluginInstanceContainerController implements IContainerController {
     await engine.stop();
   }
 
+  async watch(): Promise<string[]> {
+    return [
+      '../crons/crons.json',
+      '../events/database',
+      '../events/app'
+    ];
+  }
+
   async build() {
     // do nothing
   }

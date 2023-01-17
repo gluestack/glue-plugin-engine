@@ -150,6 +150,17 @@ var PluginInstanceContainerController = (function () {
             });
         });
     };
+    PluginInstanceContainerController.prototype.watch = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2, [
+                        '../crons/crons.json',
+                        '../events/database',
+                        '../events/app'
+                    ]];
+            });
+        });
+    };
     PluginInstanceContainerController.prototype.build = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
