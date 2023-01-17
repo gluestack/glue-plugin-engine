@@ -20,9 +20,10 @@ module.exports = async (req, res) => {
 
   const client = new DaprClient(daprHost, daprPort);
 
-  const serviceMethod = 'functions';
   const serviceAppId = body.action_name;
   const data = body.hasOwnProperty('data') ? { ...body.data } : {};
+  const serviceMethod = body.hasOwnProperty('method_name')
+    ? body.method_name : 'functions';
 
   await client.invoker.invoke(
     serviceAppId,
