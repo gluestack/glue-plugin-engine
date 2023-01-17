@@ -96,7 +96,7 @@ var NginxConf = (function () {
                         domain = routes.domain;
                     }
                     if (routes.hasOwnProperty('path')) {
-                        locations.push((0, nginx_literals_1.setLocation)(routes.path, routes.proxy.instance, routes.proxy.path));
+                        locations.push((0, nginx_literals_1.setLocation)(routes.path, routes.proxy.instance, routes.proxy.path, routes.host, routes.size_in_mb));
                     }
                 });
                 return [2, Promise.resolve(nginx_literals_1.startsWith + (0, nginx_literals_1.setServer)(domain, locations) + nginx_literals_1.endsWith)];
