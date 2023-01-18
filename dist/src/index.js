@@ -77,25 +77,49 @@ var GlueStackPlugin = (function () {
             var engineInstance;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.app.createPluginInstance(this, instanceName, this.getTemplateFolderPath(), target)];
+                    case 0: return [4, this.checkAlreadyInstalled()];
                     case 1:
-                        engineInstance = _a.sent();
-                        if (!engineInstance) return [3, 6];
-                        return [4, (0, write_env_1.writeEnv)(engineInstance)];
-                    case 2:
                         _a.sent();
-                        return [4, (0, add_main_router_1.addMainRouter)(engineInstance)];
+                        if (instanceName !== "engine") {
+                            console.log("\x1b[36m");
+                            console.log("Install engine instance: `node glue add engine engine`");
+                            console.log("\x1b[31m");
+                            throw new Error("engine supports instance name `engine` only");
+                        }
+                        return [4, this.app.createPluginInstance(this, instanceName, this.getTemplateFolderPath(), target)];
+                    case 2:
+                        engineInstance = _a.sent();
+                        if (!engineInstance) return [3, 7];
+                        return [4, (0, write_env_1.writeEnv)(engineInstance)];
                     case 3:
                         _a.sent();
-                        return [4, (0, add_main_events_1.addMainEvents)(engineInstance)];
+                        return [4, (0, add_main_router_1.addMainRouter)(engineInstance)];
                     case 4:
                         _a.sent();
-                        return [4, (0, add_main_cron_1.addMainCron)(engineInstance)];
+                        return [4, (0, add_main_events_1.addMainEvents)(engineInstance)];
                     case 5:
                         _a.sent();
-                        _a.label = 6;
-                    case 6: return [2];
+                        return [4, (0, add_main_cron_1.addMainCron)(engineInstance)];
+                    case 6:
+                        _a.sent();
+                        _a.label = 7;
+                    case 7: return [2];
                 }
+            });
+        });
+    };
+    GlueStackPlugin.prototype.checkAlreadyInstalled = function () {
+        var _a;
+        return __awaiter(this, void 0, void 0, function () {
+            var enginePlugin;
+            return __generator(this, function (_b) {
+                enginePlugin = this.app.getPluginByName("@gluestack/glue-plugin-engine");
+                if ((_a = enginePlugin === null || enginePlugin === void 0 ? void 0 : enginePlugin.getInstances()) === null || _a === void 0 ? void 0 : _a[0]) {
+                    throw new Error("engine instance already installed as ".concat(enginePlugin
+                        .getInstances()[0]
+                        .getName()));
+                }
+                return [2];
             });
         });
     };
