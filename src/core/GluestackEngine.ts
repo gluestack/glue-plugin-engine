@@ -71,6 +71,12 @@ export default class GluestackEngine implements IGlueEngine {
       // 7. runs hasura metadata apply
       await hasuraEngine.applyMetadata();
 
+      // 6. runs hasura metadata apply
+      await hasuraEngine.applyMigrate();
+
+      // 7. runs hasura metadata apply
+      await hasuraEngine.applyMetadata();
+
       // 8. runs track files into hasura metadata
       await hasuraEngine.applyTracks();
 

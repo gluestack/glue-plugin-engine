@@ -89,7 +89,7 @@ var GluestackEngine = (function () {
                         _a.label = 6;
                     case 6:
                         hasuraPluginName = (0, GluestackConfig_1.getConfig)('hasuraInstancePath');
-                        if (!(hasuraPluginName && hasuraPluginName !== '')) return [3, 13];
+                        if (!(hasuraPluginName && hasuraPluginName !== '')) return [3, 15];
                         hasuraEngine = new HasuraEngine_1.default(this.actionPlugins);
                         return [4, hasuraEngine.applyMigrate()];
                     case 7:
@@ -97,17 +97,23 @@ var GluestackEngine = (function () {
                         return [4, hasuraEngine.applyMetadata()];
                     case 8:
                         _a.sent();
-                        return [4, hasuraEngine.applyTracks()];
+                        return [4, hasuraEngine.applyMigrate()];
                     case 9:
                         _a.sent();
-                        return [4, hasuraEngine.exportMetadata()];
+                        return [4, hasuraEngine.applyMetadata()];
                     case 10:
                         _a.sent();
-                        return [4, hasuraEngine.reapplyActions()];
+                        return [4, hasuraEngine.applyTracks()];
                     case 11:
                         _a.sent();
-                        return [4, hasuraEngine.reapplyEvents()];
+                        return [4, hasuraEngine.exportMetadata()];
                     case 12:
+                        _a.sent();
+                        return [4, hasuraEngine.reapplyActions()];
+                    case 13:
+                        _a.sent();
+                        return [4, hasuraEngine.reapplyEvents()];
+                    case 14:
                         _a.sent();
                         console.log('\n> Note: ');
                         console.log(">  1. In case a table does not exist in Hasura Engine, Gluestack Engine");
@@ -117,11 +123,11 @@ var GluestackEngine = (function () {
                         console.log(">     issues with the event trigger, custom types & actions)");
                         console.log(">  3. Gluestack Engine will not drop any existing event triggers, actions");
                         console.log(">     & custom-types that are not registered by Gluestack Engine.\n");
-                        _a.label = 13;
-                    case 13:
+                        _a.label = 15;
+                    case 15:
                         cron = new GluestackCron_1.default();
                         return [4, cron.start()];
-                    case 14:
+                    case 16:
                         _a.sent();
                         return [2];
                 }
