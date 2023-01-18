@@ -6,7 +6,7 @@ export interface IStatelessPlugin {
   template_folder: string;
   instance: string;
   path: string;
-  status: string;
+  status?: string;
   instance_object?: any;
 
   getInitDbPath?: () => string;

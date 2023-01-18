@@ -17,6 +17,8 @@ export const config: any = {
 
   hasuraInstancePath: '',
 
+  hasuraInstanceStatus: 'down',
+
   hasuraEnvs: {}
 };
 

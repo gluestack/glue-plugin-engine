@@ -59,6 +59,7 @@ exports.config = {
     backendInstancePath: '',
     engineInstancePath: '',
     hasuraInstancePath: '',
+    hasuraInstanceStatus: 'down',
     hasuraEnvs: {}
 };
 var getConfig = function (key) { return exports.config[key]; };
