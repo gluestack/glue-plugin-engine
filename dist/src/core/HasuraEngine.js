@@ -54,7 +54,6 @@ var remove_special_chars_1 = require("../helpers/remove-special-chars");
 var GluestackConfig_1 = require("./GluestackConfig");
 var HasuraMetadata_1 = __importDefault(require("./HasuraMetadata"));
 var GluestackEvent_1 = __importDefault(require("./GluestackEvent"));
-var promises_2 = require("fs/promises");
 var HasuraEngine = (function () {
     function HasuraEngine(actionPlugins) {
         this.actionGQLFile = 'action.graphql';
@@ -261,7 +260,7 @@ var HasuraEngine = (function () {
                         _e.label = 6;
                     case 6:
                         _e.trys.push([6, 9, , 10]);
-                        return [4, (0, promises_2.readFile)(trackPath)];
+                        return [4, (0, promises_1.readFile)(trackPath)];
                     case 7:
                         track = _e.sent();
                         trackJSON = JSON.parse(track.toString());

@@ -149,16 +149,22 @@ var GluestackEngine = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.collectPlugins();
-                        this.stopDockerCompose();
-                        hasuraPluginName = (0, GluestackConfig_1.getConfig)('hasuraInstancePath');
-                        if (!(hasuraPluginName && hasuraPluginName !== '')) return [3, 2];
-                        hasuraEngine = new HasuraEngine_1.default(this.actionPlugins);
-                        return [4, hasuraEngine.exportMetadata()];
+                        console.log('[engine] Stopping engine...');
+                        return [4, this.collectPlugins()];
                     case 1:
                         _a.sent();
-                        _a.label = 2;
-                    case 2: return [2];
+                        hasuraPluginName = (0, GluestackConfig_1.getConfig)('hasuraInstancePath');
+                        if (!(hasuraPluginName && hasuraPluginName !== '')) return [3, 3];
+                        hasuraEngine = new HasuraEngine_1.default(this.actionPlugins);
+                        return [4, hasuraEngine.exportMetadata()];
+                    case 2:
+                        _a.sent();
+                        _a.label = 3;
+                    case 3: return [4, this.stopDockerCompose()];
+                    case 4:
+                        _a.sent();
+                        console.log('[engine] Engine stopped successfully...');
+                        return [2];
                 }
             });
         });
