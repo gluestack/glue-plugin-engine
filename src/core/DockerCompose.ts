@@ -67,7 +67,7 @@ export default class DockerCompose implements IDockerCompose {
   }
 
   // Adds the hasura service to the docker-compose file
-  public async addHasura(plugin: IStatelessPlugin) {
+  public async addHasura(plugin: IStatelessPlugin, postgres: string) {
     const hasura: IService = {
       container_name: plugin.instance,
       restart: 'always',
@@ -76,14 +76,57 @@ export default class DockerCompose implements IDockerCompose {
         '8080:8080'
       ],
       volumes: [
-        `${plugin.path}:/hasura`,
+        `${plugin.path}/.db-data:/hasura`,
       ],
       env_file: [
         `${plugin.path}/.env`
       ]
     };
 
+    if (postgres && postgres !== '') {
+      hasura.depends_on = {};
+      hasura.depends_on[`${postgres}`] = {
+        condition: 'service_healthy'
+      }
+    }
+
     this.addService(plugin.instance, hasura);
+  }
+
+  // Adds the hasura service to the docker-compose file
+  public async addPostgres(plugin: IStatelessPlugin) {
+    let instance = plugin.instance_object;
+    const db_config = instance.gluePluginStore.get('db_config');
+    const port_number = instance.gluePluginStore.get('port_number');
+
+    const postgres: IService = {
+      container_name: plugin.instance,
+      restart: 'always',
+      image: 'postgres:12',
+      ports: [
+        `${port_number}:5432`
+      ],
+      volumes: [
+        `${plugin.path}/db:/var/lib/postgresql/data/`
+      ],
+      environment: {
+        POSTGRES_USER: `${db_config.username}`,
+        POSTGRES_PASSWORD: `${db_config.password}`,
+        POSTGRES_DB: `${db_config.db_name}`
+      },
+      healthcheck: {
+        test: [
+          "CMD-SHELL",
+          `psql -U ${db_config.username} -d ${db_config.db_name}`
+        ],
+        interval: '10s',
+        timeout: '10s',
+        retries: 50,
+        start_period: '30s'
+      }
+    };
+
+    this.addService(plugin.instance, postgres);
   }
 
   // Adds the other services to the docker-compose file

@@ -120,16 +120,24 @@ var PluginInstanceContainerController = (function () {
     PluginInstanceContainerController.prototype.getConfig = function () { };
     PluginInstanceContainerController.prototype.up = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var app, engine;
+            var app, engine, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         app = this.app;
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
                         engine = new GluestackEngine_1.default(app, 'backend');
                         return [4, engine.start()];
-                    case 1:
+                    case 2:
                         _a.sent();
-                        return [2];
+                        return [3, 4];
+                    case 3:
+                        err_1 = _a.sent();
+                        console.log('>> err', err_1);
+                        return [3, 4];
+                    case 4: return [2];
                 }
             });
         });

@@ -12,9 +12,10 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "@gluestack/framework": "^0.0.x",
+    "@gluestack/framework": "^0.0.18",
     "@gluestack/glue-plugin-dev-process-manager": "^0.0.x",
     "@gluestack/graphql-sdl-to-json": "^0.0.x",
+    "@gluestack/helpers": "^0.0.9",
     "@types/node": "^18.11.18",
     "axios": "^1.2.2",
     "dotenv": "^16.0.3",
@@ -33,6 +34,7 @@
     "plugin-build": "tsc"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.191",
     "@types/node-cron": "^3.0.7",
     "typescript": "^4.9.4"
   }

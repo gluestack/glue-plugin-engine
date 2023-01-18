@@ -11,11 +11,18 @@
  *
  * @returns {string[]} - Returns an array of all the plugins that are used in the project
  */
-export const backendPlugins = (): string[] => [
-  '@gluestack/glue-plugin-auth',
-  '@gluestack/glue-plugin-engine',
+export const backendPlugins: string[] = [
+  '@gluestack/glue-plugin-postgres',
   '@gluestack/glue-plugin-graphql',
-  '@gluestack/glue-plugin-storage',
+  '@gluestack/glue-plugin-engine',
   '@gluestack/glue-plugin-functions',
-  '@gluestack/glue-plugin-functions.action'
+  '@gluestack/glue-plugin-functions.action',
+  '@gluestack/glue-plugin-auth',
+  '@gluestack/glue-plugin-storage'
 ];
+
+export const noDockerfiles: string[] = [
+  '@gluestack/glue-plugin-graphql',
+  '@gluestack/glue-plugin-postgres'
+];
+

@@ -1,5 +1,6 @@
 import IApp from "@gluestack/framework/types/app/interface/IApp";
 import IInstance from "@gluestack/framework/types/plugin/interface/IInstance";
+import IHasContainerController from "@gluestack/framework/types/plugin/interface/IHasContainerController";
 
 import { IGlueEngine } from "./types/IGlueEngine";
 import { IStatelessPlugin } from "./types/IStatelessPlugin";
@@ -11,8 +12,9 @@ import DockerCompose from "./DockerCompose";
 import { getConfig, setConfig } from "./GluestackConfig";
 
 import { join } from "path";
+import { includes } from "lodash";
 import { writeFile } from "../helpers/write-file";
-import { backendPlugins } from "../configs/constants";
+import { backendPlugins, noDockerfiles } from "../configs/constants";
 import { waitInSeconds } from "../helpers/wait-in-seconds";
 import { replaceKeyword } from "../helpers/replace-keyword";
 import { removeSpecialChars } from "../helpers/remove-special-chars";
@@ -33,11 +35,15 @@ export default class GluestackEngine implements IGlueEngine {
   app: IApp;
   actionPlugins: IStatelessPlugin[];
   statelessPlugins: IStatelessPlugin[];
+  statefulPlugins: IStatelessPlugin[];
 
   constructor(app: IApp, backendInstancePath: string) {
-    this.app = app;
     this.actionPlugins = [];
-    this.backendPlugins = backendPlugins();
+    this.statefulPlugins = [];
+    this.statelessPlugins = [];
+
+    this.app = app;
+    this.backendPlugins = backendPlugins;
 
     setConfig('backendInstancePath', backendInstancePath);
   }
@@ -46,7 +52,8 @@ export default class GluestackEngine implements IGlueEngine {
   async start(): Promise<void> {
     // 1. Gets all the stateless instances and sets some config variables
     // 2. Collect dockerfile from all available stateles instances assets directory
-    await this.collectPlugins();
+    await this.collectPlugins('stateless');
+    await this.collectPlugins('stateful');
 
     // 3. generates docker-compose file
     await this.createDockerCompose();
@@ -64,12 +71,6 @@ export default class GluestackEngine implements IGlueEngine {
     const hasuraPluginName = getConfig('hasuraInstancePath');
     if (hasuraPluginName && hasuraPluginName !== '') {
       const hasuraEngine: IHasuraEngine = new HasuraEngine(this.actionPlugins);
-
-      // 6. runs hasura metadata apply
-      await hasuraEngine.applyMigrate();
-
-      // 7. runs hasura metadata apply
-      await hasuraEngine.applyMetadata();
 
       // 6. runs hasura metadata apply
       await hasuraEngine.applyMigrate();
@@ -139,12 +140,16 @@ export default class GluestackEngine implements IGlueEngine {
   }
 
   // Collects all the stateless plugins and their dockerfiles
-  async collectPlugins (): Promise<void> {
+  async collectPlugins (
+    pluginType: 'stateless' | 'stateful' = 'stateless'
+  ): Promise<void> {
     const app: IApp = this.app;
     const arr: IStatelessPlugin[] = [];
 
     // Gather all the availables plugin instances
-    const instances: any = app.getContainerTypePluginInstances(false);
+    // @ts-ignore
+    const instances: (IInstance & IHasContainerController)[] =
+      app.getContainerTypePluginInstances(false);
 
     // Iterate over the instances
     for await (const instance of instances) {
@@ -157,7 +162,7 @@ export default class GluestackEngine implements IGlueEngine {
       if (
         instance &&
         instance?.containerController &&
-        type && type === 'stateless' &&
+        type && type === pluginType &&
         name && this.backendPlugins.includes(name)
       ) {
 
@@ -168,51 +173,72 @@ export default class GluestackEngine implements IGlueEngine {
           template_folder: instance.callerPlugin.getTemplateFolderPath(),
           instance: instance.getName(),
           path: join(process.cwd(), instance.getInstallationPath()),
-          status: instance.getContainerController().getStatus()
+          status: instance.getContainerController().setStatus('up'),
+          instance_object: instance
         };
 
         // Ignore graphql plugin
-        if (details.name !== '@gluestack/glue-plugin-graphql') {
+        if (!includes(noDockerfiles, details.name)) {
           // Collect the dockerfile & store the context into the instance store
           await this.collectDockerContext(details, instance);
-        } else {
-          // store graphql plugin's instance name
+        }
+
+        // store graphql plugin's instance name
+        if (details.name === '@gluestack/glue-plugin-graphql') {
           setConfig('hasuraInstancePath', details.instance);
         }
 
         // store engine plugin's instance name
-        if (details.name !== '@gluestack/glue-plugin-engine') {
+        if (details.name === '@gluestack/glue-plugin-engine') {
           setConfig('engineInstancePath', details.instance);
         }
 
         // store auth plugin's instance name
-        if (details.name !== '@gluestack/glue-plugin-auth') {
+        if (details.name === '@gluestack/glue-plugin-auth') {
           setConfig('authInstancePath', details.instance);
         }
 
+        // store functions plugin's instance name
         if (details.name === '@gluestack/glue-plugin-functions.action') {
           this.actionPlugins.push(details);
+        }
+
+        // store postgres plugin's instance name
+        if (details.name === '@gluestack/glue-plugin-postgres') {
+          setConfig('postgresInstancePath', details.instance);
         }
 
         arr.push(details);
       }
     }
 
-    this.statelessPlugins = arr;
+    if (pluginType === 'stateless') {
+      this.statelessPlugins = arr;
+    } else {
+      this.statefulPlugins = arr;
+    }
   }
 
   // Creates the docker-compose file
   async createDockerCompose(): Promise<void> {
     const dockerCompose = new DockerCompose();
-    const plugins = this.statelessPlugins;
+    const plugins = [
+      ...this.statelessPlugins,
+      ...this.statefulPlugins
+    ];
 
+    const postgresInstancePath: string = getConfig('postgresInstancePath');
     // Gather all the availables plugin instances
     for await (const plugin of plugins) {
+      // If and only if the instance is postgres plugin
+      if (plugin.name === '@gluestack/glue-plugin-postgres') {
+        dockerCompose.addPostgres(plugin);
+        continue;
+      }
+
       // If and only if the instance is graphql plugin
       if (plugin.name === '@gluestack/glue-plugin-graphql') {
-        dockerCompose.addHasura(plugin);
-        setConfig('hasuraInstancePath', plugin.instance);
-
+        dockerCompose.addHasura(plugin, postgresInstancePath);
         continue;
       }
 
@@ -220,8 +246,6 @@ export default class GluestackEngine implements IGlueEngine {
       if (plugin.name === '@gluestack/glue-plugin-engine') {
         this.engineExist = true;
         dockerCompose.addNginx(plugin);
-
-        setConfig('engineInstancePath', plugin.instance);
       }
 
       // Add the rest of the plugins

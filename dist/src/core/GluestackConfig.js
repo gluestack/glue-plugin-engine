@@ -53,6 +53,8 @@ var promises_1 = require("fs/promises");
 var file_exists_1 = require("../helpers/file-exists");
 var write_file_1 = require("../helpers/write-file");
 exports.config = {
+    postgresInstancePath: '',
+    postgresConnectionString: '',
     authInstancePath: '',
     backendInstancePath: '',
     engineInstancePath: '',
