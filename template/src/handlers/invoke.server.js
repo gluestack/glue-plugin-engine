@@ -31,16 +31,23 @@ module.exports = async (req, res) => {
     data = body.hasOwnProperty('data') ? { ...body.data } : {};
   }
 
-  await client.invoker.invoke(
-    appId,
-    methodName,
-    method,
-    data,
-    options
-  );
-
-  return res.status(200).json({
-    status: true,
-    message: 'OK'
-  });
+  try {
+    const resp = await client.invoker.invoke(
+      appId,
+      methodName,
+      method,
+      data,
+      options
+    );
+    return res.status(200).json({
+      status: true,
+      message: 'OK',
+      data: resp
+    });
+  } catch (e) {
+    return res.status(500).json({
+      status: false,
+      errors: e.message
+    });
+  }
 };
