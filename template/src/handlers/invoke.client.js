@@ -10,6 +10,7 @@ const { DaprClient, HttpMethod } = require('@dapr/dapr');
 
 module.exports = async (req, res) => {
   const { headers, body } = req;
+  if (headers["content-length"]) delete headers["content-length"];
 
   if (!body.hasOwnProperty('action_name')) {
     return res.json({ status: false, message: 'Missing "action_name"' });
