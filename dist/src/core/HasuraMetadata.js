@@ -133,7 +133,7 @@ var HasuraMetadata = (function () {
                         error_1 = _a.sent();
                         console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
                         return [2, Promise.resolve('failed')];
-                    case 4: return [4, this.makeRequest(actionData)];
+                    case 4: return [4, this.makeRequest(actionData, true)];
                     case 5:
                         _a.sent();
                         return [2];
@@ -248,7 +248,7 @@ var HasuraMetadata = (function () {
                         if (e_1) throw e_1.error;
                         return [7];
                     case 17: return [7];
-                    case 18: return [4, this.makeRequest(customTypes)];
+                    case 18: return [4, this.makeRequest(customTypes, true)];
                     case 19:
                         _e.sent();
                         return [2];

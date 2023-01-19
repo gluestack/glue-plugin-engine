@@ -67,7 +67,7 @@ export default class HasuraMetadata implements IHasuraMetadata {
     }
 
     // creating action
-    await this.makeRequest(actionData);
+    await this.makeRequest(actionData, true);
   }
 
   // Creates the given action in the hasura engine
@@ -141,7 +141,7 @@ export default class HasuraMetadata implements IHasuraMetadata {
     }
 
     // creating action
-    await this.makeRequest(customTypes);
+    await this.makeRequest(customTypes, true);
   }
 
   // Creates the given event in the hasura engine

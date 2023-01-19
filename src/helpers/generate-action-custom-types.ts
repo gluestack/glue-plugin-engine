@@ -41,6 +41,23 @@ const createCustomTypes = (definitions: any) => {
     if (type === 'input_object') {
       body.args.input_objects.push(object);
     }
+
+    if (type === 'GRAPHQL_ENUM') {
+      body.args.enums.push({
+        name: definition.title,
+        values: definition.enum.map((value: string) => {
+          return {
+            value: value
+          }
+        })
+      });
+    }
+
+    if (type === 'GRAPHQL_SCALAR') {
+      body.args.scalars.push({
+        name: definition.title
+      });
+    }
   });
 
   return body;
