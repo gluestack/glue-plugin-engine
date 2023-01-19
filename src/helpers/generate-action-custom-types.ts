@@ -27,7 +27,10 @@ const createCustomTypes = (definitions: any) => {
 
       object.fields.push({
         name: propKey,
-        type: capitalize(property.type) + '!'
+        type:
+          (property.type
+            ? capitalize(property.type)
+            : replaceRefDefinition(property)) + "!",
       });
     });
 

@@ -24,7 +24,9 @@ var createCustomTypes = function (definitions) {
             var property = definition.properties[propKey];
             object.fields.push({
                 name: propKey,
-                type: capitalize(property.type) + '!'
+                type: (property.type
+                    ? capitalize(property.type)
+                    : replaceRefDefinition(property)) + "!",
             });
         });
         if (type === 'object') {
