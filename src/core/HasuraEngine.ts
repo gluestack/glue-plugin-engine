@@ -102,6 +102,10 @@ export default class HasuraEngine implements IHasuraEngine {
     // create all actions plugins into hasura engine
     console.log('> Registering actions plugins into hasura engine...');
     await this.createActions();
+
+    // create all action permissions into hasura engine
+    console.log('> Registering actions plugins into hasura engine...');
+    await this.createActionPermissions();
   }
 
   // Re-apply all the events into the hasura engine
@@ -204,6 +208,17 @@ export default class HasuraEngine implements IHasuraEngine {
 
     for await (const action of this.actions) {
       await this.metadata.createAction(action);
+    }
+  }
+
+  // Create all actions into the hasura engine
+  private async createActionPermissions(): Promise<void | boolean> {
+    if (this.actions.length <= 0) {
+      return Promise.resolve(false);
+    }
+
+    for await (const action of this.actions) {
+      await this.metadata.createActionPermission(action);
     }
   }
 

@@ -77,6 +77,29 @@ const createAction = (
   return body;
 };
 
+const createActionPermission = (
+  query: any, roles: string[]
+) => {
+  const action: string = objectKeys(query.properties)[0];
+
+  const body: any = {
+    type: "bulk",
+    args: []
+  };
+
+  for (const role of roles) {
+    body.args.push({
+      type: 'create_action_permission',
+      args: {
+        action,
+        role
+      }
+    })
+  }
+  
+  return body;
+};
+
 export const generate = (
   schema: string, kind: string, type: string = 'action'
 ): Promise<any> => {
@@ -100,4 +123,24 @@ export const generate = (
     delete definitions[isMutation ? 'Mutation' : 'Query'];
     return createCustomTypes(definitions);
   }
+}
+
+export const generateActionPermission = (
+  schema: string, roles: string[]
+): Promise<any> => {
+  const jsonSchema: any = graphqlToJsonSchema(schema);
+  const { definitions } = jsonSchema;
+
+  let isMutation: boolean = false, isQuery: boolean = false;
+
+  isMutation = has(definitions, 'Mutation');
+  isQuery = has(definitions, 'Query');
+
+  if (!isQuery && !isMutation) {
+    console.log('> No Query or Mutation found in schema!');
+    process.exit(1);
+  }
+
+  const query: string = get(definitions, isMutation ? 'Mutation' : 'Query');
+  return createActionPermission(query, roles);
 };

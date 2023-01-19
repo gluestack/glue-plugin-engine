@@ -154,6 +154,10 @@ var HasuraEngine = (function () {
                         return [4, this.createActions()];
                     case 4:
                         _a.sent();
+                        console.log('> Registering actions plugins into hasura engine...');
+                        return [4, this.createActionPermissions()];
+                    case 5:
+                        _a.sent();
                         return [2];
                 }
             });
@@ -465,6 +469,60 @@ var HasuraEngine = (function () {
                     case 12: return [3, 14];
                     case 13:
                         if (e_5) throw e_5.error;
+                        return [7];
+                    case 14: return [7];
+                    case 15: return [2];
+                }
+            });
+        });
+    };
+    HasuraEngine.prototype.createActionPermissions = function () {
+        var _a, e_6, _b, _c;
+        return __awaiter(this, void 0, void 0, function () {
+            var _d, _e, _f, action, e_6_1;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
+                    case 0:
+                        if (this.actions.length <= 0) {
+                            return [2, Promise.resolve(false)];
+                        }
+                        _g.label = 1;
+                    case 1:
+                        _g.trys.push([1, 9, 10, 15]);
+                        _d = true, _e = __asyncValues(this.actions);
+                        _g.label = 2;
+                    case 2: return [4, _e.next()];
+                    case 3:
+                        if (!(_f = _g.sent(), _a = _f.done, !_a)) return [3, 8];
+                        _c = _f.value;
+                        _d = false;
+                        _g.label = 4;
+                    case 4:
+                        _g.trys.push([4, , 6, 7]);
+                        action = _c;
+                        return [4, this.metadata.createActionPermission(action)];
+                    case 5:
+                        _g.sent();
+                        return [3, 7];
+                    case 6:
+                        _d = true;
+                        return [7];
+                    case 7: return [3, 2];
+                    case 8: return [3, 15];
+                    case 9:
+                        e_6_1 = _g.sent();
+                        e_6 = { error: e_6_1 };
+                        return [3, 15];
+                    case 10:
+                        _g.trys.push([10, , 13, 14]);
+                        if (!(!_d && !_a && (_b = _e.return))) return [3, 12];
+                        return [4, _b.call(_e)];
+                    case 11:
+                        _g.sent();
+                        _g.label = 12;
+                    case 12: return [3, 14];
+                    case 13:
+                        if (e_6) throw e_6.error;
                         return [7];
                     case 14: return [7];
                     case 15: return [2];

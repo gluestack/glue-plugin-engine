@@ -10,6 +10,7 @@ import { IHasuraMetadata } from './types/IHasuraMetadata';
 import { getConfig, setConfig } from './GluestackConfig';
 import { generate as generateEvent } from '../helpers/generate-events';
 import { generate as generateActionOrCustomType } from '../helpers/generate-action-custom-types';
+import { generateActionPermission } from '../helpers/generate-action-custom-types';
 
 /**
  * HasuraMetadata
@@ -67,6 +68,34 @@ export default class HasuraMetadata implements IHasuraMetadata {
 
     // creating action
     await this.makeRequest(actionData);
+  }
+
+  // Creates the given action in the hasura engine
+  public async createActionPermission(action: IAction): Promise<string> {
+    // Reads the action.setting file
+    const setting = readFileSync(action.setting_path, 'utf8');
+
+    const regex = /roles="(.*)"/g;
+    const match = regex.exec(setting);
+    if (match?.[1]) {
+      const roles = match[1].split(",")
+
+      // Reads the action.graphql file
+      const schema = readFileSync(action.grapqhl_path, 'utf8');
+
+      let actionData: any = {};
+
+      try {
+        // Generates the custom types & action data
+        actionData = await generateActionPermission(schema, roles);
+      } catch (error) {
+        console.log(`> Action Instance ${action.name} has invalid graphql schema. Skipping...`);
+        return Promise.resolve('failed');
+      }
+
+      // creating action
+      await this.makeRequest(actionData, true);
+    }
   }
 
   // Creates the given custom-types against all the actions in the hasura engine

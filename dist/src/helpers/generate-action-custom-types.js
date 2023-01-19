@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generate = void 0;
+exports.generateActionPermission = exports.generate = void 0;
 var graphqlToJsonSchema = require('@gluestack/graphql-sdl-to-json');
 var _a = require('lodash'), replace = _a.replace, has = _a.has, get = _a.get, objectKeys = _a.keys, capitalize = _a.capitalize;
 var replaceRefDefinition = function (string) {
@@ -63,6 +63,24 @@ var createAction = function (query, type, kind) {
     };
     return body;
 };
+var createActionPermission = function (query, roles) {
+    var action = objectKeys(query.properties)[0];
+    var body = {
+        type: "bulk",
+        args: []
+    };
+    for (var _i = 0, roles_1 = roles; _i < roles_1.length; _i++) {
+        var role = roles_1[_i];
+        body.args.push({
+            type: 'create_action_permission',
+            args: {
+                action: action,
+                role: role
+            }
+        });
+    }
+    return body;
+};
 var generate = function (schema, kind, type) {
     if (type === void 0) { type = 'action'; }
     var jsonSchema = graphqlToJsonSchema(schema);
@@ -84,4 +102,18 @@ var generate = function (schema, kind, type) {
     }
 };
 exports.generate = generate;
+var generateActionPermission = function (schema, roles) {
+    var jsonSchema = graphqlToJsonSchema(schema);
+    var definitions = jsonSchema.definitions;
+    var isMutation = false, isQuery = false;
+    isMutation = has(definitions, 'Mutation');
+    isQuery = has(definitions, 'Query');
+    if (!isQuery && !isMutation) {
+        console.log('> No Query or Mutation found in schema!');
+        process.exit(1);
+    }
+    var query = get(definitions, isMutation ? 'Mutation' : 'Query');
+    return createActionPermission(query, roles);
+};
+exports.generateActionPermission = generateActionPermission;
 //# sourceMappingURL=generate-action-custom-types.js.map
