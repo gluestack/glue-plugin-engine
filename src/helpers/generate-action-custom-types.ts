@@ -1,3 +1,5 @@
+import { IAction } from "src/core/types/IHasuraEngine";
+
 const graphqlToJsonSchema = require('@gluestack/graphql-sdl-to-json');
 const {
   replace, has, get, keys: objectKeys, capitalize
@@ -64,7 +66,7 @@ const createCustomTypes = (definitions: any) => {
 };
 
 const createAction = (
-  query: any, type: string, kind: string = 'synchronous'
+  query: any, type: string, kind: string = 'synchronous', action:IAction = null
 ) => {
   const name: string = objectKeys(query.properties)[0];
   const property: any = query.properties[name];
@@ -83,7 +85,7 @@ const createAction = (
       name,
       definition: {
         arguments: argmnts,
-        handler: '{{ACTION_BASE_URL}}',
+        handler: `{{ACTION_BASE_URL}}/${action.handler}`,
         kind,
         output_type,
         type
@@ -118,7 +120,7 @@ const createActionPermission = (
 };
 
 export const generate = (
-  schema: string, kind: string, type: string = 'action'
+  schema: string, kind: string, type: string = 'action', action:IAction = null
 ): Promise<any> => {
   const jsonSchema: any = graphqlToJsonSchema(schema);
   const { definitions } = jsonSchema;
@@ -135,7 +137,7 @@ export const generate = (
 
   if (type === 'action') {
     const query: string = get(definitions, isMutation ? 'Mutation' : 'Query');
-    return createAction(query, isMutation ? 'mutation' : 'query', kind);
+    return createAction(query, isMutation ? 'mutation' : 'query', kind, action);
   } else {
     delete definitions[isMutation ? 'Mutation' : 'Query'];
     return createCustomTypes(definitions);

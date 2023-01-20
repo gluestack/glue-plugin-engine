@@ -166,27 +166,32 @@ export default class HasuraEngine implements IHasuraEngine {
   private async scanActions(): Promise<void>  {
     for await (const plugin of this.actionPlugins) {
       // Check if the plugin path exists
-      let exist = await fileExists(plugin.path);
+      let exist = await fileExists(`${plugin.path}/actions`);
       if (!exist) {
         console.log(`> Action Instance ${plugin.instance} is missing. Skipping...`);
         continue;
       }
-
-      // Check if the action.graphql file exists
-      exist = await fileExists(join(plugin.path, this.actionGQLFile));
-      if (!exist) {
-        console.log(`> Action Instance ${plugin.instance} does not have actions.graphql file. Skipping...`);
-        continue;
+      const dirents = await readdir(`${plugin.path}/actions`, {withFileTypes: true});
+      for await (const dirent of dirents) {
+        if (dirent.isDirectory()) {
+            // Check if the action.graphql file exists
+            exist = await fileExists(join(plugin.path, "actions", dirent.name, this.actionGQLFile));
+            if (!exist) {
+              console.log(`> Action Instance ${plugin.instance} does not have actions.graphql file. Skipping...`);
+              continue;
+            }
+      
+            // Push the action to the actions array
+            this.actions.push({
+              name: removeSpecialChars(dirent.name),
+              handler: removeSpecialChars(plugin.instance),
+              path: join(plugin.path, "actions", dirent.name),
+              grapqhl_path: join(plugin.path, "actions", dirent.name, this.actionGQLFile),
+              setting_path: join(plugin.path, "actions", dirent.name, this.actionSettingFile)
+            });
+          }
+        }
       }
-
-      // Push the action to the actions array
-      this.actions.push({
-        name: removeSpecialChars(plugin.instance),
-        path: plugin.path,
-        grapqhl_path: join(plugin.path, this.actionGQLFile),
-        setting_path: join(plugin.path, this.actionSettingFile)
-      });
-    }
   }
 
   // Drops all actions from the hasura engine

@@ -60,7 +60,7 @@ export default class HasuraMetadata implements IHasuraMetadata {
 
     try {
       // Generates the custom types & action data
-      actionData = await generateActionOrCustomType(schema, kind, 'action');
+      actionData = await generateActionOrCustomType(schema, kind, 'action', action);
     } catch (error) {
       console.log(`> Action Instance ${action.name} has invalid graphql schema. Skipping...`);
       return Promise.resolve('failed');

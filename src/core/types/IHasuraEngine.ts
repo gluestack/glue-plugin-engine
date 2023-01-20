@@ -3,6 +3,7 @@ import { IStatelessPlugin } from "./IStatelessPlugin";
 export interface IAction {
   name: string;
   path: string;
+  handler: string;
   grapqhl_path: string;
   setting_path: string;
 }

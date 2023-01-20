@@ -303,75 +303,117 @@ var HasuraEngine = (function () {
         });
     };
     HasuraEngine.prototype.scanActions = function () {
-        var _a, e_3, _b, _c;
+        var _a, e_3, _b, _c, _d, e_4, _e, _f;
         return __awaiter(this, void 0, void 0, function () {
-            var _d, _e, _f, plugin, exist, e_3_1;
-            return __generator(this, function (_g) {
-                switch (_g.label) {
+            var _g, _h, _j, plugin, exist, dirents, _k, dirents_2, dirents_2_1, dirent, e_4_1, e_3_1;
+            return __generator(this, function (_l) {
+                switch (_l.label) {
                     case 0:
-                        _g.trys.push([0, 9, 10, 15]);
-                        _d = true, _e = __asyncValues(this.actionPlugins);
-                        _g.label = 1;
-                    case 1: return [4, _e.next()];
+                        _l.trys.push([0, 25, 26, 31]);
+                        _g = true, _h = __asyncValues(this.actionPlugins);
+                        _l.label = 1;
+                    case 1: return [4, _h.next()];
                     case 2:
-                        if (!(_f = _g.sent(), _a = _f.done, !_a)) return [3, 8];
-                        _c = _f.value;
-                        _d = false;
-                        _g.label = 3;
+                        if (!(_j = _l.sent(), _a = _j.done, !_a)) return [3, 24];
+                        _c = _j.value;
+                        _g = false;
+                        _l.label = 3;
                     case 3:
-                        _g.trys.push([3, , 6, 7]);
+                        _l.trys.push([3, , 22, 23]);
                         plugin = _c;
-                        return [4, (0, file_exists_1.fileExists)(plugin.path)];
+                        return [4, (0, file_exists_1.fileExists)("".concat(plugin.path, "/actions"))];
                     case 4:
-                        exist = _g.sent();
+                        exist = _l.sent();
                         if (!exist) {
                             console.log("> Action Instance ".concat(plugin.instance, " is missing. Skipping..."));
-                            return [3, 7];
+                            return [3, 23];
                         }
-                        return [4, (0, file_exists_1.fileExists)((0, path_1.join)(plugin.path, this.actionGQLFile))];
+                        return [4, (0, promises_1.readdir)("".concat(plugin.path, "/actions"), { withFileTypes: true })];
                     case 5:
-                        exist = _g.sent();
+                        dirents = _l.sent();
+                        _l.label = 6;
+                    case 6:
+                        _l.trys.push([6, 15, 16, 21]);
+                        _k = true, dirents_2 = (e_4 = void 0, __asyncValues(dirents));
+                        _l.label = 7;
+                    case 7: return [4, dirents_2.next()];
+                    case 8:
+                        if (!(dirents_2_1 = _l.sent(), _d = dirents_2_1.done, !_d)) return [3, 14];
+                        _f = dirents_2_1.value;
+                        _k = false;
+                        _l.label = 9;
+                    case 9:
+                        _l.trys.push([9, , 12, 13]);
+                        dirent = _f;
+                        if (!dirent.isDirectory()) return [3, 11];
+                        return [4, (0, file_exists_1.fileExists)((0, path_1.join)(plugin.path, "actions", dirent.name, this.actionGQLFile))];
+                    case 10:
+                        exist = _l.sent();
                         if (!exist) {
                             console.log("> Action Instance ".concat(plugin.instance, " does not have actions.graphql file. Skipping..."));
-                            return [3, 7];
+                            return [3, 13];
                         }
                         this.actions.push({
-                            name: (0, remove_special_chars_1.removeSpecialChars)(plugin.instance),
-                            path: plugin.path,
-                            grapqhl_path: (0, path_1.join)(plugin.path, this.actionGQLFile),
-                            setting_path: (0, path_1.join)(plugin.path, this.actionSettingFile)
+                            name: (0, remove_special_chars_1.removeSpecialChars)(dirent.name),
+                            handler: (0, remove_special_chars_1.removeSpecialChars)(plugin.instance),
+                            path: (0, path_1.join)(plugin.path, "actions", dirent.name),
+                            grapqhl_path: (0, path_1.join)(plugin.path, "actions", dirent.name, this.actionGQLFile),
+                            setting_path: (0, path_1.join)(plugin.path, "actions", dirent.name, this.actionSettingFile)
                         });
-                        return [3, 7];
-                    case 6:
-                        _d = true;
+                        _l.label = 11;
+                    case 11: return [3, 13];
+                    case 12:
+                        _k = true;
                         return [7];
-                    case 7: return [3, 1];
-                    case 8: return [3, 15];
-                    case 9:
-                        e_3_1 = _g.sent();
+                    case 13: return [3, 7];
+                    case 14: return [3, 21];
+                    case 15:
+                        e_4_1 = _l.sent();
+                        e_4 = { error: e_4_1 };
+                        return [3, 21];
+                    case 16:
+                        _l.trys.push([16, , 19, 20]);
+                        if (!(!_k && !_d && (_e = dirents_2.return))) return [3, 18];
+                        return [4, _e.call(dirents_2)];
+                    case 17:
+                        _l.sent();
+                        _l.label = 18;
+                    case 18: return [3, 20];
+                    case 19:
+                        if (e_4) throw e_4.error;
+                        return [7];
+                    case 20: return [7];
+                    case 21: return [3, 23];
+                    case 22:
+                        _g = true;
+                        return [7];
+                    case 23: return [3, 1];
+                    case 24: return [3, 31];
+                    case 25:
+                        e_3_1 = _l.sent();
                         e_3 = { error: e_3_1 };
-                        return [3, 15];
-                    case 10:
-                        _g.trys.push([10, , 13, 14]);
-                        if (!(!_d && !_a && (_b = _e.return))) return [3, 12];
-                        return [4, _b.call(_e)];
-                    case 11:
-                        _g.sent();
-                        _g.label = 12;
-                    case 12: return [3, 14];
-                    case 13:
+                        return [3, 31];
+                    case 26:
+                        _l.trys.push([26, , 29, 30]);
+                        if (!(!_g && !_a && (_b = _h.return))) return [3, 28];
+                        return [4, _b.call(_h)];
+                    case 27:
+                        _l.sent();
+                        _l.label = 28;
+                    case 28: return [3, 30];
+                    case 29:
                         if (e_3) throw e_3.error;
                         return [7];
-                    case 14: return [7];
-                    case 15: return [2];
+                    case 30: return [7];
+                    case 31: return [2];
                 }
             });
         });
     };
     HasuraEngine.prototype.dropActions = function () {
-        var _a, e_4, _b, _c;
+        var _a, e_5, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var _d, _e, _f, action, e_4_1;
+            var _d, _e, _f, action, e_5_1;
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
@@ -402,8 +444,8 @@ var HasuraEngine = (function () {
                     case 7: return [3, 2];
                     case 8: return [3, 15];
                     case 9:
-                        e_4_1 = _g.sent();
-                        e_4 = { error: e_4_1 };
+                        e_5_1 = _g.sent();
+                        e_5 = { error: e_5_1 };
                         return [3, 15];
                     case 10:
                         _g.trys.push([10, , 13, 14]);
@@ -414,7 +456,7 @@ var HasuraEngine = (function () {
                         _g.label = 12;
                     case 12: return [3, 14];
                     case 13:
-                        if (e_4) throw e_4.error;
+                        if (e_5) throw e_5.error;
                         return [7];
                     case 14: return [7];
                     case 15: return [2];
@@ -423,9 +465,9 @@ var HasuraEngine = (function () {
         });
     };
     HasuraEngine.prototype.createActions = function () {
-        var _a, e_5, _b, _c;
+        var _a, e_6, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var _d, _e, _f, action, e_5_1;
+            var _d, _e, _f, action, e_6_1;
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
@@ -456,8 +498,8 @@ var HasuraEngine = (function () {
                     case 7: return [3, 2];
                     case 8: return [3, 15];
                     case 9:
-                        e_5_1 = _g.sent();
-                        e_5 = { error: e_5_1 };
+                        e_6_1 = _g.sent();
+                        e_6 = { error: e_6_1 };
                         return [3, 15];
                     case 10:
                         _g.trys.push([10, , 13, 14]);
@@ -468,7 +510,7 @@ var HasuraEngine = (function () {
                         _g.label = 12;
                     case 12: return [3, 14];
                     case 13:
-                        if (e_5) throw e_5.error;
+                        if (e_6) throw e_6.error;
                         return [7];
                     case 14: return [7];
                     case 15: return [2];
@@ -477,9 +519,9 @@ var HasuraEngine = (function () {
         });
     };
     HasuraEngine.prototype.createActionPermissions = function () {
-        var _a, e_6, _b, _c;
+        var _a, e_7, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var _d, _e, _f, action, e_6_1;
+            var _d, _e, _f, action, e_7_1;
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
@@ -510,8 +552,8 @@ var HasuraEngine = (function () {
                     case 7: return [3, 2];
                     case 8: return [3, 15];
                     case 9:
-                        e_6_1 = _g.sent();
-                        e_6 = { error: e_6_1 };
+                        e_7_1 = _g.sent();
+                        e_7 = { error: e_7_1 };
                         return [3, 15];
                     case 10:
                         _g.trys.push([10, , 13, 14]);
@@ -522,7 +564,7 @@ var HasuraEngine = (function () {
                         _g.label = 12;
                     case 12: return [3, 14];
                     case 13:
-                        if (e_6) throw e_6.error;
+                        if (e_7) throw e_7.error;
                         return [7];
                     case 14: return [7];
                     case 15: return [2];

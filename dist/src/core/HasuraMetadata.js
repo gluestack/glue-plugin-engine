@@ -125,7 +125,7 @@ var HasuraMetadata = (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4, (0, generate_action_custom_types_1.generate)(schema, kind, 'action')];
+                        return [4, (0, generate_action_custom_types_1.generate)(schema, kind, 'action', action)];
                     case 2:
                         actionData = _a.sent();
                         return [3, 4];
