@@ -89,88 +89,107 @@ var DockerCompose = (function () {
     };
     DockerCompose.prototype.addNginx = function (plugin) {
         return __awaiter(this, void 0, void 0, function () {
-            var nginx;
+            var instance, port_number, nginx;
             return __generator(this, function (_a) {
-                nginx = {
-                    container_name: 'nginx',
-                    restart: 'always',
-                    build: (0, path_1.join)(plugin.path, 'router'),
-                    ports: [
-                        '9090:80'
-                    ],
-                    volumes: [
-                        "".concat((0, path_1.join)(plugin.path, 'router', 'nginx.conf'), ":/etc/nginx/nginx.conf")
-                    ]
-                };
-                this.addService('nginx', nginx);
-                return [2];
+                switch (_a.label) {
+                    case 0:
+                        instance = plugin.instance_object;
+                        return [4, instance.gluePluginStore.get('port_number')];
+                    case 1:
+                        port_number = _a.sent();
+                        nginx = {
+                            container_name: 'nginx',
+                            restart: 'always',
+                            build: (0, path_1.join)(plugin.path, 'router'),
+                            ports: [
+                                "".concat(port_number, ":80")
+                            ],
+                            volumes: [
+                                "".concat((0, path_1.join)(plugin.path, 'router', 'nginx.conf'), ":/etc/nginx/nginx.conf")
+                            ]
+                        };
+                        this.addService('nginx', nginx);
+                        return [2];
+                }
             });
         });
     };
     DockerCompose.prototype.addHasura = function (plugin, postgres) {
         return __awaiter(this, void 0, void 0, function () {
-            var hasura;
+            var instance, port_number, hasura;
             return __generator(this, function (_a) {
-                hasura = {
-                    container_name: plugin.instance,
-                    restart: 'always',
-                    image: 'hasura/graphql-engine:v2.16.1',
-                    ports: [
-                        '8080:8080'
-                    ],
-                    volumes: [
-                        "".concat(plugin.path, "/.db-data:/hasura"),
-                    ],
-                    env_file: [
-                        "".concat(plugin.path, "/.env")
-                    ]
-                };
-                if (postgres && postgres !== '') {
-                    hasura.depends_on = {};
-                    hasura.depends_on["".concat(postgres)] = {
-                        condition: 'service_healthy'
-                    };
+                switch (_a.label) {
+                    case 0:
+                        instance = plugin.instance_object;
+                        return [4, instance.gluePluginStore.get('port_number')];
+                    case 1:
+                        port_number = _a.sent();
+                        hasura = {
+                            container_name: plugin.instance,
+                            restart: 'always',
+                            image: 'hasura/graphql-engine:v2.16.1',
+                            ports: [
+                                "".concat(port_number, ":8080")
+                            ],
+                            volumes: [
+                                "".concat(plugin.path, "/.db-data:/hasura"),
+                            ],
+                            env_file: [
+                                "".concat(plugin.path, "/.env")
+                            ]
+                        };
+                        if (postgres && postgres !== '') {
+                            hasura.depends_on = {};
+                            hasura.depends_on["".concat(postgres)] = {
+                                condition: 'service_healthy'
+                            };
+                        }
+                        this.addService(plugin.instance, hasura);
+                        return [2];
                 }
-                this.addService(plugin.instance, hasura);
-                return [2];
             });
         });
     };
     DockerCompose.prototype.addPostgres = function (plugin) {
         return __awaiter(this, void 0, void 0, function () {
-            var instance, db_config, port_number, postgres;
+            var instance, port_number, db_config, postgres;
             return __generator(this, function (_a) {
-                instance = plugin.instance_object;
-                db_config = instance.gluePluginStore.get('db_config');
-                port_number = instance.gluePluginStore.get('port_number');
-                postgres = {
-                    container_name: plugin.instance,
-                    restart: 'always',
-                    image: 'postgres:12',
-                    ports: [
-                        "".concat(port_number, ":5432")
-                    ],
-                    volumes: [
-                        "".concat(plugin.path, "/db:/var/lib/postgresql/data/")
-                    ],
-                    environment: {
-                        POSTGRES_USER: "".concat(db_config.username),
-                        POSTGRES_PASSWORD: "".concat(db_config.password),
-                        POSTGRES_DB: "".concat(db_config.db_name)
-                    },
-                    healthcheck: {
-                        test: [
-                            "CMD-SHELL",
-                            "psql -U ".concat(db_config.username, " -d ").concat(db_config.db_name)
-                        ],
-                        interval: '10s',
-                        timeout: '10s',
-                        retries: 50,
-                        start_period: '30s'
-                    }
-                };
-                this.addService(plugin.instance, postgres);
-                return [2];
+                switch (_a.label) {
+                    case 0:
+                        instance = plugin.instance_object;
+                        return [4, instance.gluePluginStore.get('port_number')];
+                    case 1:
+                        port_number = _a.sent();
+                        db_config = instance.gluePluginStore.get('db_config');
+                        postgres = {
+                            container_name: plugin.instance,
+                            restart: 'always',
+                            image: 'postgres:12',
+                            ports: [
+                                "".concat(port_number, ":5432")
+                            ],
+                            volumes: [
+                                "".concat(plugin.path, "/db:/var/lib/postgresql/data/")
+                            ],
+                            environment: {
+                                POSTGRES_USER: "".concat(db_config.username),
+                                POSTGRES_PASSWORD: "".concat(db_config.password),
+                                POSTGRES_DB: "".concat(db_config.db_name)
+                            },
+                            healthcheck: {
+                                test: [
+                                    "CMD-SHELL",
+                                    "psql -U ".concat(db_config.username, " -d ").concat(db_config.db_name)
+                                ],
+                                interval: '10s',
+                                timeout: '10s',
+                                retries: 50,
+                                start_period: '30s'
+                            }
+                        };
+                        this.addService(plugin.instance, postgres);
+                        return [2];
+                }
             });
         });
     };

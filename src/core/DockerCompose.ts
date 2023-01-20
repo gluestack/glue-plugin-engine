@@ -51,12 +51,15 @@ export default class DockerCompose implements IDockerCompose {
 
   // Adds the nginx service to the docker-compose file
   public async addNginx(plugin: IStatelessPlugin) {
+    const instance: any = plugin.instance_object;
+    const port_number = await instance.gluePluginStore.get('port_number');
+
     const nginx = {
       container_name: 'nginx',
       restart: 'always',
       build: join(plugin.path, 'router'),
       ports: [
-        '9090:80'
+        `${port_number}:80`
       ],
       volumes: [
         `${join(plugin.path, 'router', 'nginx.conf')}:/etc/nginx/nginx.conf`
@@ -68,12 +71,15 @@ export default class DockerCompose implements IDockerCompose {
 
   // Adds the hasura service to the docker-compose file
   public async addHasura(plugin: IStatelessPlugin, postgres: string) {
+    const instance: any = plugin.instance_object;
+    const port_number = await instance.gluePluginStore.get('port_number');
+
     const hasura: IService = {
       container_name: plugin.instance,
       restart: 'always',
       image: 'hasura/graphql-engine:v2.16.1',
       ports: [
-        '8080:8080'
+        `${port_number}:8080`
       ],
       volumes: [
         `${plugin.path}/.db-data:/hasura`,
@@ -95,9 +101,9 @@ export default class DockerCompose implements IDockerCompose {
 
   // Adds the hasura service to the docker-compose file
   public async addPostgres(plugin: IStatelessPlugin) {
-    let instance = plugin.instance_object;
+    const instance: any = plugin.instance_object;
+    const port_number = await instance.gluePluginStore.get('port_number');
     const db_config = instance.gluePluginStore.get('db_config');
-    const port_number = instance.gluePluginStore.get('port_number');
 
     const postgres: IService = {
       container_name: plugin.instance,
