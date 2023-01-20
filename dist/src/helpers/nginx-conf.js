@@ -55,7 +55,6 @@ exports.__esModule = true;
 var path_1 = require("path");
 var fs_1 = require("fs");
 var file_exists_1 = require("./file-exists");
-var constants_1 = require("../constants");
 var nginx_literals_1 = require("./nginx-literals");
 var NginxConf = (function () {
     function NginxConf() {
@@ -140,10 +139,10 @@ var NginxConf = (function () {
                         try {
                             location_1 = _f;
                             if (location_1.hasOwnProperty('server_name')) {
-                                domain = location_1.server_name + constants_1.server_domain;
+                                domain = '_';
                             }
                             if (location_1.hasOwnProperty('path')) {
-                                locations.push((0, nginx_literals_1.setLocation)(location_1.path, "localhost:".concat(upstream.port), location_1.proxy.path, location_1.host, location_1.size_in_mb || 50));
+                                locations.push((0, nginx_literals_1.setLocation)(location_1.path, "host.docker.internal:".concat(upstream.port), location_1.proxy.path, location_1.host, location_1.size_in_mb || 50));
                             }
                         }
                         finally {

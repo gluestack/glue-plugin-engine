@@ -78,18 +78,16 @@ var GlueStackPlugin = (function () {
     GlueStackPlugin.prototype.getTemplateFolderPath = function () {
         return "".concat(process.cwd(), "/node_modules/").concat(this.getName(), "/template");
     };
-    GlueStackPlugin.prototype.getInstallationPath = function (target) {
-        return "";
+    GlueStackPlugin.prototype.getInstallationPath = function () {
+        return process.cwd();
     };
     GlueStackPlugin.prototype.runPostInstall = function (instanceName, target) {
         return __awaiter(this, void 0, void 0, function () {
-            var devProcessManagerPlugin;
+            var instance;
             return __generator(this, function (_a) {
-                devProcessManagerPlugin = this.app.getPluginByName("@gluestack/glue-plugin-dev-process-manager");
-                if (devProcessManagerPlugin &&
-                    devProcessManagerPlugin.getInstances() &&
-                    devProcessManagerPlugin.getInstances()[0]) {
-                    throw new Error("Dev process manager instance already installed as ".concat(devProcessManagerPlugin
+                instance = this.app.getPluginByName("@gluestack/glue-plugin-engine");
+                if (instance && instance.getInstances() && instance.getInstances()[0]) {
+                    throw new Error("Dev process manager instance already installed as ".concat(instance
                         .getInstances()[0]
                         .getName()));
                 }

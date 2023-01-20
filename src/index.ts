@@ -57,22 +57,20 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
     return `${process.cwd()}/node_modules/${this.getName()}/template`;
   }
 
-  getInstallationPath(target: string): string {
-    return "";
+  getInstallationPath(): string {
+    return process.cwd();
   }
 
   async runPostInstall(instanceName: string, target: string) {
-    const devProcessManagerPlugin: GlueStackPlugin = this.app.getPluginByName(
-      "@gluestack/glue-plugin-dev-process-manager",
+    const instance: GlueStackPlugin = this.app.getPluginByName(
+      "@gluestack/glue-plugin-engine",
     );
-    //Validation
+    // Validation
     if (
-      devProcessManagerPlugin &&
-      devProcessManagerPlugin.getInstances() &&
-      devProcessManagerPlugin.getInstances()[0]
+      instance && instance.getInstances() && instance.getInstances()[0]
     ) {
       throw new Error(
-        `Dev process manager instance already installed as ${devProcessManagerPlugin
+        `Dev process manager instance already installed as ${instance
           .getInstances()[0]
           .getName()}`,
       );

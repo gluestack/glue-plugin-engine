@@ -57,12 +57,13 @@ export default class NginxConf {
     for await (const upstream of upstreams) {
       for await (const location of upstream.locations) {
         if (location.hasOwnProperty('server_name')) {
-          domain = location.server_name + server_domain;
+          // domain = location.server_name + server_domain;
+          domain = '_';
         }
 
         if (location.hasOwnProperty('path')) {
           locations.push(setLocation(
-            location.path, `localhost:${upstream.port}`, location.proxy.path, location.host, location.size_in_mb || 50
+            location.path, `host.docker.internal:${upstream.port}`, location.proxy.path, location.host, location.size_in_mb || 50
           ));
         }
       }
