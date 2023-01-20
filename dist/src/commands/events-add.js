@@ -45,7 +45,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.createContent = exports.create = exports.eventsAdd = void 0;
 var write_file_1 = require("../helpers/write-file");
 var create_folder_1 = require("../helpers/create-folder");
@@ -73,7 +73,7 @@ function create(_glueStackPlugin, args) {
                 case 0:
                     dbEventPath = "./backend/events/database";
                     appEventPath = "./backend/events/app";
-                    if (!args.table && !args["function"] && !args.webhook && !args.app) {
+                    if (!args.table && !args.function && !args.webhook && !args.app) {
                         console.log("Please provide at least one of the following options: --table, --function, --webhook, --app");
                         process.exit(0);
                     }
@@ -93,7 +93,7 @@ function create(_glueStackPlugin, args) {
                     console.log("please give either table or an app");
                     process.exit(0);
                     _j.label = 3;
-                case 3: return [4, createContent("function", args["function"])];
+                case 3: return [4, createContent("function", args.function)];
                 case 4:
                     content = _j.sent();
                     return [3, 7];
@@ -134,7 +134,7 @@ function create(_glueStackPlugin, args) {
                     return [4, (0, file_exists_1.fileExists)("".concat(dbEventPath, "/").concat(args.table.folderName, "/").concat(element, ".js"))];
                 case 14:
                     if (_j.sent()) {
-                        dbEventFilePath = path_1["default"].join(process.cwd(), dbEventPath.slice(2), "".concat(args.table.folderName, "/").concat(element, ".js"));
+                        dbEventFilePath = path_1.default.join(process.cwd(), dbEventPath.slice(2), "".concat(args.table.folderName, "/").concat(element, ".js"));
                         data = require(dbEventFilePath);
                         if (data.length !== 0) {
                             objExist = data.find(function (obj) {
@@ -173,7 +173,7 @@ function create(_glueStackPlugin, args) {
                     return [3, 27];
                 case 22:
                     _j.trys.push([22, , 25, 26]);
-                    if (!(!_f && !_a && (_b = _g["return"]))) return [3, 24];
+                    if (!(!_f && !_a && (_b = _g.return))) return [3, 24];
                     return [4, _b.call(_g)];
                 case 23:
                     _j.sent();
@@ -191,7 +191,7 @@ function create(_glueStackPlugin, args) {
                     return [4, (0, file_exists_1.fileExists)("".concat(appEventPath, "/").concat(args.app, ".js"))];
                 case 29:
                     if (_j.sent()) {
-                        appEventFilePath = path_1["default"].join(process.cwd(), appEventPath.slice(2), args.app);
+                        appEventFilePath = path_1.default.join(process.cwd(), appEventPath.slice(2), args.app);
                         data = require(appEventFilePath);
                         data.push(content);
                         fileContent = "module.exports = ".concat(JSON.stringify(data, null, 2));
@@ -219,7 +219,7 @@ function createContent(type, value) {
             return [2, {
                     kind: "sync",
                     type: type,
-                    value: value
+                    value: value,
                 }];
         });
     });

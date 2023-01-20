@@ -61,7 +61,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.createContent = exports.create = exports.cronsAdd = void 0;
 var write_file_1 = require("../helpers/write-file");
 var file_exists_1 = require("../helpers/file-exists");
@@ -95,7 +95,7 @@ function create(_glueStackPlugin, args) {
                     console.log("Please give either --f function or --w webhook-url");
                     process.exit(0);
                     _b.label = 2;
-                case 2: return [4, createContent("function", args["function"], args.schedule)];
+                case 2: return [4, createContent("function", args.function, args.schedule)];
                 case 3:
                     content = _b.sent();
                     return [3, 6];
@@ -115,7 +115,7 @@ function create(_glueStackPlugin, args) {
                     return [4, (0, file_exists_1.fileExists)(cronsFilePath)];
                 case 7:
                     if (_b.sent()) {
-                        data = require(path_1["default"].join(process.cwd(), cronsPath.slice(2), "crons"));
+                        data = require(path_1.default.join(process.cwd(), cronsPath.slice(2), "crons"));
                         data.push(content);
                         fileContent = JSON.stringify(data, null, 2);
                     }
@@ -137,7 +137,7 @@ function createContent(type, value, schedule) {
             return [2, {
                     schedule: schedule,
                     type: type,
-                    value: value
+                    value: value,
                 }];
         });
     });

@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var path_1 = require("path");
 var fs_1 = require("fs");
 var file_exists_1 = require("../helpers/file-exists");
@@ -96,7 +96,7 @@ var NginxConf = (function () {
                         domain = routes.domain;
                     }
                     if (routes.hasOwnProperty('path')) {
-                        locations.push((0, nginx_literals_1.setLocation)(routes.path, routes.proxy.instance, routes.proxy.path));
+                        locations.push((0, nginx_literals_1.setLocation)(routes.path, routes.proxy.instance, routes.proxy.path, routes.host, routes.size_in_mb));
                     }
                 });
                 return [2, Promise.resolve(nginx_literals_1.startsWith + (0, nginx_literals_1.setServer)(domain, locations) + nginx_literals_1.endsWith)];
@@ -105,5 +105,5 @@ var NginxConf = (function () {
     };
     return NginxConf;
 }());
-exports["default"] = NginxConf;
+exports.default = NginxConf;
 //# sourceMappingURL=NginxConf.js.map

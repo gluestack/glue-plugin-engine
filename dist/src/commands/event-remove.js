@@ -45,7 +45,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteEvents = exports.eventRemove = void 0;
 var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
@@ -68,7 +68,7 @@ function deleteEvents(_glueStackPlugin, args) {
                 case 0:
                     eventTypes = {
                         app: "./backend/events/app",
-                        database: "./backend/events/database"
+                        database: "./backend/events/database",
                     };
                     selectedEventTypes = Object.keys(args).filter(function (key) {
                         return eventTypes.hasOwnProperty(key);
@@ -91,7 +91,7 @@ function deleteEvents(_glueStackPlugin, args) {
                 case 4:
                     _e.trys.push([4, , 6, 7]);
                     eventType = _c;
-                    files = fs_1["default"].readdirSync(eventTypes[eventType]);
+                    files = fs_1.default.readdirSync(eventTypes[eventType]);
                     return [4, deleteSelected(files, eventTypes[eventType])];
                 case 5:
                     _e.sent();
@@ -107,7 +107,7 @@ function deleteEvents(_glueStackPlugin, args) {
                     return [3, 15];
                 case 10:
                     _e.trys.push([10, , 13, 14]);
-                    if (!(!_d && !_a && (_b = selectedEventTypes_1["return"]))) return [3, 12];
+                    if (!(!_d && !_a && (_b = selectedEventTypes_1.return))) return [3, 12];
                     return [4, _b.call(selectedEventTypes_1)];
                 case 11:
                     _e.sent();
@@ -138,7 +138,7 @@ var deleteSelected = function (files, eventPath) { return __awaiter(void 0, void
                 prompted = new MultiSelect({
                     name: "files",
                     message: "Select the files and directories you want to delete by pressing <space>:",
-                    choices: choices
+                    choices: choices,
                 });
                 return [4, prompted.run()];
             case 1:
@@ -148,7 +148,7 @@ var deleteSelected = function (files, eventPath) { return __awaiter(void 0, void
                 }
                 return [4, confirm({
                         name: "question",
-                        message: "Are you sure you want to delete the selected files and folders?"
+                        message: "Are you sure you want to delete the selected files and folders?",
                     })];
             case 2:
                 userConfirm = _a.sent();
@@ -160,16 +160,16 @@ var deleteSelected = function (files, eventPath) { return __awaiter(void 0, void
             case 3:
                 if (!(_i < selectedIndexes_1.length)) return [3, 10];
                 index = selectedIndexes_1[_i];
-                filePath = path_1["default"].join(eventPath, index);
-                return [4, fs_1["default"].promises.lstat(filePath)];
+                filePath = path_1.default.join(eventPath, index);
+                return [4, fs_1.default.promises.lstat(filePath)];
             case 4:
                 stats = _a.sent();
                 if (!stats.isDirectory()) return [3, 6];
-                return [4, fs_1["default"].promises.rm(filePath, { recursive: true })];
+                return [4, fs_1.default.promises.rm(filePath, { recursive: true })];
             case 5:
                 _a.sent();
                 return [3, 8];
-            case 6: return [4, fs_1["default"].promises.unlink(filePath)];
+            case 6: return [4, fs_1.default.promises.unlink(filePath)];
             case 7:
                 _a.sent();
                 _a.label = 8;

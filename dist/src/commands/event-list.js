@@ -45,7 +45,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.list = exports.eventsList = void 0;
 var fs_1 = __importDefault(require("fs"));
 var promises_1 = __importDefault(require("fs/promises"));
@@ -70,12 +70,12 @@ function list(_glueStackPlugin, args) {
                 case 0:
                     dbEventPath = "./backend/events/database";
                     appEventPath = "./backend/events/app";
-                    table = new cli_table3_1["default"]({
+                    table = new cli_table3_1.default({
                         head: [
                             colors.brightGreen("Filepath"),
                             colors.brightGreen("Functions"),
                             colors.brightGreen("Webhooks"),
-                        ]
+                        ],
                     });
                     _a = true;
                     switch (_a) {
@@ -137,7 +137,7 @@ function getEvents(eventPath, table, dbEvent) {
                     file = _c;
                     eventFilePath = void 0;
                     if (!dbEvent) {
-                        eventFilePath = path_1["default"].join(process.cwd(), eventPath.slice(2), file);
+                        eventFilePath = path_1.default.join(process.cwd(), eventPath.slice(2), file);
                     }
                     else {
                         eventFilePath = eventPath;
@@ -153,8 +153,8 @@ function getEvents(eventPath, table, dbEvent) {
                     isDir = _e;
                     if (!!isDir) return [3, 11];
                     eventFilePath_1 = dbEvent
-                        ? path_1["default"].join(eventPath, file)
-                        : path_1["default"].join(process.cwd(), eventPath.slice(2), file);
+                        ? path_1.default.join(eventPath, file)
+                        : path_1.default.join(process.cwd(), eventPath.slice(2), file);
                     data = require(eventFilePath_1);
                     listData = {
                         fileName: dbEvent
@@ -162,8 +162,8 @@ function getEvents(eventPath, table, dbEvent) {
                             : eventFilePath_1.split("/").slice(-2).join("/"),
                         event: {
                             fun: [],
-                            webhook: []
-                        }
+                            webhook: [],
+                        },
                     };
                     return [4, data.map(function (events) {
                             if (events.type === "function") {
@@ -195,7 +195,7 @@ function getEvents(eventPath, table, dbEvent) {
                     return [3, 23];
                 case 18:
                     _g.trys.push([18, , 21, 22]);
-                    if (!(!_d && !_a && (_b = files_1["return"]))) return [3, 20];
+                    if (!(!_d && !_a && (_b = files_1.return))) return [3, 20];
                     return [4, _b.call(files_1)];
                 case 19:
                     _g.sent();
@@ -219,7 +219,7 @@ function getFiles(filePath) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             return [2, new Promise(function (resolve, reject) {
-                    fs_1["default"].readdir(filePath, function (err, files) {
+                    fs_1.default.readdir(filePath, function (err, files) {
                         if (err) {
                             console.log("> No files found");
                             process.exit(0);
@@ -237,7 +237,7 @@ function isDirectory(path) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4, promises_1["default"].lstat(path)];
+                    return [4, promises_1.default.lstat(path)];
                 case 1:
                     data = _a.sent();
                     if (data.isDirectory()) {

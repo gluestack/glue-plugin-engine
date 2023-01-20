@@ -61,6 +61,18 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
   }
 
   async runPostInstall(instanceName: string, target: string) {
+    await this.checkAlreadyInstalled();
+    if (instanceName !== "engine") {
+      console.log("\x1b[36m");
+      console.log(
+        `Install engine instance: \`node glue add engine engine\``,
+      );
+      console.log("\x1b[31m");
+      throw new Error(
+        "engine supports instance name `engine` only",
+      );
+    }
+
     const engineInstance: PluginInstance =
       await this.app.createPluginInstance(
         this,
@@ -81,6 +93,20 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
 
       // Adds crons directory
       await addMainCron(engineInstance);
+    }
+  }
+
+  async checkAlreadyInstalled() {
+    const enginePlugin: GlueStackPlugin = this.app.getPluginByName(
+      "@gluestack/glue-plugin-engine",
+    );
+    //Validation
+    if (enginePlugin?.getInstances()?.[0]) {
+      throw new Error(
+        `engine instance already installed as ${enginePlugin
+          .getInstances()[0]
+          .getName()}`,
+      );
     }
   }
 

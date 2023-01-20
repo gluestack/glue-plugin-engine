@@ -58,7 +58,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var path_1 = require("path");
 var yaml = __importStar(require("yaml"));
 var fs_1 = require("fs");
@@ -107,7 +107,7 @@ var DockerCompose = (function () {
             });
         });
     };
-    DockerCompose.prototype.addHasura = function (plugin) {
+    DockerCompose.prototype.addHasura = function (plugin, postgres) {
         return __awaiter(this, void 0, void 0, function () {
             var hasura;
             return __generator(this, function (_a) {
@@ -119,13 +119,57 @@ var DockerCompose = (function () {
                         '8080:8080'
                     ],
                     volumes: [
-                        "".concat(plugin.path, ":/hasura"),
+                        "".concat(plugin.path, "/.db-data:/hasura"),
                     ],
                     env_file: [
                         "".concat(plugin.path, "/.env")
                     ]
                 };
+                if (postgres && postgres !== '') {
+                    hasura.depends_on = {};
+                    hasura.depends_on["".concat(postgres)] = {
+                        condition: 'service_healthy'
+                    };
+                }
                 this.addService(plugin.instance, hasura);
+                return [2];
+            });
+        });
+    };
+    DockerCompose.prototype.addPostgres = function (plugin) {
+        return __awaiter(this, void 0, void 0, function () {
+            var instance, db_config, port_number, postgres;
+            return __generator(this, function (_a) {
+                instance = plugin.instance_object;
+                db_config = instance.gluePluginStore.get('db_config');
+                port_number = instance.gluePluginStore.get('port_number');
+                postgres = {
+                    container_name: plugin.instance,
+                    restart: 'always',
+                    image: 'postgres:12',
+                    ports: [
+                        "".concat(port_number, ":5432")
+                    ],
+                    volumes: [
+                        "".concat(plugin.path, "/db:/var/lib/postgresql/data/")
+                    ],
+                    environment: {
+                        POSTGRES_USER: "".concat(db_config.username),
+                        POSTGRES_PASSWORD: "".concat(db_config.password),
+                        POSTGRES_DB: "".concat(db_config.db_name)
+                    },
+                    healthcheck: {
+                        test: [
+                            "CMD-SHELL",
+                            "psql -U ".concat(db_config.username, " -d ").concat(db_config.db_name)
+                        ],
+                        interval: '10s',
+                        timeout: '10s',
+                        retries: 50,
+                        start_period: '30s'
+                    }
+                };
+                this.addService(plugin.instance, postgres);
                 return [2];
             });
         });
@@ -195,5 +239,5 @@ var DockerCompose = (function () {
     };
     return DockerCompose;
 }());
-exports["default"] = DockerCompose;
+exports.default = DockerCompose;
 //# sourceMappingURL=DockerCompose.js.map

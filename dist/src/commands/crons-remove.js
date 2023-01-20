@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteEvents = exports.cronsRemove = void 0;
 var path_1 = __importDefault(require("path"));
 var write_file_1 = require("../helpers/write-file");
@@ -64,7 +64,7 @@ function deleteEvents(_glueStackPlugin) {
                         console.log('> Crons file missing!');
                         process.exit(0);
                     }
-                    dataFilePath = path_1["default"].join(process.cwd(), cronsFilePath.slice(2));
+                    dataFilePath = path_1.default.join(process.cwd(), cronsFilePath.slice(2));
                     fileData = require(dataFilePath);
                     if (fileData.length <= 0) {
                         console.log('> Crons file empty! Please add one and try again.');
@@ -85,7 +85,7 @@ function deleteEvents(_glueStackPlugin) {
                     if (!(responses.length !== 0)) return [3, 5];
                     return [4, confirm({
                             name: 'question',
-                            message: 'Are you sure you want to delete the selected files and folders?'
+                            message: 'Are you sure you want to delete the selected files and folders?',
                         })];
                 case 3:
                     userConfirm = _a.sent();

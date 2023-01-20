@@ -45,7 +45,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.list = exports.cronsList = void 0;
 var file_exists_1 = require("../helpers/file-exists");
 var path_1 = __importDefault(require("path"));
@@ -67,11 +67,11 @@ function list(_glueStackPlugin) {
             switch (_f.label) {
                 case 0:
                     cronsFilePath = "./backend/crons/crons.json";
-                    table = new cli_table3_1["default"]({
+                    table = new cli_table3_1.default({
                         head: [
                             colors.brightGreen("Schedule"),
                             colors.brightGreen("Run"),
-                        ]
+                        ],
                     });
                     return [4, (0, file_exists_1.fileExists)(cronsFilePath)];
                 case 1:
@@ -79,7 +79,7 @@ function list(_glueStackPlugin) {
                         console.log("> Crons file missing!");
                         process.exit(0);
                     }
-                    dataFilePath = path_1["default"].join(process.cwd(), cronsFilePath.slice(2));
+                    dataFilePath = path_1.default.join(process.cwd(), cronsFilePath.slice(2));
                     fileData = require(dataFilePath);
                     if (fileData.length <= 0) {
                         console.log("> Crons file empty! Please add one and try again.");
@@ -112,7 +112,7 @@ function list(_glueStackPlugin) {
                     return [3, 13];
                 case 8:
                     _f.trys.push([8, , 11, 12]);
-                    if (!(!_d && !_a && (_b = fileData_1["return"]))) return [3, 10];
+                    if (!(!_d && !_a && (_b = fileData_1.return))) return [3, 10];
                     return [4, _b.call(fileData_1)];
                 case 9:
                     _f.sent();

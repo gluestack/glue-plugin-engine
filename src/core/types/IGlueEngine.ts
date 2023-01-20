@@ -3,7 +3,7 @@ import { IStatelessPlugin } from "./IStatelessPlugin";
 export interface IGlueEngine {
   statelessPlugins: IStatelessPlugin[];
 
-  collectPlugins(): Promise<void>;
+  collectPlugins(pluginType: 'stateless' | 'stateful'): Promise<void>;
 
   start(): Promise<void>;
   stop(): Promise<void>;

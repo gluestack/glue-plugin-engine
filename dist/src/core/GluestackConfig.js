@@ -46,17 +46,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.prepareConfigJSON = exports.setConfig = exports.getConfig = exports.config = void 0;
 var path_1 = require("path");
 var promises_1 = require("fs/promises");
 var file_exists_1 = require("../helpers/file-exists");
 var write_file_1 = require("../helpers/write-file");
 exports.config = {
+    postgresInstancePath: '',
+    postgresConnectionString: '',
     authInstancePath: '',
     backendInstancePath: '',
     engineInstancePath: '',
     hasuraInstancePath: '',
+    hasuraInstanceStatus: 'down',
     hasuraEnvs: {}
 };
 var getConfig = function (key) { return exports.config[key]; };

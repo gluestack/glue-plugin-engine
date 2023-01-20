@@ -1,8 +1,9 @@
 import { extname, join } from "path";
-import { readdir } from 'node:fs/promises';
+import { readFile, readdir } from "node:fs/promises";
 
 import { execute } from "../helpers/spawn";
 import { fileExists } from "../helpers/file-exists";
+import { waitInSeconds } from "../helpers/wait-in-seconds";
 import { removeSpecialChars } from "../helpers/remove-special-chars";
 
 import { IStatelessPlugin } from "./types/IStatelessPlugin";
@@ -11,7 +12,6 @@ import { IAction, IHasuraEngine } from "./types/IHasuraEngine";
 import { getConfig } from "./GluestackConfig";
 import HasuraMetadata from "./HasuraMetadata";
 import GluestackEvent from "./GluestackEvent";
-import { readFile } from "fs/promises";
 
 /**
  * HasuraEngine class
@@ -102,6 +102,10 @@ export default class HasuraEngine implements IHasuraEngine {
     // create all actions plugins into hasura engine
     console.log('> Registering actions plugins into hasura engine...');
     await this.createActions();
+
+    // create all action permissions into hasura engine
+    console.log('> Registering actions plugins into hasura engine...');
+    await this.createActionPermissions();
   }
 
   // Re-apply all the events into the hasura engine
@@ -204,6 +208,17 @@ export default class HasuraEngine implements IHasuraEngine {
 
     for await (const action of this.actions) {
       await this.metadata.createAction(action);
+    }
+  }
+
+  // Create all actions into the hasura engine
+  private async createActionPermissions(): Promise<void | boolean> {
+    if (this.actions.length <= 0) {
+      return Promise.resolve(false);
+    }
+
+    for await (const action of this.actions) {
+      await this.metadata.createActionPermission(action);
     }
   }
 

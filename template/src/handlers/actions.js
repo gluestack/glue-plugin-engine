@@ -9,26 +9,37 @@
 const { DaprClient, HttpMethod } = require('@dapr/dapr');
 
 module.exports = async (req, res) => {
+  if (!req.params || !req.params.action_name) {
+    return res.status(500).json({
+      status: false,
+      message: '"action" is missing from request param'
+    });
+  }
+
   const { headers, body } = req;
+  if (headers["content-length"]) delete headers["content-length"];
 
   const daprHost = '127.0.0.1';
   const daprPort = 3500;
 
   const client = new DaprClient(daprHost, daprPort);
 
-  const serviceAppId = body.action.name;
-  const serviceMethod = 'functions';
+  const serviceAppId = req.params.action_name;
+  const serviceMethod = body.action.name;
 
-  await client.invoker.invoke(
-    serviceAppId,
-    serviceMethod,
-    HttpMethod.POST,
-    { ...body },
-    { headers }
-  );
-
-  res.status(200).json({
-    status: true,
-    message: 'OK'
-  });
+  try {
+    const data = await client.invoker.invoke(
+      serviceAppId,
+      serviceMethod,
+      HttpMethod.POST,
+      { ...body },
+      { headers }
+    );
+    return res.status(200).json(data);
+  } catch (e) {
+    return res.status(500).json({
+      status: false,
+      ...e.message
+    });
+  }
 };

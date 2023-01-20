@@ -74,14 +74,15 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-exports.__esModule = true;
-var axios = require("axios")["default"];
+Object.defineProperty(exports, "__esModule", { value: true });
+var axios = require("axios").default;
 var path_1 = require("path");
 var dotenv = __importStar(require("dotenv"));
 var node_fs_1 = require("node:fs");
 var GluestackConfig_1 = require("./GluestackConfig");
 var generate_events_1 = require("../helpers/generate-events");
 var generate_action_custom_types_1 = require("../helpers/generate-action-custom-types");
+var generate_action_custom_types_2 = require("../helpers/generate-action-custom-types");
 var HasuraMetadata = (function () {
     function HasuraMetadata(pluginName) {
         this.pluginName = pluginName;
@@ -132,10 +133,43 @@ var HasuraMetadata = (function () {
                         error_1 = _a.sent();
                         console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
                         return [2, Promise.resolve('failed')];
-                    case 4: return [4, this.makeRequest(actionData)];
+                    case 4: return [4, this.makeRequest(actionData, true)];
                     case 5:
                         _a.sent();
                         return [2];
+                }
+            });
+        });
+    };
+    HasuraMetadata.prototype.createActionPermission = function (action) {
+        return __awaiter(this, void 0, void 0, function () {
+            var setting, regex, match, roles, schema, actionData, error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        setting = (0, node_fs_1.readFileSync)(action.setting_path, 'utf8');
+                        regex = /roles="(.*)"/g;
+                        match = regex.exec(setting);
+                        if (!(match === null || match === void 0 ? void 0 : match[1])) return [3, 6];
+                        roles = match[1].split(",");
+                        schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, 'utf8');
+                        actionData = {};
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4, (0, generate_action_custom_types_2.generateActionPermission)(schema, roles)];
+                    case 2:
+                        actionData = _a.sent();
+                        return [3, 4];
+                    case 3:
+                        error_2 = _a.sent();
+                        console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
+                        return [2, Promise.resolve('failed')];
+                    case 4: return [4, this.makeRequest(actionData, true)];
+                    case 5:
+                        _a.sent();
+                        _a.label = 6;
+                    case 6: return [2];
                 }
             });
         });
@@ -144,7 +178,7 @@ var HasuraMetadata = (function () {
         var _a, actions_1, actions_1_1;
         var _b, e_1, _c, _d;
         return __awaiter(this, void 0, void 0, function () {
-            var customTypes, action, setting, regex, match, kind, schema, _tmp, error_2, e_1_1;
+            var customTypes, action, setting, regex, match, kind, schema, _tmp, error_3, e_1_1;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
@@ -189,7 +223,7 @@ var HasuraMetadata = (function () {
                         customTypes.args.input_objects = __spreadArray(__spreadArray([], customTypes.args.input_objects, true), _tmp.args.input_objects, true);
                         return [3, 8];
                     case 7:
-                        error_2 = _e.sent();
+                        error_3 = _e.sent();
                         console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
                         return [3, 10];
                     case 8: return [3, 10];
@@ -204,7 +238,7 @@ var HasuraMetadata = (function () {
                         return [3, 18];
                     case 13:
                         _e.trys.push([13, , 16, 17]);
-                        if (!(!_a && !_b && (_c = actions_1["return"]))) return [3, 15];
+                        if (!(!_a && !_b && (_c = actions_1.return))) return [3, 15];
                         return [4, _c.call(actions_1)];
                     case 14:
                         _e.sent();
@@ -214,7 +248,7 @@ var HasuraMetadata = (function () {
                         if (e_1) throw e_1.error;
                         return [7];
                     case 17: return [7];
-                    case 18: return [4, this.makeRequest(customTypes)];
+                    case 18: return [4, this.makeRequest(customTypes, true)];
                     case 19:
                         _e.sent();
                         return [2];
@@ -279,7 +313,7 @@ var HasuraMetadata = (function () {
     HasuraMetadata.prototype.makeRequest = function (data, showError) {
         if (showError === void 0) { showError = false; }
         return __awaiter(this, void 0, void 0, function () {
-            var hasuraEnvs, options, error_3;
+            var hasuraEnvs, options, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -302,9 +336,9 @@ var HasuraMetadata = (function () {
                         _a.sent();
                         return [3, 4];
                     case 3:
-                        error_3 = _a.sent();
-                        if (showError && error_3.response && error_3.response.data.error) {
-                            console.log('> Error:', error_3.response.data.error);
+                        error_4 = _a.sent();
+                        if (showError && error_4.response && error_4.response.data.error) {
+                            console.log('> Error:', error_4.response.data.error);
                         }
                         return [3, 4];
                     case 4: return [2];
@@ -318,5 +352,5 @@ var HasuraMetadata = (function () {
     };
     return HasuraMetadata;
 }());
-exports["default"] = HasuraMetadata;
+exports.default = HasuraMetadata;
 //# sourceMappingURL=HasuraMetadata.js.map
