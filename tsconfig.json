@@ -1,22 +1,20 @@
 {
-	"compilerOptions": {
-		"baseUrl": ".",
-		"outDir": "dist",
-		"module": "commonjs",
-		"noImplicitAny": true,
-		"removeComments": true,
-		"preserveConstEnums": true,
-		"sourceMap": true,
-		"moduleResolution": "node",
-		"resolveJsonModule": true,
-		"esModuleInterop": true,
-		"paths": {
-			"@gluestack/framework": ["node_modules/@gluestack/framework"]
-		},
-		"lib": ["dom", "es6"],
-		"target": "es5"
-	},
-	"include": [
-		"src/**/*.ts"
-	],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "outDir": "dist",
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "paths": {
+            "@gluestack/framework": ["node_modules/@gluestack/framework"]
+        }
+    },
+    "include": [
+        "src/**/*.ts"
+    ],
 }

@@ -38,15 +38,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.GlueStackPlugin = void 0;
 var package_json_1 = __importDefault(require("../package.json"));
 var PluginInstance_1 = require("./PluginInstance");
-var write_env_1 = require("./helpers/write-env");
-var add_main_router_1 = require("./helpers/add-main-router");
-var add_main_events_1 = require("./helpers/add-main-events");
-var add_main_cron_1 = require("./helpers/add-main-cron");
-var commands_1 = require("./commands");
+var route_generate_1 = require("./commands/route-generate");
+var develop_list_1 = require("./commands/develop-list");
+var develop_watch_1 = require("./commands/develop-watch");
+var develop_up_1 = require("./commands/develop-up");
+var develop_down_1 = require("./commands/develop-down");
+var build_1 = require("./commands/build");
 var GlueStackPlugin = (function () {
     function GlueStackPlugin(app, gluePluginStore) {
         this.type = "stateless";
@@ -56,20 +57,20 @@ var GlueStackPlugin = (function () {
     }
     GlueStackPlugin.prototype.init = function () {
         var _this = this;
-        this.app.addCommand(function (program) { return (0, commands_1.eventsAdd)(program, _this); });
-        this.app.addCommand(function (program) { return (0, commands_1.eventsList)(program, _this); });
-        this.app.addCommand(function (program) { return (0, commands_1.eventRemove)(program, _this); });
-        this.app.addCommand(function (program) { return (0, commands_1.cronsAdd)(program, _this); });
-        this.app.addCommand(function (program) { return (0, commands_1.cronsList)(program, _this); });
-        this.app.addCommand(function (program) { return (0, commands_1.cronsRemove)(program, _this); });
+        this.app.addCommand(function (program) { return (0, develop_list_1.developList)(program, _this); });
+        this.app.addCommand(function (program) { return (0, develop_up_1.developUp)(program, _this); });
+        this.app.addCommand(function (program) { return (0, develop_down_1.developDown)(program, _this); });
+        this.app.addCommand(function (program) { return (0, develop_watch_1.developWatch)(program, _this); });
+        this.app.addCommand(function (program) { return (0, build_1.build)(program, _this); });
+        this.app.addCommand(function (program) { return (0, route_generate_1.routeGenerate)(program, _this); });
     };
     GlueStackPlugin.prototype.destroy = function () {
     };
     GlueStackPlugin.prototype.getName = function () {
-        return package_json_1.default.name;
+        return package_json_1["default"].name;
     };
     GlueStackPlugin.prototype.getVersion = function () {
-        return package_json_1.default.version;
+        return package_json_1["default"].version;
     };
     GlueStackPlugin.prototype.getType = function () {
         return this.type;
@@ -78,52 +79,17 @@ var GlueStackPlugin = (function () {
         return "".concat(process.cwd(), "/node_modules/").concat(this.getName(), "/template");
     };
     GlueStackPlugin.prototype.getInstallationPath = function (target) {
-        return "./backend/".concat(target);
+        return "";
     };
     GlueStackPlugin.prototype.runPostInstall = function (instanceName, target) {
         return __awaiter(this, void 0, void 0, function () {
-            var engineInstance;
+            var devProcessManagerPlugin;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, this.checkAlreadyInstalled()];
-                    case 1:
-                        _a.sent();
-                        if (instanceName !== "engine") {
-                            console.log("\x1b[36m");
-                            console.log("Install engine instance: `node glue add engine engine`");
-                            console.log("\x1b[31m");
-                            throw new Error("engine supports instance name `engine` only");
-                        }
-                        return [4, this.app.createPluginInstance(this, instanceName, this.getTemplateFolderPath(), target)];
-                    case 2:
-                        engineInstance = _a.sent();
-                        if (!engineInstance) return [3, 7];
-                        return [4, (0, write_env_1.writeEnv)(engineInstance)];
-                    case 3:
-                        _a.sent();
-                        return [4, (0, add_main_router_1.addMainRouter)(engineInstance)];
-                    case 4:
-                        _a.sent();
-                        return [4, (0, add_main_events_1.addMainEvents)(engineInstance)];
-                    case 5:
-                        _a.sent();
-                        return [4, (0, add_main_cron_1.addMainCron)(engineInstance)];
-                    case 6:
-                        _a.sent();
-                        _a.label = 7;
-                    case 7: return [2];
-                }
-            });
-        });
-    };
-    GlueStackPlugin.prototype.checkAlreadyInstalled = function () {
-        var _a;
-        return __awaiter(this, void 0, void 0, function () {
-            var enginePlugin;
-            return __generator(this, function (_b) {
-                enginePlugin = this.app.getPluginByName("@gluestack/glue-plugin-engine");
-                if ((_a = enginePlugin === null || enginePlugin === void 0 ? void 0 : enginePlugin.getInstances()) === null || _a === void 0 ? void 0 : _a[0]) {
-                    throw new Error("engine instance already installed as ".concat(enginePlugin
+                devProcessManagerPlugin = this.app.getPluginByName("@gluestack/glue-plugin-dev-process-manager");
+                if (devProcessManagerPlugin &&
+                    devProcessManagerPlugin.getInstances() &&
+                    devProcessManagerPlugin.getInstances()[0]) {
+                    throw new Error("Dev process manager instance already installed as ".concat(devProcessManagerPlugin
                         .getInstances()[0]
                         .getName()));
                 }

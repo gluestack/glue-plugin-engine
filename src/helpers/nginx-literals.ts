@@ -12,9 +12,10 @@ http {
 export const endsWith = `
 }`;
 
-export const setServer = (locations: string[]): string => `
+export const setServer = (domain: string, locations: string[]): string => `
   server {
     listen 80;
+    server_name ${domain};
 
     gzip on;
     gzip_disable "msie6";

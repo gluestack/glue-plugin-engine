@@ -36,24 +36,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.fileExists = void 0;
+exports.readFileContent = void 0;
 var promises_1 = require("node:fs/promises");
-var fileExists = function (path) { return __awaiter(void 0, void 0, void 0, function () {
-    var err_1;
+var readFileContent = function (fileName) { return __awaiter(void 0, void 0, void 0, function () {
+    var content, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4, (0, promises_1.access)(path, promises_1.constants.R_OK)];
+                return [4, (0, promises_1.readFile)(fileName, 'utf8')];
             case 1:
-                _a.sent();
-                return [2, Promise.resolve(true)];
+                content = _a.sent();
+                return [2, Promise.resolve(content)];
             case 2:
                 err_1 = _a.sent();
-                return [2, Promise.resolve(false)];
+                return [2, Promise.reject(false)];
             case 3: return [2];
         }
     });
 }); };
-exports.fileExists = fileExists;
-//# sourceMappingURL=file-exists.js.map
+exports.readFileContent = readFileContent;
+//# sourceMappingURL=read-file.js.map

@@ -1,1 +1,0 @@
-{"version":3,"file":"wait-in-seconds.js","sourceRoot":"","sources":["../../../src/helpers/wait-in-seconds.ts"],"names":[],"mappings":";;;AAAO,IAAM,aAAa,GAAG,UAAC,OAAe;IAC3C,OAAO,IAAI,OAAO,CAAC,UAAC,OAAO;QACzB,UAAU,CAAC;YACT,OAAO,CAAC,MAAM,CAAC,CAAC;QAClB,CAAC,EAAE,OAAO,GAAG,IAAI,CAAC,CAAC;IACrB,CAAC,CAAC,CAAC;AACL,CAAC,CAAC;AANW,QAAA,aAAa,iBAMxB"}

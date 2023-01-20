@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.addTrailingSlash = void 0;
 var addTrailingSlash = function (str) {
     if (str[str.length - 1] === '/') {
