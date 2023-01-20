@@ -30,7 +30,7 @@ app.get('/health-check',
   );
 
 // Engine action route
-app.post('/actions', actions);
+app.post('/actions/:action_name', actions);
 
 // Engine db events route
 app.post('/events', dbEvents);

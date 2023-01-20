@@ -18,7 +18,8 @@ export const backendPlugins: string[] = [
   '@gluestack/glue-plugin-functions',
   '@gluestack/glue-plugin-functions.action',
   '@gluestack/glue-plugin-auth',
-  '@gluestack/glue-plugin-storage'
+  '@gluestack/glue-plugin-storage',
+  '@gluestack/glue-plugin-functions-*'
 ];
 
 export const noDockerfiles: string[] = [
