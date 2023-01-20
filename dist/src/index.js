@@ -46,6 +46,7 @@ var write_env_1 = require("./helpers/write-env");
 var add_main_router_1 = require("./helpers/add-main-router");
 var add_main_events_1 = require("./helpers/add-main-events");
 var add_main_cron_1 = require("./helpers/add-main-cron");
+var commands_1 = require("./commands");
 var GlueStackPlugin = (function () {
     function GlueStackPlugin(app, gluePluginStore) {
         this.type = "stateless";
@@ -54,6 +55,13 @@ var GlueStackPlugin = (function () {
         this.gluePluginStore = gluePluginStore;
     }
     GlueStackPlugin.prototype.init = function () {
+        var _this = this;
+        this.app.addCommand(function (program) { return (0, commands_1.eventsAdd)(program, _this); });
+        this.app.addCommand(function (program) { return (0, commands_1.eventsList)(program, _this); });
+        this.app.addCommand(function (program) { return (0, commands_1.eventRemove)(program, _this); });
+        this.app.addCommand(function (program) { return (0, commands_1.cronsAdd)(program, _this); });
+        this.app.addCommand(function (program) { return (0, commands_1.cronsList)(program, _this); });
+        this.app.addCommand(function (program) { return (0, commands_1.cronsRemove)(program, _this); });
     };
     GlueStackPlugin.prototype.destroy = function () {
     };
