@@ -4,11 +4,18 @@ import { fileExists } from "./file-exists";
 import { PluginInstance } from "../PluginInstance";
 
 const construct = async (projectName: string, path: string): Promise<void> => {
-  const content: string = `module.exports = () => {
-    return [{
-      domain: "${projectName}.local.gluestack.app"
-    }]
-  };`;
+  const content: string = `module.exports = () => [
+  {
+    "server_name": "your-app-name"
+  },
+  {
+    "path": "/${projectName}",
+    "proxy": {
+      "path": "/"
+    }
+  }
+];
+`;
 
   await writeFile(path, content);
 };

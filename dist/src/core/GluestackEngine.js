@@ -180,7 +180,6 @@ var GluestackEngine = (function () {
                         backendInstancePath = (0, GluestackConfig_1.getConfig)('backendInstancePath');
                         plugins = this.statelessPlugins;
                         nginxConf = new NginxConf_1.default();
-                        nginxConf.addRouter((0, path_1.join)(process.cwd(), backendInstancePath, 'router.js'));
                         _e.label = 1;
                     case 1:
                         _e.trys.push([1, 9, 10, 15]);

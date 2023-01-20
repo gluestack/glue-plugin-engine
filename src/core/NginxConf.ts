@@ -56,15 +56,9 @@ export default class NginxConf {
   // Converts the nginx conf data to a string
   private async toConf(): Promise<string> {
     let locations: string[] = [];
-    let domain: string = '';
-
     const data: any[] = this.data;
 
     data.forEach((routes: any) => {
-      if (routes.hasOwnProperty('domain')) {
-        domain = routes.domain;
-      }
-
       if (routes.hasOwnProperty('path')) {
         locations.push(setLocation(
           routes.path, routes.proxy.instance, routes.proxy.path, routes.host, routes.size_in_mb
@@ -73,7 +67,7 @@ export default class NginxConf {
     });
 
     return Promise.resolve(
-      startsWith + setServer(domain, locations) + endsWith
+      startsWith + setServer(locations) + endsWith
     );
   }
 }

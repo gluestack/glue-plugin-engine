@@ -86,20 +86,16 @@ var NginxConf = (function () {
     };
     NginxConf.prototype.toConf = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var locations, domain, data;
+            var locations, data;
             return __generator(this, function (_a) {
                 locations = [];
-                domain = '';
                 data = this.data;
                 data.forEach(function (routes) {
-                    if (routes.hasOwnProperty('domain')) {
-                        domain = routes.domain;
-                    }
                     if (routes.hasOwnProperty('path')) {
                         locations.push((0, nginx_literals_1.setLocation)(routes.path, routes.proxy.instance, routes.proxy.path, routes.host, routes.size_in_mb));
                     }
                 });
-                return [2, Promise.resolve(nginx_literals_1.startsWith + (0, nginx_literals_1.setServer)(domain, locations) + nginx_literals_1.endsWith)];
+                return [2, Promise.resolve(nginx_literals_1.startsWith + (0, nginx_literals_1.setServer)(locations) + nginx_literals_1.endsWith)];
             });
         });
     };

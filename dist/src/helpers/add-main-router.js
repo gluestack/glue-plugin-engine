@@ -45,7 +45,7 @@ var construct = function (projectName, path) { return __awaiter(void 0, void 0, 
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                content = "module.exports = () => {\n    return [{\n      domain: \"".concat(projectName, ".local.gluestack.app\"\n    }]\n  };");
+                content = "module.exports = () => [\n  {\n    \"server_name\": \"your-app-name\"\n  },\n  {\n    \"path\": \"/".concat(projectName, "\",\n    \"proxy\": {\n      \"path\": \"/\"\n    }\n  }\n];\n");
                 return [4, (0, write_file_1.writeFile)(path, content)];
             case 1:
                 _a.sent();

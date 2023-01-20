@@ -134,7 +134,7 @@ export default class GluestackEngine implements IGlueEngine {
     const plugins = this.statelessPlugins;
     const nginxConf = new NginxConf();
 
-    nginxConf.addRouter(join(process.cwd(), backendInstancePath, 'router.js'));
+    // nginxConf.addRouter(join(process.cwd(), backendInstancePath, 'router.js'));
 
     for await (const plugin of plugins) {
       await nginxConf.addRouter(
