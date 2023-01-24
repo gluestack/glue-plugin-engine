@@ -54,6 +54,16 @@ export const setServer = (domain: string, locations: string[]): string => `
   }
 `;
 
+export const createRewriteRule = (
+  path: string, proxy_path: string
+): string => {
+  if (!path.startsWith('/backend')) {
+    return `rewrite ^${addTrailingSlash(path)}(.*) ${addTrailingSlash(proxy_path)}$1 break;`
+  }
+
+  return '';
+};
+
 export const setLocation = (
   path: string,
   proxy_instance: string,
@@ -62,7 +72,7 @@ export const setLocation = (
   size_in_mb?: number,
 ): string => `
     location ${path} {
-      rewrite ^${addTrailingSlash(path)}(.*) ${addTrailingSlash(proxy_path)}$1 break;
+      ${createRewriteRule(path, proxy_path)}
 
       client_max_body_size ${size_in_mb || 1}M;
 
