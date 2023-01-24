@@ -5,6 +5,7 @@ import { PluginInstance } from "./PluginInstance";
 const { DockerodeHelper } = require("@gluestack/helpers");
 import IApp from "@gluestack/framework/types/app/interface/IApp";
 import IContainerController from "@gluestack/framework/types/plugin/interface/IContainerController";
+import { fileExists } from "./helpers/file-exists";
 
 export class PluginInstanceContainerController implements IContainerController {
   app: IApp;
@@ -40,6 +41,10 @@ export class PluginInstanceContainerController implements IContainerController {
   }
 
   async getDockerJson() {
+    const SSL_FILES_PATH: string = join(
+      process.cwd(), await this.getSslFilesPath()
+    );
+
     const data: any = {};
     data.Image = "nginx:latest";
     data.RestartPolicy = {
@@ -49,27 +54,21 @@ export class PluginInstanceContainerController implements IContainerController {
     data.HostConfig = {
       PortBindings: {
         "80/tcp": [{ HostPort: '80' }]
-      },
-      Binds: [
-        `${await this.getDefaultConfPath()}:/etc/nginx/nginx.conf`,
-      ],
+      }
     };
+
+    const filesExist: boolean = await fileExists(SSL_FILES_PATH);
+    if (filesExist) {
+      data.HostConfig.Binds = [
+        `${await this.getDefaultConfPath()}:/etc/nginx/nginx.conf`,
+        `${SSL_FILES_PATH}/fullchain.pem:/etc/ssl/fullchain.pem`,
+        `${SSL_FILES_PATH}/privkey.pem:/etc/ssl/privkey.pem`
+      ];
+    }
 
     data.ExposedPorts = {
       "80/tcp": {},
     };
-
-    data.Binds = [];
-    data.Binds.push(
-      `${await this.getDefaultConfPath()}:/etc/nginx/nginx.conf`
-    );
-
-    const SSL_FILES_PATH: string = join(
-      process.cwd(), await this.getSslFilesPath()
-    );
-
-    data.Binds.push(`${SSL_FILES_PATH}/fullchain.pem:/etc/ssl/fullchain.pem`);
-    data.Binds.push(`${SSL_FILES_PATH}/privkey.pem:/etc/ssl/privkey.pem`);
 
     return data;
   }
@@ -84,7 +83,7 @@ export class PluginInstanceContainerController implements IContainerController {
   }
 
   async getDefaultConfPath() {
-    return join(process.cwd(), 'nginx.conf');
+    return join(process.cwd(), 'meta/router', 'nginx.conf');
   }
 
   getStatus(): "up" | "down" {

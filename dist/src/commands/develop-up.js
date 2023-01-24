@@ -71,30 +71,33 @@ function runner(instanceName, glueStackPlugin) {
                     _a = 0, upInstances_1 = upInstances;
                     _b.label = 1;
                 case 1:
-                    if (!(_a < upInstances_1.length)) return [3, 7];
+                    if (!(_a < upInstances_1.length)) return [3, 8];
                     instance = upInstances_1[_a];
-                    if (!(instance && (instance === null || instance === void 0 ? void 0 : instance.containerController))) return [3, 6];
+                    if (!(instance && (instance === null || instance === void 0 ? void 0 : instance.containerController))) return [3, 7];
                     console.log("Starting: ".concat(instance.getName(), " instance"));
                     _b.label = 2;
                 case 2:
-                    _b.trys.push([2, 4, , 5]);
-                    return [4, instance.containerController.up()];
+                    _b.trys.push([2, 5, , 6]);
+                    return [4, instance.containerController.getPortNumber()];
                 case 3:
                     _b.sent();
-                    console.log("Success: ".concat(instance.getName(), " instance is up"));
-                    return [3, 5];
+                    return [4, instance.containerController.up()];
                 case 4:
+                    _b.sent();
+                    console.log("Success: ".concat(instance.getName(), " instance is up"));
+                    return [3, 6];
+                case 5:
                     e_1 = _b.sent();
                     console.log("Failed: ".concat(instance.getName(), " instance could not be started"));
                     console.log("\x1b[33m\nError:\x1b[31m", e_1.message, "\x1b[0m");
-                    return [3, 5];
-                case 5:
-                    console.log();
-                    _b.label = 6;
+                    return [3, 6];
                 case 6:
+                    console.log();
+                    _b.label = 7;
+                case 7:
                     _a++;
                     return [3, 1];
-                case 7: return [2];
+                case 8: return [2];
             }
         });
     });

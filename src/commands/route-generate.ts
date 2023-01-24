@@ -60,7 +60,6 @@ export const runner = async (glueStackPlugin: GlueStackPlugin) => {
             tree[pluginName].push(dependency);
           }
         }
-
       } catch (err) {
         console.log('>> Error:', err);
         continue;

@@ -5,6 +5,7 @@ import { server_domain } from '../constants';
 import {
   endsWith, startsWith, setServer, setLocation
 } from './nginx-literals';
+import { createFolder } from './create-folder';
 
 /**
  * Nginx Conf
@@ -15,6 +16,9 @@ import {
 export default class NginxConf {
   public upstreams: any[];
 
+  private filename: string = 'nginx.conf';
+  private subdirectory: string = join('meta', 'router');
+
   constructor() {
     this.upstreams = [];
   }
@@ -23,7 +27,9 @@ export default class NginxConf {
   public async generate(): Promise<void> {
     try {
       const conf: string = await this.toConf();
-      const filepath: string = join(process.cwd(), 'nginx.conf');
+      const filepath: string = join(process.cwd(), this.subdirectory, this.filename);
+
+      await createFolder(join(process.cwd(), this.subdirectory));
 
       writeFileSync(filepath, conf);
 

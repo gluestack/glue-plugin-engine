@@ -56,8 +56,11 @@ var path_1 = require("path");
 var fs_1 = require("fs");
 var file_exists_1 = require("./file-exists");
 var nginx_literals_1 = require("./nginx-literals");
+var create_folder_1 = require("./create-folder");
 var NginxConf = (function () {
     function NginxConf() {
+        this.filename = 'nginx.conf';
+        this.subdirectory = (0, path_1.join)('meta', 'router');
         this.upstreams = [];
     }
     NginxConf.prototype.generate = function () {
@@ -66,20 +69,23 @@ var NginxConf = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _a.trys.push([0, 3, , 4]);
                         return [4, this.toConf()];
                     case 1:
                         conf = _a.sent();
-                        filepath = (0, path_1.join)(process.cwd(), 'nginx.conf');
+                        filepath = (0, path_1.join)(process.cwd(), this.subdirectory, this.filename);
+                        return [4, (0, create_folder_1.createFolder)((0, path_1.join)(process.cwd(), this.subdirectory))];
+                    case 2:
+                        _a.sent();
                         (0, fs_1.writeFileSync)(filepath, conf);
                         console.log('> NGINX file created successfully -', (0, path_1.relative)('.', filepath));
-                        return [3, 3];
-                    case 2:
+                        return [3, 4];
+                    case 3:
                         err_1 = _a.sent();
                         console.log('> NGINX file creation failed due to following reasons -');
                         console.log(err_1);
-                        return [3, 3];
-                    case 3: return [2];
+                        return [3, 4];
+                    case 4: return [2];
                 }
             });
         });

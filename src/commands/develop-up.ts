@@ -40,6 +40,7 @@ export async function runner(
     if (instance && instance?.containerController) {
       console.log(`Starting: ${instance.getName()} instance`);
       try {
+        await instance.containerController.getPortNumber();
         await instance.containerController.up();
         console.log(`Success: ${instance.getName()} instance is up`);
       } catch (e) {
