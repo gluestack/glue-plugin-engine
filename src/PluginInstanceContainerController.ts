@@ -53,7 +53,8 @@ export class PluginInstanceContainerController implements IContainerController {
 
     data.HostConfig = {
       PortBindings: {
-        "80/tcp": [{ HostPort: '80' }]
+        "80/tcp": [{ HostPort: '80' }],
+        "443/tcp": [{ HostPort: '443' }],
       }
     };
 
@@ -68,6 +69,7 @@ export class PluginInstanceContainerController implements IContainerController {
 
     data.ExposedPorts = {
       "80/tcp": {},
+      "443/tcp": {},
     };
 
     return data;

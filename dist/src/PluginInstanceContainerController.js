@@ -102,7 +102,8 @@ var PluginInstanceContainerController = (function () {
                         };
                         data.HostConfig = {
                             PortBindings: {
-                                "80/tcp": [{ HostPort: '80' }]
+                                "80/tcp": [{ HostPort: '80' }],
+                                "443/tcp": [{ HostPort: '443' }]
                             }
                         };
                         return [4, (0, file_exists_1.fileExists)(SSL_FILES_PATH)];
@@ -121,7 +122,8 @@ var PluginInstanceContainerController = (function () {
                         _e.label = 4;
                     case 4:
                         data.ExposedPorts = {
-                            "80/tcp": {}
+                            "80/tcp": {},
+                            "443/tcp": {}
                         };
                         return [2, data];
                 }

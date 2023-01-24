@@ -204,6 +204,16 @@ function runner(glueStackPlugin) {
                                 }
                             });
                         }); });
+                        watcher_2.on('close', function () { return __awaiter(_this, void 0, void 0, function () {
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4, restartsWatchedContainers(instances, true)];
+                                    case 1:
+                                        _a.sent();
+                                        return [2];
+                                }
+                            });
+                        }); });
                     }
                     else {
                         console.log('Nothing to watch. Terminating!');
@@ -214,9 +224,10 @@ function runner(glueStackPlugin) {
     });
 }
 exports.runner = runner;
-function restartsWatchedContainers(instances) {
+function restartsWatchedContainers(instances, down) {
     var _a, instances_2, instances_2_1;
     var _b, e_4, _c, _d;
+    if (down === void 0) { down = false; }
     return __awaiter(this, void 0, void 0, function () {
         var instance, e_5, e_4_1;
         return __generator(this, function (_e) {

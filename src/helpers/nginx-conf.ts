@@ -63,8 +63,7 @@ export default class NginxConf {
     for await (const upstream of upstreams) {
       for await (const location of upstream.locations) {
         if (location.hasOwnProperty('server_name')) {
-          // domain = location.server_name + server_domain;
-          domain = '_';
+          domain = location.server_name || 'gluestack' + server_domain;
         }
 
         if (location.hasOwnProperty('path')) {
