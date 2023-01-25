@@ -69,8 +69,22 @@ export async function runner(
       }
     });
 
-    watcher.on('close', async () => {
+    // CTRL+C
+    process.on('SIGINT', async () => {
       await restartsWatchedContainers(instances, true);
+      process.exit(0);
+    });
+
+    // Keyboard quit
+    process.on('SIGQUIT', async () => {
+      await restartsWatchedContainers(instances, true);
+      process.exit(0);
+    });
+
+    // `kill` command
+    process.on('SIGTERM', async () => {
+      await restartsWatchedContainers(instances, true);
+      process.exit(0);
     });
   } else {
     console.log('Nothing to watch. Terminating!');
@@ -85,7 +99,9 @@ async function restartsWatchedContainers(
     if (instance && instance?.containerController) {
       try {
         await instance.containerController.down();
-        await instance.containerController.up();
+        if (!down) {
+          await instance.containerController.up();
+        }
       } catch (e) {
         console.log(
           `Failed: ${instance.getName()} instance could not be started`,
