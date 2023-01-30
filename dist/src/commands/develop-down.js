@@ -74,14 +74,12 @@ function runner(instanceName, glueStackPlugin) {
                     if (!(_a < downInstances_1.length)) return [3, 7];
                     instance = downInstances_1[_a];
                     if (!(instance && (instance === null || instance === void 0 ? void 0 : instance.containerController))) return [3, 6];
-                    console.log("Stopping: ".concat(instance.getName(), " instance"));
                     _b.label = 2;
                 case 2:
                     _b.trys.push([2, 4, , 5]);
                     return [4, instance.containerController.down()];
                 case 3:
                     _b.sent();
-                    console.log("Success: ".concat(instance.getName(), " instance is down"));
                     return [3, 5];
                 case 4:
                     e_1 = _b.sent();

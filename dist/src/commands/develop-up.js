@@ -37,6 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.runner = exports.developUp = void 0;
+var node_path_1 = require("node:path");
+var file_exists_1 = require("../helpers/file-exists");
 function developUp(program, glueStackPlugin) {
     var command = program
         .command("develop:up")
@@ -47,9 +49,9 @@ function developUp(program, glueStackPlugin) {
 exports.developUp = developUp;
 function runner(instanceName, glueStackPlugin) {
     return __awaiter(this, void 0, void 0, function () {
-        var instances, upInstances, found, _i, instances_1, instance, _a, upInstances_1, instance, e_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var instances, upInstances, found, _i, instances_1, instance, routes, _a, upInstances_1, instance, routerPath, subRoute, content, _b, _c, _d, e_1;
+        return __generator(this, function (_e) {
+            switch (_e.label) {
                 case 0:
                     instances = glueStackPlugin.app.getContainerTypePluginInstances(true);
                     upInstances = instances;
@@ -68,36 +70,53 @@ function runner(instanceName, glueStackPlugin) {
                             return [2];
                         }
                     }
+                    routes = [];
                     _a = 0, upInstances_1 = upInstances;
-                    _b.label = 1;
+                    _e.label = 1;
                 case 1:
-                    if (!(_a < upInstances_1.length)) return [3, 8];
+                    if (!(_a < upInstances_1.length)) return [3, 11];
                     instance = upInstances_1[_a];
-                    if (!(instance && (instance === null || instance === void 0 ? void 0 : instance.containerController))) return [3, 7];
-                    console.log("Starting: ".concat(instance.getName(), " instance"));
-                    _b.label = 2;
+                    if (!(instance && (instance === null || instance === void 0 ? void 0 : instance.containerController))) return [3, 10];
+                    _e.label = 2;
                 case 2:
-                    _b.trys.push([2, 5, , 6]);
-                    return [4, instance.containerController.getPortNumber()];
+                    _e.trys.push([2, 8, , 9]);
+                    if (!(typeof instance.containerController.getRoutes === 'function')) return [3, 5];
+                    routerPath = (0, node_path_1.join)(process.cwd(), instance.getInstallationPath(), "router.js");
+                    subRoute = '';
+                    return [4, (0, file_exists_1.fileExists)(routerPath)];
                 case 3:
-                    _b.sent();
-                    return [4, instance.containerController.up()];
+                    if (_e.sent()) {
+                        content = require(routerPath)();
+                        if (content.length) {
+                        }
+                    }
+                    _c = (_b = routes.push).apply;
+                    _d = [routes];
+                    return [4, instance.containerController.getRoutes()];
                 case 4:
-                    _b.sent();
-                    console.log("Success: ".concat(instance.getName(), " instance is up"));
-                    return [3, 6];
-                case 5:
-                    e_1 = _b.sent();
+                    _c.apply(_b, _d.concat([_e.sent()]));
+                    _e.label = 5;
+                case 5: return [4, instance.containerController.getPortNumber()];
+                case 6:
+                    _e.sent();
+                    return [4, instance.containerController.up()];
+                case 7:
+                    _e.sent();
+                    return [3, 9];
+                case 8:
+                    e_1 = _e.sent();
                     console.log("Failed: ".concat(instance.getName(), " instance could not be started"));
                     console.log("\x1b[33m\nError:\x1b[31m", e_1.message, "\x1b[0m");
-                    return [3, 6];
-                case 6:
+                    return [3, 9];
+                case 9:
                     console.log();
-                    _b.label = 7;
-                case 7:
+                    _e.label = 10;
+                case 10:
                     _a++;
                     return [3, 1];
-                case 8: return [2];
+                case 11:
+                    console.table(routes);
+                    return [2];
             }
         });
     });

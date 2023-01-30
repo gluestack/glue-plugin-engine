@@ -30,7 +30,6 @@ export default class NginxConf {
       const filepath: string = join(process.cwd(), this.subdirectory, this.filename);
 
       await createFolder(join(process.cwd(), this.subdirectory));
-
       writeFileSync(filepath, conf);
 
       console.log('> NGINX file created successfully -', relative('.', filepath));

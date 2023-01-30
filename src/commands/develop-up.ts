@@ -1,6 +1,9 @@
+import { join } from "node:path";
 import { GlueStackPlugin } from "src";
 import IPlugin from "@gluestack/framework/types/plugin/interface/IPlugin";
+import { IRoutes } from "@gluestack/framework/types/plugin/interface/IContainerController";
 import IHasContainerController from "@gluestack/framework/types/plugin/interface/IHasContainerController";
+import { fileExists } from "../helpers/file-exists";
 
 export function developUp(program: any, glueStackPlugin: GlueStackPlugin) {
   const command = program
@@ -36,13 +39,31 @@ export async function runner(
     }
   }
 
+  const routes: IRoutes[] = [];
   for (const instance of upInstances) {
     if (instance && instance?.containerController) {
-      console.log(`Starting: ${instance.getName()} instance`);
       try {
+        if (typeof instance.containerController.getRoutes === 'function') {
+          const routerPath: string = join(
+            process.cwd(),
+            // @ts-ignore
+            instance.getInstallationPath(),
+            "router.js",
+          );
+
+          const subRoute: string = '';
+          if (await fileExists(routerPath)) {
+            const content = require(routerPath)();
+            if (content.length) {
+              // subRoute = content[0].path;
+            }
+          }
+
+          routes.push(...await instance.containerController.getRoutes());
+        }
+
         await instance.containerController.getPortNumber();
         await instance.containerController.up();
-        console.log(`Success: ${instance.getName()} instance is up`);
       } catch (e) {
         console.log(
           `Failed: ${instance.getName()} instance could not be started`,
@@ -53,4 +74,6 @@ export async function runner(
       console.log();
     }
   }
+
+  console.table(routes);
 }

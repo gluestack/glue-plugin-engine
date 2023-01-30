@@ -1,4 +1,3 @@
-import { addTrailingSlash } from "./add-trailing-slash";
 
 export const startsWith = `
 events {
@@ -58,7 +57,8 @@ export const createRewriteRule = (
   path: string, proxy_path: string
 ): string => {
   if (!path.startsWith('/backend')) {
-    return `rewrite ^${addTrailingSlash(path)}(.*) ${addTrailingSlash(proxy_path)}$1 break;`
+    // return `rewrite ^${addTrailingSlash(path)}(.*) ${addTrailingSlash(proxy_path)}$1 break;`
+    return `rewrite ^${path} ${proxy_path} break;`
   }
 
   return '';

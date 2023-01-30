@@ -1,14 +1,13 @@
 "use strict";
 exports.__esModule = true;
 exports.setLocation = exports.createRewriteRule = exports.setServer = exports.endsWith = exports.startsWith = void 0;
-var add_trailing_slash_1 = require("./add-trailing-slash");
 exports.startsWith = "\nevents {\n  worker_connections 1024;\n}\n\nhttp {\n  client_max_body_size 100M;\n  sendfile on;";
 exports.endsWith = "\n}";
 var setServer = function (domain, locations) { return "\n  server {\n    listen 80;\n    server_name ".concat(domain, ";\n    return 301 https://$host$request_uri;\n  }\n\n  server {\n    listen 443 ssl;\n\n    server_name ").concat(domain, ";\n\n    ssl_certificate     /etc/ssl/fullchain.pem;\n    ssl_certificate_key /etc/ssl/privkey.pem;\n\n    ssl_session_cache  builtin:1000  shared:SSL:10m;\n    ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;\n    ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;\n    ssl_prefer_server_ciphers on;\n\n    gzip on;\n    gzip_disable \"msie6\";\n\n    gzip_comp_level 6;\n    gzip_min_length 1100;\n    gzip_buffers 16 8k;\n    gzip_proxied any;\n    gzip_types\n        text/plain\n        text/css\n        text/js\n        text/xml\n        text/javascript\n        application/javascript\n        application/json\n        application/xml\n        application/rss+xml\n        image/svg+xml;\n    ").concat(locations.join('\n'), "\n  }\n"); };
 exports.setServer = setServer;
 var createRewriteRule = function (path, proxy_path) {
     if (!path.startsWith('/backend')) {
-        return "rewrite ^".concat((0, add_trailing_slash_1.addTrailingSlash)(path), "(.*) ").concat((0, add_trailing_slash_1.addTrailingSlash)(proxy_path), "$1 break;");
+        return "rewrite ^".concat(path, " ").concat(proxy_path, " break;");
     }
     return '';
 };
