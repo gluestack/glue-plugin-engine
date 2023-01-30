@@ -35,10 +35,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
 exports.runner = exports.developUp = void 0;
+var colors_1 = __importDefault(require("colors"));
+var cli_table3_1 = __importDefault(require("cli-table3"));
 var node_path_1 = require("node:path");
 var file_exists_1 = require("../helpers/file-exists");
+var add_forward_slash_1 = require("../helpers/add-forward-slash");
 function developUp(program, glueStackPlugin) {
     var command = program
         .command("develop:up")
@@ -49,7 +55,7 @@ function developUp(program, glueStackPlugin) {
 exports.developUp = developUp;
 function runner(instanceName, glueStackPlugin) {
     return __awaiter(this, void 0, void 0, function () {
-        var instances, upInstances, found, _i, instances_1, instance, routes, _a, upInstances_1, instance, routerPath, subRoute, content, _b, _c, _d, e_1;
+        var instances, upInstances, found, _i, instances_1, instance, rows, table, _a, upInstances_1, instance, paths, isService, routerPath, subRoute, content, _b, content_1, data, routes, pluginData, subRoutes, subMethods, _c, paths_1, _path, _d, routes_1, route, _routePath, e_1;
         return __generator(this, function (_e) {
             switch (_e.label) {
                 case 0:
@@ -70,52 +76,100 @@ function runner(instanceName, glueStackPlugin) {
                             return [2];
                         }
                     }
-                    routes = [];
+                    rows = [];
+                    table = new cli_table3_1["default"]({
+                        head: [colors_1["default"].green('Plugin Prefix Route'), colors_1["default"].green('URI Route'), colors_1["default"].green('URI Method')],
+                        chars: {
+                            'top': '═', 'top-mid': '╤', 'top-left': '╔', 'top-right': '╗',
+                            'bottom': '═', 'bottom-mid': '╧', 'bottom-left': '╚', 'bottom-right': '╝',
+                            'left': '║', 'left-mid': '╟', 'mid': '─', 'mid-mid': '┼',
+                            'right': '║', 'right-mid': '╢', 'middle': '│'
+                        }
+                    });
                     _a = 0, upInstances_1 = upInstances;
                     _e.label = 1;
                 case 1:
-                    if (!(_a < upInstances_1.length)) return [3, 11];
+                    if (!(_a < upInstances_1.length)) return [3, 9];
                     instance = upInstances_1[_a];
-                    if (!(instance && (instance === null || instance === void 0 ? void 0 : instance.containerController))) return [3, 10];
+                    paths = [];
+                    if (!(instance && (instance === null || instance === void 0 ? void 0 : instance.containerController))) return [3, 8];
                     _e.label = 2;
                 case 2:
-                    _e.trys.push([2, 8, , 9]);
-                    if (!(typeof instance.containerController.getRoutes === 'function')) return [3, 5];
+                    _e.trys.push([2, 7, , 8]);
+                    isService = instance.callerPlugin.getName() === '@gluestack/glue-plugin-service-node';
                     routerPath = (0, node_path_1.join)(process.cwd(), instance.getInstallationPath(), "router.js");
                     subRoute = '';
                     return [4, (0, file_exists_1.fileExists)(routerPath)];
                 case 3:
-                    if (_e.sent()) {
-                        content = require(routerPath)();
-                        if (content.length) {
+                    if (!(_e.sent())) {
+                        return [3, 8];
+                    }
+                    content = require(routerPath)();
+                    if (!content.length) {
+                        return [3, 8];
+                    }
+                    for (_b = 0, content_1 = content; _b < content_1.length; _b++) {
+                        data = content_1[_b];
+                        if (data.hasOwnProperty("path") && data.path.includes('(.*)')) {
+                            paths.push(data.path);
+                        }
+                        if (data.hasOwnProperty("path") && !data.path.includes('(.*)')) {
+                            table.push([
+                                data.path,
+                                data.proxy.path,
+                                '--'
+                            ]);
                         }
                     }
-                    _c = (_b = routes.push).apply;
-                    _d = [routes];
                     return [4, instance.containerController.getRoutes()];
                 case 4:
-                    _c.apply(_b, _d.concat([_e.sent()]));
-                    _e.label = 5;
-                case 5: return [4, instance.containerController.getPortNumber()];
-                case 6:
+                    routes = _e.sent();
+                    if (!routes.length) {
+                        return [3, 8];
+                    }
+                    pluginData = void 0;
+                    subRoutes = [];
+                    subMethods = [];
+                    for (_c = 0, paths_1 = paths; _c < paths_1.length; _c++) {
+                        _path = paths_1[_c];
+                        pluginData = _path.replace('(.*)', '');
+                        for (_d = 0, routes_1 = routes; _d < routes_1.length; _d++) {
+                            route = routes_1[_d];
+                            _routePath = (0, add_forward_slash_1.addForwardSlash)(route.path);
+                            if (subRoutes.includes(_routePath)) {
+                                continue;
+                            }
+                            subRoutes.push(_routePath);
+                            if (isService) {
+                                subMethods.push('ALL');
+                            }
+                            else {
+                                subMethods.push(route.method);
+                            }
+                        }
+                        table.push([
+                            pluginData,
+                            subRoutes.join("\n"),
+                            subMethods.join("\n")
+                        ]);
+                    }
+                    return [4, instance.containerController.getPortNumber()];
+                case 5:
                     _e.sent();
                     return [4, instance.containerController.up()];
-                case 7:
+                case 6:
                     _e.sent();
-                    return [3, 9];
-                case 8:
+                    return [3, 8];
+                case 7:
                     e_1 = _e.sent();
                     console.log("Failed: ".concat(instance.getName(), " instance could not be started"));
                     console.log("\x1b[33m\nError:\x1b[31m", e_1.message, "\x1b[0m");
-                    return [3, 9];
-                case 9:
-                    console.log();
-                    _e.label = 10;
-                case 10:
+                    return [3, 8];
+                case 8:
                     _a++;
                     return [3, 1];
-                case 11:
-                    console.table(routes);
+                case 9:
+                    console.log(table.toString());
                     return [2];
             }
         });
