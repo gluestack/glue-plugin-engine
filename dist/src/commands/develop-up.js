@@ -55,7 +55,7 @@ function developUp(program, glueStackPlugin) {
 exports.developUp = developUp;
 function runner(instanceName, glueStackPlugin) {
     return __awaiter(this, void 0, void 0, function () {
-        var instances, upInstances, found, _i, instances_1, instance, rows, table, _a, upInstances_1, instance, paths, isService, routerPath, subRoute, content, _b, content_1, data, routes, pluginData, subRoutes, subMethods, _c, paths_1, _path, _d, routes_1, route, _routePath, e_1;
+        var instances, upInstances, found, _i, instances_1, instance, table, _a, upInstances_1, instance, paths, isService, routerPath, subRoute, content, _b, content_1, data, routes, pluginData, subRoutes, subMethods, _c, paths_1, _path, _d, routes_1, route, _routePath, e_1;
         return __generator(this, function (_e) {
             switch (_e.label) {
                 case 0:
@@ -76,7 +76,6 @@ function runner(instanceName, glueStackPlugin) {
                             return [2];
                         }
                     }
-                    rows = [];
                     table = new cli_table3_1["default"]({
                         head: [colors_1["default"].green('Plugin Prefix Route'), colors_1["default"].green('URI Route'), colors_1["default"].green('URI Method')],
                         chars: {

@@ -43,7 +43,6 @@ export async function runner(
     }
   }
 
-  const rows: IRoutes[] = [];
   // instantiate
   const table = new Table({
     head: [colors.green('Plugin Prefix Route'), colors.green('URI Route'), colors.green('URI Method')],
