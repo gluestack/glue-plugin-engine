@@ -55,7 +55,7 @@ function developUp(program, glueStackPlugin) {
 exports.developUp = developUp;
 function runner(instanceName, glueStackPlugin) {
     return __awaiter(this, void 0, void 0, function () {
-        var instances, upInstances, found, _i, instances_1, instance, table, _a, upInstances_1, instance, paths, isService, routerPath, subRoute, content, _b, content_1, data, routes, pluginData, subRoutes, subMethods, _c, paths_1, _path, _d, routes_1, route, _routePath, e_1;
+        var instances, upInstances, found, _i, instances_1, instance, table, _a, upInstances_1, instance, paths, isService, routerPath, content, _b, content_1, data, routes, pluginData, subRoutes, subMethods, _c, paths_1, _path, _d, routes_1, route, _routePath, e_1;
         return __generator(this, function (_e) {
             switch (_e.label) {
                 case 0:
@@ -97,7 +97,6 @@ function runner(instanceName, glueStackPlugin) {
                     _e.trys.push([2, 7, , 8]);
                     isService = instance.callerPlugin.getName() === '@gluestack/glue-plugin-service-node';
                     routerPath = (0, node_path_1.join)(process.cwd(), instance.getInstallationPath(), "router.js");
-                    subRoute = '';
                     return [4, (0, file_exists_1.fileExists)(routerPath)];
                 case 3:
                     if (!(_e.sent())) {
@@ -119,6 +118,9 @@ function runner(instanceName, glueStackPlugin) {
                                 '--'
                             ]);
                         }
+                    }
+                    if (typeof instance.containerController.getRoutes !== 'function') {
+                        return [3, 8];
                     }
                     return [4, instance.containerController.getRoutes()];
                 case 4:

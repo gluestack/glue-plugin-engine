@@ -71,7 +71,6 @@ export async function runner(
           "router.js",
         );
 
-        const subRoute: string = '';
         if (!await fileExists(routerPath)) {
           continue;
         }
@@ -93,6 +92,10 @@ export async function runner(
               '--'
             ]);
           }
+        }
+
+        if (typeof instance.containerController.getRoutes !== 'function') {
+          continue;
         }
 
         const routes: IRoutes[] = await instance.containerController.getRoutes();
