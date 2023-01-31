@@ -72,11 +72,13 @@ export async function runner(
         );
 
         if (!await fileExists(routerPath)) {
+          await runUpCommand(instance);
           continue;
         }
 
         const content = require(routerPath)();
         if (!content.length) {
+          await runUpCommand(instance);
           continue;
         }
 
@@ -95,11 +97,13 @@ export async function runner(
         }
 
         if (typeof instance.containerController.getRoutes !== 'function') {
+          await runUpCommand(instance);
           continue;
         }
 
         const routes: IRoutes[] = await instance.containerController.getRoutes();
         if (!routes.length) {
+          await runUpCommand(instance);
           continue;
         }
 
@@ -131,8 +135,7 @@ export async function runner(
           ]);
         }
 
-        await instance.containerController.getPortNumber();
-        await instance.containerController.up();
+        await runUpCommand(instance);
 
       } catch (e) {
         console.log(
@@ -146,3 +149,9 @@ export async function runner(
 
   console.log(table.toString());
 }
+
+const runUpCommand = async (instance: IPlugin & IHasContainerController) => {
+  await instance.containerController.getPortNumber();
+  await instance.containerController.up();
+};
+

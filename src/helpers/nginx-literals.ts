@@ -71,7 +71,7 @@ export const setLocation = (
   host?: string,
   size_in_mb?: number,
 ): string => `
-    location ${path.replace('/(.*)', '')} {
+    location ${path.replace('(.*)', '')} {
       ${createRewriteRule(path, proxy_path)}
 
       client_max_body_size ${size_in_mb || 1}M;

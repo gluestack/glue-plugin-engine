@@ -88,24 +88,30 @@ function runner(instanceName, glueStackPlugin) {
                     _a = 0, upInstances_1 = upInstances;
                     _e.label = 1;
                 case 1:
-                    if (!(_a < upInstances_1.length)) return [3, 9];
+                    if (!(_a < upInstances_1.length)) return [3, 16];
                     instance = upInstances_1[_a];
                     paths = [];
-                    if (!(instance && (instance === null || instance === void 0 ? void 0 : instance.containerController))) return [3, 8];
+                    if (!(instance && (instance === null || instance === void 0 ? void 0 : instance.containerController))) return [3, 15];
                     _e.label = 2;
                 case 2:
-                    _e.trys.push([2, 7, , 8]);
+                    _e.trys.push([2, 14, , 15]);
                     isService = instance.callerPlugin.getName() === '@gluestack/glue-plugin-service-node';
                     routerPath = (0, node_path_1.join)(process.cwd(), instance.getInstallationPath(), "router.js");
                     return [4, (0, file_exists_1.fileExists)(routerPath)];
                 case 3:
-                    if (!(_e.sent())) {
-                        return [3, 8];
-                    }
+                    if (!!(_e.sent())) return [3, 5];
+                    return [4, runUpCommand(instance)];
+                case 4:
+                    _e.sent();
+                    return [3, 15];
+                case 5:
                     content = require(routerPath)();
-                    if (!content.length) {
-                        return [3, 8];
-                    }
+                    if (!!content.length) return [3, 7];
+                    return [4, runUpCommand(instance)];
+                case 6:
+                    _e.sent();
+                    return [3, 15];
+                case 7:
                     for (_b = 0, content_1 = content; _b < content_1.length; _b++) {
                         data = content_1[_b];
                         if (data.hasOwnProperty("path") && data.path.includes('(.*)')) {
@@ -119,15 +125,20 @@ function runner(instanceName, glueStackPlugin) {
                             ]);
                         }
                     }
-                    if (typeof instance.containerController.getRoutes !== 'function') {
-                        return [3, 8];
-                    }
-                    return [4, instance.containerController.getRoutes()];
-                case 4:
+                    if (!(typeof instance.containerController.getRoutes !== 'function')) return [3, 9];
+                    return [4, runUpCommand(instance)];
+                case 8:
+                    _e.sent();
+                    return [3, 15];
+                case 9: return [4, instance.containerController.getRoutes()];
+                case 10:
                     routes = _e.sent();
-                    if (!routes.length) {
-                        return [3, 8];
-                    }
+                    if (!!routes.length) return [3, 12];
+                    return [4, runUpCommand(instance)];
+                case 11:
+                    _e.sent();
+                    return [3, 15];
+                case 12:
                     pluginData = void 0;
                     subRoutes = [];
                     subMethods = [];
@@ -154,22 +165,19 @@ function runner(instanceName, glueStackPlugin) {
                             subMethods.join("\n")
                         ]);
                     }
-                    return [4, instance.containerController.getPortNumber()];
-                case 5:
+                    return [4, runUpCommand(instance)];
+                case 13:
                     _e.sent();
-                    return [4, instance.containerController.up()];
-                case 6:
-                    _e.sent();
-                    return [3, 8];
-                case 7:
+                    return [3, 15];
+                case 14:
                     e_1 = _e.sent();
                     console.log("Failed: ".concat(instance.getName(), " instance could not be started"));
                     console.log("\x1b[33m\nError:\x1b[31m", e_1.message, "\x1b[0m");
-                    return [3, 8];
-                case 8:
+                    return [3, 15];
+                case 15:
                     _a++;
                     return [3, 1];
-                case 9:
+                case 16:
                     console.log(table.toString());
                     return [2];
             }
@@ -177,4 +185,17 @@ function runner(instanceName, glueStackPlugin) {
     });
 }
 exports.runner = runner;
+var runUpCommand = function (instance) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4, instance.containerController.getPortNumber()];
+            case 1:
+                _a.sent();
+                return [4, instance.containerController.up()];
+            case 2:
+                _a.sent();
+                return [2];
+        }
+    });
+}); };
 //# sourceMappingURL=develop-up.js.map
