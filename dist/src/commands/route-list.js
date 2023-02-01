@@ -36,63 +36,42 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.runner = exports.developDown = void 0;
-function developDown(program, glueStackPlugin) {
-    var command = program
-        .command("develop:down")
-        .argument("[instance-name]", "Name of the container instance to down (optional)")
-        .description("Stops provided container instances or all the containers if no instance is provided")
-        .action(function (instanceName) { return runner(instanceName, glueStackPlugin); });
-}
-exports.developDown = developDown;
+exports.runner = exports.routeList = void 0;
+var route_list_1 = require("../helpers/route-list");
+var routeList = function (program, glueStackPlugin) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        program
+            .command("route:list")
+            .description("Generate route list of all instances")
+            .action(function (instanceName) { return runner(instanceName, glueStackPlugin); });
+        return [2];
+    });
+}); };
+exports.routeList = routeList;
 function runner(instanceName, glueStackPlugin) {
     return __awaiter(this, void 0, void 0, function () {
-        var instances, downInstances, found, _i, instances_1, instance, _a, downInstances_1, instance, e_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var instances, upInstances, _i, instances_1, instance;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
                     instances = glueStackPlugin.app.getContainerTypePluginInstances(true);
-                    downInstances = instances;
-                    found = false;
+                    upInstances = instances;
                     if (instanceName) {
                         for (_i = 0, instances_1 = instances; _i < instances_1.length; _i++) {
                             instance = instances_1[_i];
                             if (instance.getName() === instanceName) {
-                                found = true;
-                                downInstances = [instance];
+                                upInstances = [instance];
                                 break;
                             }
                         }
-                        if (!found) {
-                            console.log("Error: could not down ".concat(instanceName, " instance not found"));
-                            return [2];
-                        }
                     }
-                    _a = 0, downInstances_1 = downInstances;
-                    _b.label = 1;
+                    return [4, (0, route_list_1.routesList)(upInstances, false)];
                 case 1:
-                    if (!(_a < downInstances_1.length)) return [3, 6];
-                    instance = downInstances_1[_a];
-                    if (!(instance && (instance === null || instance === void 0 ? void 0 : instance.containerController))) return [3, 5];
-                    _b.label = 2;
-                case 2:
-                    _b.trys.push([2, 4, , 5]);
-                    return [4, instance.containerController.down()];
-                case 3:
-                    _b.sent();
-                    return [3, 5];
-                case 4:
-                    e_1 = _b.sent();
-                    console.log("Failed: ".concat(instance.getName(), " instance could not be stopped"));
-                    console.log("\x1b[33m\nError:\x1b[31m", e_1.message, "\x1b[0m");
-                    return [3, 5];
-                case 5:
-                    _a++;
-                    return [3, 1];
-                case 6: return [2];
+                    _a.sent();
+                    return [2];
             }
         });
     });
 }
 exports.runner = runner;
-//# sourceMappingURL=develop-down.js.map
+//# sourceMappingURL=route-list.js.map
