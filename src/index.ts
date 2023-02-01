@@ -14,6 +14,7 @@ import { developWatch } from "./commands/develop-watch";
 import { developUp } from "./commands/develop-up";
 import { developDown } from "./commands/develop-down";
 import { build } from "./commands/build";
+import { routeList } from "./commands/route-list";
 
 //Do not edit the name of this class
 export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
@@ -35,6 +36,7 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
     this.app.addCommand((program: any) => developWatch(program, this));
     this.app.addCommand((program: any) => build(program, this));
     this.app.addCommand((program: any) => routeGenerate(program, this));
+    this.app.addCommand((program: any) => routeList(program, this));
   }
 
   destroy() {
