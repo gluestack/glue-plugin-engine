@@ -1,3 +1,4 @@
+import { removeTrailingSlash } from "./remove-trailing-slash";
 
 export const startsWith = `
 events {
@@ -6,10 +7,11 @@ events {
 
 http {
   client_max_body_size 100M;
-  sendfile on;`;
+  sendfile on;
+`;
 
-export const endsWith = `
-}`;
+export const endsWith = `}
+`;
 
 export const setServer = (domain: string, locations: string[]): string => `
   server {
@@ -57,7 +59,6 @@ export const createRewriteRule = (
   path: string, proxy_path: string
 ): string => {
   if (!path.startsWith('/backend')) {
-    // return `rewrite ^${addTrailingSlash(path)}(.*) ${addTrailingSlash(proxy_path)}$1 break;`
     return `rewrite ^${path} ${proxy_path} break;`
   }
 
@@ -70,8 +71,11 @@ export const setLocation = (
   proxy_path: string,
   host?: string,
   size_in_mb?: number,
-): string => `
-    location ${path.replace('(.*)', '')} {
+): string => {
+  const location: string = path.replace('(.*)', '');
+
+  return `
+    location ${removeTrailingSlash(location)} {
       ${createRewriteRule(path, proxy_path)}
 
       client_max_body_size ${size_in_mb || 1}M;
@@ -87,4 +91,5 @@ export const setLocation = (
       proxy_set_header X-Forwarded-Proto $scheme;
 
       proxy_pass http://${proxy_instance};
-    }`;
+    }`
+};

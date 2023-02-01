@@ -115,6 +115,7 @@ export const runner = async (glueStackPlugin: GlueStackPlugin) => {
 
   for await (const plugin of statelessPlugins) {
     await nginxConf.addRouter(
+      plugin.instance,
       plugin.port,
       join(plugin.path, 'router.js')
     );
