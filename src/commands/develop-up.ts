@@ -21,8 +21,10 @@ export async function runner(
   glueStackPlugin: GlueStackPlugin,
 ) {
   const instances = glueStackPlugin.app.getContainerTypePluginInstances(true);
+
   let upInstances: (IPlugin & IHasContainerController)[] = instances;
   let found = false;
+
   if (instanceName) {
     for (const instance of instances) {
       if (instance.getName() === instanceName) {
@@ -36,8 +38,6 @@ export async function runner(
       return;
     }
   }
+
   await routesList(upInstances, true);
 }
-
-
-

@@ -8,7 +8,6 @@ import IHasContainerController from "@gluestack/framework/types/plugin/interface
 import { fileExists } from "../helpers/file-exists";
 import { addForwardSlash } from "../helpers/add-forward-slash";
 
-
 export async function routesList(upInstances: any, isUp: boolean) {
 	const table = new Table({
 		head: [colors.green('Plugin Prefix Route'), colors.green('URI Route'), colors.green('URI Method')],
