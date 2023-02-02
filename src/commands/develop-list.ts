@@ -49,6 +49,7 @@ export async function runner(glueStackPlugin: GlueStackPlugin, args: any) {
         arr.push({
           instance: instance.getName(),
           package: instance.callerPlugin.getName(),
+          version: instance.callerPlugin.getVersion(),
           type: instance.callerPlugin.getType(),
           status: instance.getContainerController().getStatus(),
           port:
