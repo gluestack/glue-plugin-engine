@@ -12,7 +12,7 @@ import { Canvas, Meta, Story } from "@storybook/addon-docs";
 
 
 * There is list of certain commands which are available in this plugin.
-  Below is a little description of those commands.
+  Below is a description of those commands.
 
 <br/>
 
@@ -23,10 +23,10 @@ import { Canvas, Meta, Story } from "@storybook/addon-docs";
 
   <br/>
 
-  * This command will run the **Plugin Instances** inside our docker.
+  * This command will run the **Plugin Instances** inside your docker.
 
-    In order to run the docker container of all **Plugin Instances** we have created,
-    we need to run the below command:
+    In order to run the docker container of all **Plugin Instances** you have created,
+    you need to run the below command:
 
     <br/>
 
@@ -36,7 +36,7 @@ import { Canvas, Meta, Story } from "@storybook/addon-docs";
 
     <br/>
 
-  * In order to run a particular **Plugin Instance** we need to run command in the below pattern:
+  * In order to run a particular **Plugin Instance** you need to run command in the below pattern:
 
     <br/>
 
@@ -57,7 +57,7 @@ import { Canvas, Meta, Story } from "@storybook/addon-docs";
 
     <br/>
 
-    **Note:** Passing instance name is optional. If we don't pass the instance name then, it will
+    **Note:** Passing instance name is optional. If you don't pass the instance name then, it will
     start running all the instances
 
   </details>
@@ -71,10 +71,10 @@ import { Canvas, Meta, Story } from "@storybook/addon-docs";
 
   <br/>
 
-  * This command will stop running the **Plugin Instances** inside our docker.
+  * This command will stop running the **Plugin Instances** inside your docker.
 
-    In order to stop the docker container of all **Plugin Instances** we have created,
-    we need to run the below command:
+    In order to stop the docker container of all **Plugin Instances** you have created,
+    you need to run the below command:
 
     <br/>
 
@@ -84,7 +84,7 @@ import { Canvas, Meta, Story } from "@storybook/addon-docs";
 
     <br/>
 
-  * In order to stop a particular **Plugin Instance** we need to run command in the below pattern:
+  * In order to stop a particular **Plugin Instance** you need to run command in the below pattern:
 
     <br/>
 
@@ -105,7 +105,7 @@ import { Canvas, Meta, Story } from "@storybook/addon-docs";
 
     <br/>
 
-    **Note:** Passing instance name is optional. If we don't pass the instance name then, it will
+    **Note:** Passing instance name is optional. If you don't pass the instance name then, it will
     stop all the instances
 
   </details>
@@ -119,10 +119,10 @@ import { Canvas, Meta, Story } from "@storybook/addon-docs";
 
   <br/>
 
-  * This command will show us details of all **Plugin Instances** we have created.
+  * This command will show us details of all **Plugin Instances** you have created.
 
-    In order to show the details of all **Plugin Instances** we have created,
-    we need to run the below command:
+    In order to show the details of all **Plugin Instances** you have created,
+    you need to run the below command:
 
     <br/>
 
@@ -132,7 +132,7 @@ import { Canvas, Meta, Story } from "@storybook/addon-docs";
 
     <br/>
 
-  * In order to see the details of a particular **Plugin Instance** we need to run command in the below pattern:
+  * In order to see the details of a particular **Plugin Instance** you need to run command in the below pattern:
 
     <br/>
 
@@ -167,18 +167,18 @@ import { Canvas, Meta, Story } from "@storybook/addon-docs";
 
   <br/>
 
-  * This command will run our applicaion in **watch** mode. Whenever we save changes in our
+  * This command will run your applicaion in **watch** mode. Whenever you save changes in your
     plugin instances which have **watch() function** included in them, then this command will
-    automatically restart our **instance containers**. 
+    automatically restart your **instance containers**. 
 
-    It will **watch** for all those plugin instances inside which we have implemented **watch()
+    It will **watch** for all those plugin instances inside which you have implemented **watch()
     function**.
 
     The **watch()** function should return an array of strings. Those strings are the **file
-    path** upon which our application will run on watch mode.
+    path** upon which your application will run on watch mode.
     
     
-    In order to run this command we need to enter the following command:
+    In order to run this command you need to enter the following command:
 
     <br/>
 
@@ -201,7 +201,7 @@ import { Canvas, Meta, Story } from "@storybook/addon-docs";
 
   * This command will generate router file for all the container instances.
 
-    In order to generate router file for all the container instances, we need
+    In order to generate router file for all the container instances, you need
     to run the following command.
 
     <br/>
@@ -212,8 +212,35 @@ import { Canvas, Meta, Story } from "@storybook/addon-docs";
 
     <br/>
 
-    This command will generate a **default.conf** file, which is yours main nginx 
-    conf file. This file will be present at root of your project.
+    This command will generate a **default.conf** file, which is your main nginx.conf file. 
+    This file will be present at root of your project.
+
+  </details>
+
+<br/>
+
+* <details>
+  <summary>
+    <strong> route:list</strong>
+  </summary>
+
+  <br/>
+
+  * This command will generate list of all the routes available for the interaction
+  with the instances you have created.
+
+    In order to generate list of all the routes for all instances, you need
+    to run the following command.
+
+    <br/>
+
+    ```
+    node glue route:list
+    ```
+
+    <br/>
+
+    This will generate list of all routes available.
 
   </details>
 
