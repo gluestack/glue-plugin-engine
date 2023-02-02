@@ -1,6 +1,6 @@
 {
   "name": "@gluestack/glue-plugin-engine",
-  "version": "0.0.47",
+  "version": "0.0.57",
   "description": "Gluestack Plugins Process Manager Engine",
   "repository": {
     "type": "git",
@@ -22,11 +22,13 @@
     "@types/chokidar": "^2.1.3",
     "@types/node": "^18.11.16",
     "chokidar": "^3.5.3",
+    "cli-table3": "^0.6.3",
+    "colors": "^1.4.0",
     "dotenv": "^16.0.3",
     "prompts": "^2.4.2"
   },
   "devDependencies": {
-    "@gluestack/framework": "^0.0.19",
+    "@gluestack/framework": "^0.0.x",
     "@types/dotenv": "^8.2.0",
     "typescript": "^4.9.4"
   },

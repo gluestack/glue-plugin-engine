@@ -204,6 +204,39 @@ function runner(glueStackPlugin) {
                                 }
                             });
                         }); });
+                        process.on('SIGINT', function () { return __awaiter(_this, void 0, void 0, function () {
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4, restartsWatchedContainers(instances, true)];
+                                    case 1:
+                                        _a.sent();
+                                        process.exit(0);
+                                        return [2];
+                                }
+                            });
+                        }); });
+                        process.on('SIGQUIT', function () { return __awaiter(_this, void 0, void 0, function () {
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4, restartsWatchedContainers(instances, true)];
+                                    case 1:
+                                        _a.sent();
+                                        process.exit(0);
+                                        return [2];
+                                }
+                            });
+                        }); });
+                        process.on('SIGTERM', function () { return __awaiter(_this, void 0, void 0, function () {
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4, restartsWatchedContainers(instances, true)];
+                                    case 1:
+                                        _a.sent();
+                                        process.exit(0);
+                                        return [2];
+                                }
+                            });
+                        }); });
                     }
                     else {
                         console.log('Nothing to watch. Terminating!');
@@ -214,68 +247,71 @@ function runner(glueStackPlugin) {
     });
 }
 exports.runner = runner;
-function restartsWatchedContainers(instances) {
+function restartsWatchedContainers(instances, down) {
     var _a, instances_2, instances_2_1;
     var _b, e_4, _c, _d;
+    if (down === void 0) { down = false; }
     return __awaiter(this, void 0, void 0, function () {
         var instance, e_5, e_4_1;
         return __generator(this, function (_e) {
             switch (_e.label) {
                 case 0:
-                    _e.trys.push([0, 13, 14, 19]);
+                    _e.trys.push([0, 14, 15, 20]);
                     _a = true, instances_2 = __asyncValues(instances);
                     _e.label = 1;
                 case 1: return [4, instances_2.next()];
                 case 2:
-                    if (!(instances_2_1 = _e.sent(), _b = instances_2_1.done, !_b)) return [3, 12];
+                    if (!(instances_2_1 = _e.sent(), _b = instances_2_1.done, !_b)) return [3, 13];
                     _d = instances_2_1.value;
                     _a = false;
                     _e.label = 3;
                 case 3:
-                    _e.trys.push([3, , 10, 11]);
+                    _e.trys.push([3, , 11, 12]);
                     instance = _d;
-                    if (!(instance && (instance === null || instance === void 0 ? void 0 : instance.containerController))) return [3, 9];
+                    if (!(instance && (instance === null || instance === void 0 ? void 0 : instance.containerController))) return [3, 10];
                     _e.label = 4;
                 case 4:
-                    _e.trys.push([4, 7, , 8]);
+                    _e.trys.push([4, 8, , 9]);
                     return [4, instance.containerController.down()];
                 case 5:
                     _e.sent();
+                    if (!!down) return [3, 7];
                     return [4, instance.containerController.up()];
                 case 6:
                     _e.sent();
-                    return [3, 8];
-                case 7:
+                    _e.label = 7;
+                case 7: return [3, 9];
+                case 8:
                     e_5 = _e.sent();
                     console.log("Failed: ".concat(instance.getName(), " instance could not be started"));
                     console.log("\x1b[33m\nError:\x1b[31m", e_5.message, "\x1b[0m");
-                    return [3, 8];
-                case 8:
+                    return [3, 9];
+                case 9:
                     console.log();
-                    _e.label = 9;
-                case 9: return [3, 11];
-                case 10:
+                    _e.label = 10;
+                case 10: return [3, 12];
+                case 11:
                     _a = true;
                     return [7];
-                case 11: return [3, 1];
-                case 12: return [3, 19];
-                case 13:
+                case 12: return [3, 1];
+                case 13: return [3, 20];
+                case 14:
                     e_4_1 = _e.sent();
                     e_4 = { error: e_4_1 };
-                    return [3, 19];
-                case 14:
-                    _e.trys.push([14, , 17, 18]);
-                    if (!(!_a && !_b && (_c = instances_2["return"]))) return [3, 16];
-                    return [4, _c.call(instances_2)];
+                    return [3, 20];
                 case 15:
+                    _e.trys.push([15, , 18, 19]);
+                    if (!(!_a && !_b && (_c = instances_2["return"]))) return [3, 17];
+                    return [4, _c.call(instances_2)];
+                case 16:
                     _e.sent();
-                    _e.label = 16;
-                case 16: return [3, 18];
-                case 17:
+                    _e.label = 17;
+                case 17: return [3, 19];
+                case 18:
                     if (e_4) throw e_4.error;
                     return [7];
-                case 18: return [7];
-                case 19: return [2];
+                case 19: return [7];
+                case 20: return [2];
             }
         });
     });

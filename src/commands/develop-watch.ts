@@ -44,32 +44,47 @@ export async function runner(
 
   if (paths.length > 0) {
     const watcher = new GluestackWatcher(paths);
+
     watcher.on('add', async (path) => {
-      // console.log(`${path} added`);
-
       if (!watcher.getStatus()) {
         watcher.restart(true);
         await restartsWatchedContainers(instances);
         watcher.restart(false);
       }
     });
+
     watcher.on('change', async (path) => {
-      // console.log(`${path} changed`);
-
       if (!watcher.getStatus()) {
         watcher.restart(true);
         await restartsWatchedContainers(instances);
         watcher.restart(false);
       }
     });
-    watcher.on('unlink', async (path) => {
-      // console.log(`${path} deleted`);
 
+    watcher.on('unlink', async (path) => {
       if (!watcher.getStatus()) {
         watcher.restart(true);
         await restartsWatchedContainers(instances);
         watcher.restart(false);
       }
+    });
+
+    // CTRL+C
+    process.on('SIGINT', async () => {
+      await restartsWatchedContainers(instances, true);
+      process.exit(0);
+    });
+
+    // Keyboard quit
+    process.on('SIGQUIT', async () => {
+      await restartsWatchedContainers(instances, true);
+      process.exit(0);
+    });
+
+    // `kill` command
+    process.on('SIGTERM', async () => {
+      await restartsWatchedContainers(instances, true);
+      process.exit(0);
     });
   } else {
     console.log('Nothing to watch. Terminating!');
@@ -77,13 +92,16 @@ export async function runner(
 }
 
 async function restartsWatchedContainers(
-  instances: (IPlugin & IHasContainerController)[]
+  instances: (IPlugin & IHasContainerController)[],
+  down: boolean = false
 ) {
   for await (const instance of instances) {
     if (instance && instance?.containerController) {
       try {
         await instance.containerController.down();
-        await instance.containerController.up();
+        if (!down) {
+          await instance.containerController.up();
+        }
       } catch (e) {
         console.log(
           `Failed: ${instance.getName()} instance could not be started`,

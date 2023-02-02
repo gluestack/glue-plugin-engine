@@ -38,17 +38,14 @@ export async function runner(
 
   for (const instance of downInstances) {
     if (instance && instance?.containerController) {
-      console.log(`Stopping: ${instance.getName()} instance`);
       try {
         await instance.containerController.down();
-        console.log(`Success: ${instance.getName()} instance is down`);
       } catch (e) {
         console.log(
           `Failed: ${instance.getName()} instance could not be stopped`,
         );
         console.log("\x1b[33m\nError:\x1b[31m", e.message, "\x1b[0m");
       }
-      console.log();
     }
   }
 }

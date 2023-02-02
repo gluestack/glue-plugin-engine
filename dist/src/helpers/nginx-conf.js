@@ -56,8 +56,11 @@ var path_1 = require("path");
 var fs_1 = require("fs");
 var file_exists_1 = require("./file-exists");
 var nginx_literals_1 = require("./nginx-literals");
+var create_folder_1 = require("./create-folder");
 var NginxConf = (function () {
     function NginxConf() {
+        this.filename = 'nginx.conf';
+        this.subdirectory = (0, path_1.join)('meta', 'router');
         this.upstreams = [];
     }
     NginxConf.prototype.generate = function () {
@@ -66,25 +69,27 @@ var NginxConf = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _a.trys.push([0, 3, , 4]);
                         return [4, this.toConf()];
                     case 1:
                         conf = _a.sent();
-                        filepath = (0, path_1.join)(process.cwd(), 'nginx.conf');
-                        (0, fs_1.writeFileSync)(filepath, conf);
-                        console.log('> NGINX file created successfully -', (0, path_1.relative)('.', filepath));
-                        return [3, 3];
+                        filepath = (0, path_1.join)(process.cwd(), this.subdirectory, this.filename);
+                        return [4, (0, create_folder_1.createFolder)((0, path_1.join)(process.cwd(), this.subdirectory))];
                     case 2:
+                        _a.sent();
+                        (0, fs_1.writeFileSync)(filepath, conf);
+                        return [3, 4];
+                    case 3:
                         err_1 = _a.sent();
                         console.log('> NGINX file creation failed due to following reasons -');
                         console.log(err_1);
-                        return [3, 3];
-                    case 3: return [2];
+                        return [3, 4];
+                    case 4: return [2];
                 }
             });
         });
     };
-    NginxConf.prototype.addRouter = function (port, string) {
+    NginxConf.prototype.addRouter = function (instance, port, string) {
         return __awaiter(this, void 0, void 0, function () {
             var upstreams, exist;
             return __generator(this, function (_a) {
@@ -96,100 +101,241 @@ var NginxConf = (function () {
                         exist = _a.sent();
                         if (!exist)
                             return [2, Promise.resolve(false)];
-                        upstreams.push({ locations: __spreadArray([], require(string)(), true), port: port });
+                        upstreams.push({ locations: __spreadArray([], require(string)(), true), port: port, instance: instance });
                         return [2, Promise.resolve(true)];
                 }
             });
         });
     };
     NginxConf.prototype.toConf = function () {
-        var _a, e_1, _b, _c, _d, e_2, _e, _f;
+        var _a, e_1, _b, _c, _d, e_2, _e, _f, _g, e_3, _h, _j, _k, e_4, _l, _m;
         return __awaiter(this, void 0, void 0, function () {
-            var locations, domain, upstreams, _g, upstreams_1, upstreams_1_1, upstream, _h, _j, _k, location_1, e_2_1, e_1_1;
-            return __generator(this, function (_l) {
-                switch (_l.label) {
+            var content, upstreams, mainStreams, _o, upstreams_1, upstreams_1_1, upstream, locations_1, server_name, _p, _q, _r, location_1, e_2_1, e_1_1, locations, _s, mainStreams_1, mainStreams_1_1, mainStream, _t, _u, _v, location_2, e_4_1, e_3_1, server_name;
+            return __generator(this, function (_w) {
+                switch (_w.label) {
                     case 0:
-                        locations = [];
-                        domain = '';
+                        content = '';
                         upstreams = this.upstreams;
-                        _l.label = 1;
+                        mainStreams = [];
+                        _w.label = 1;
                     case 1:
-                        _l.trys.push([1, 20, 21, 26]);
-                        _g = true, upstreams_1 = __asyncValues(upstreams);
-                        _l.label = 2;
+                        _w.trys.push([1, 21, 22, 27]);
+                        _o = true, upstreams_1 = __asyncValues(upstreams);
+                        _w.label = 2;
                     case 2: return [4, upstreams_1.next()];
                     case 3:
-                        if (!(upstreams_1_1 = _l.sent(), _a = upstreams_1_1.done, !_a)) return [3, 19];
+                        if (!(upstreams_1_1 = _w.sent(), _a = upstreams_1_1.done, !_a)) return [3, 20];
                         _c = upstreams_1_1.value;
-                        _g = false;
-                        _l.label = 4;
+                        _o = false;
+                        _w.label = 4;
                     case 4:
-                        _l.trys.push([4, , 17, 18]);
+                        _w.trys.push([4, , 18, 19]);
                         upstream = _c;
-                        _l.label = 5;
+                        return [4, this.hasServerName(upstream.locations)];
                     case 5:
-                        _l.trys.push([5, 10, 11, 16]);
-                        _h = true, _j = (e_2 = void 0, __asyncValues(upstream.locations));
-                        _l.label = 6;
-                    case 6: return [4, _j.next()];
-                    case 7:
-                        if (!(_k = _l.sent(), _d = _k.done, !_d)) return [3, 9];
-                        _f = _k.value;
-                        _h = false;
+                        if (!(_w.sent())) {
+                            mainStreams.push({ locations: __spreadArray([], upstream.locations, true), port: upstream.port });
+                            return [3, 19];
+                        }
+                        locations_1 = [];
+                        server_name = '';
+                        _w.label = 6;
+                    case 6:
+                        _w.trys.push([6, 11, 12, 17]);
+                        _p = true, _q = (e_2 = void 0, __asyncValues(upstream.locations));
+                        _w.label = 7;
+                    case 7: return [4, _q.next()];
+                    case 8:
+                        if (!(_r = _w.sent(), _d = _r.done, !_d)) return [3, 10];
+                        _f = _r.value;
+                        _p = false;
                         try {
                             location_1 = _f;
-                            if (location_1.hasOwnProperty('server_name')) {
-                                domain = '_';
+                            if (location_1.hasOwnProperty('server_name') && location_1.server_name !== '') {
+                                server_name = location_1.server_name;
                             }
                             if (location_1.hasOwnProperty('path')) {
-                                locations.push((0, nginx_literals_1.setLocation)(location_1.path, "host.docker.internal:".concat(upstream.port), location_1.proxy.path, location_1.host, location_1.size_in_mb || 50));
+                                locations_1.push((0, nginx_literals_1.setLocation)(location_1.path, "host.docker.internal:".concat(upstream.port), location_1.proxy.path, location_1.host, location_1.size_in_mb || 50));
                             }
                         }
                         finally {
-                            _h = true;
+                            _p = true;
                         }
-                        _l.label = 8;
-                    case 8: return [3, 6];
-                    case 9: return [3, 16];
-                    case 10:
-                        e_2_1 = _l.sent();
-                        e_2 = { error: e_2_1 };
-                        return [3, 16];
+                        _w.label = 9;
+                    case 9: return [3, 7];
+                    case 10: return [3, 17];
                     case 11:
-                        _l.trys.push([11, , 14, 15]);
-                        if (!(!_h && !_d && (_e = _j["return"]))) return [3, 13];
-                        return [4, _e.call(_j)];
+                        e_2_1 = _w.sent();
+                        e_2 = { error: e_2_1 };
+                        return [3, 17];
                     case 12:
-                        _l.sent();
-                        _l.label = 13;
-                    case 13: return [3, 15];
-                    case 14:
+                        _w.trys.push([12, , 15, 16]);
+                        if (!(!_p && !_d && (_e = _q["return"]))) return [3, 14];
+                        return [4, _e.call(_q)];
+                    case 13:
+                        _w.sent();
+                        _w.label = 14;
+                    case 14: return [3, 16];
+                    case 15:
                         if (e_2) throw e_2.error;
                         return [7];
-                    case 15: return [7];
-                    case 16: return [3, 18];
+                    case 16: return [7];
                     case 17:
-                        _g = true;
+                        content += (0, nginx_literals_1.setServer)("".concat(server_name, ".local.gluestack.app"), locations_1);
+                        return [3, 19];
+                    case 18:
+                        _o = true;
                         return [7];
-                    case 18: return [3, 2];
-                    case 19: return [3, 26];
-                    case 20:
-                        e_1_1 = _l.sent();
-                        e_1 = { error: e_1_1 };
-                        return [3, 26];
+                    case 19: return [3, 2];
+                    case 20: return [3, 27];
                     case 21:
-                        _l.trys.push([21, , 24, 25]);
-                        if (!(!_g && !_a && (_b = upstreams_1["return"]))) return [3, 23];
-                        return [4, _b.call(upstreams_1)];
+                        e_1_1 = _w.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3, 27];
                     case 22:
-                        _l.sent();
-                        _l.label = 23;
-                    case 23: return [3, 25];
-                    case 24:
+                        _w.trys.push([22, , 25, 26]);
+                        if (!(!_o && !_a && (_b = upstreams_1["return"]))) return [3, 24];
+                        return [4, _b.call(upstreams_1)];
+                    case 23:
+                        _w.sent();
+                        _w.label = 24;
+                    case 24: return [3, 26];
+                    case 25:
                         if (e_1) throw e_1.error;
                         return [7];
-                    case 25: return [7];
-                    case 26: return [2, Promise.resolve(nginx_literals_1.startsWith + (0, nginx_literals_1.setServer)(domain, locations) + nginx_literals_1.endsWith)];
+                    case 26: return [7];
+                    case 27:
+                        locations = [];
+                        _w.label = 28;
+                    case 28:
+                        _w.trys.push([28, 47, 48, 53]);
+                        _s = true, mainStreams_1 = __asyncValues(mainStreams);
+                        _w.label = 29;
+                    case 29: return [4, mainStreams_1.next()];
+                    case 30:
+                        if (!(mainStreams_1_1 = _w.sent(), _g = mainStreams_1_1.done, !_g)) return [3, 46];
+                        _j = mainStreams_1_1.value;
+                        _s = false;
+                        _w.label = 31;
+                    case 31:
+                        _w.trys.push([31, , 44, 45]);
+                        mainStream = _j;
+                        _w.label = 32;
+                    case 32:
+                        _w.trys.push([32, 37, 38, 43]);
+                        _t = true, _u = (e_4 = void 0, __asyncValues(mainStream.locations));
+                        _w.label = 33;
+                    case 33: return [4, _u.next()];
+                    case 34:
+                        if (!(_v = _w.sent(), _k = _v.done, !_k)) return [3, 36];
+                        _m = _v.value;
+                        _t = false;
+                        try {
+                            location_2 = _m;
+                            if (location_2.hasOwnProperty('path')) {
+                                locations.push((0, nginx_literals_1.setLocation)(location_2.path, "host.docker.internal:".concat(mainStream.port), location_2.proxy.path, location_2.host, location_2.size_in_mb || 50));
+                            }
+                        }
+                        finally {
+                            _t = true;
+                        }
+                        _w.label = 35;
+                    case 35: return [3, 33];
+                    case 36: return [3, 43];
+                    case 37:
+                        e_4_1 = _w.sent();
+                        e_4 = { error: e_4_1 };
+                        return [3, 43];
+                    case 38:
+                        _w.trys.push([38, , 41, 42]);
+                        if (!(!_t && !_k && (_l = _u["return"]))) return [3, 40];
+                        return [4, _l.call(_u)];
+                    case 39:
+                        _w.sent();
+                        _w.label = 40;
+                    case 40: return [3, 42];
+                    case 41:
+                        if (e_4) throw e_4.error;
+                        return [7];
+                    case 42: return [7];
+                    case 43: return [3, 45];
+                    case 44:
+                        _s = true;
+                        return [7];
+                    case 45: return [3, 29];
+                    case 46: return [3, 53];
+                    case 47:
+                        e_3_1 = _w.sent();
+                        e_3 = { error: e_3_1 };
+                        return [3, 53];
+                    case 48:
+                        _w.trys.push([48, , 51, 52]);
+                        if (!(!_s && !_g && (_h = mainStreams_1["return"]))) return [3, 50];
+                        return [4, _h.call(mainStreams_1)];
+                    case 49:
+                        _w.sent();
+                        _w.label = 50;
+                    case 50: return [3, 52];
+                    case 51:
+                        if (e_3) throw e_3.error;
+                        return [7];
+                    case 52: return [7];
+                    case 53:
+                        if (locations.length > 0) {
+                            server_name = process
+                                .cwd().split('/')[process.cwd().split('/').length - 1];
+                            content += (0, nginx_literals_1.setServer)("".concat(server_name, ".local.gluestack.app"), locations);
+                        }
+                        return [2, Promise.resolve(nginx_literals_1.startsWith + content + nginx_literals_1.endsWith)];
+                }
+            });
+        });
+    };
+    NginxConf.prototype.hasServerName = function (router) {
+        var _a, router_1, router_1_1;
+        var _b, e_5, _c, _d;
+        return __awaiter(this, void 0, void 0, function () {
+            var route, e_5_1;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
+                    case 0:
+                        _e.trys.push([0, 5, 6, 11]);
+                        _a = true, router_1 = __asyncValues(router);
+                        _e.label = 1;
+                    case 1: return [4, router_1.next()];
+                    case 2:
+                        if (!(router_1_1 = _e.sent(), _b = router_1_1.done, !_b)) return [3, 4];
+                        _d = router_1_1.value;
+                        _a = false;
+                        try {
+                            route = _d;
+                            if (route.hasOwnProperty("server_name") && route.server_name !== '') {
+                                return [2, true];
+                            }
+                        }
+                        finally {
+                            _a = true;
+                        }
+                        _e.label = 3;
+                    case 3: return [3, 1];
+                    case 4: return [3, 11];
+                    case 5:
+                        e_5_1 = _e.sent();
+                        e_5 = { error: e_5_1 };
+                        return [3, 11];
+                    case 6:
+                        _e.trys.push([6, , 9, 10]);
+                        if (!(!_a && !_b && (_c = router_1["return"]))) return [3, 8];
+                        return [4, _c.call(router_1)];
+                    case 7:
+                        _e.sent();
+                        _e.label = 8;
+                    case 8: return [3, 10];
+                    case 9:
+                        if (e_5) throw e_5.error;
+                        return [7];
+                    case 10: return [7];
+                    case 11: return [2, false];
                 }
             });
         });

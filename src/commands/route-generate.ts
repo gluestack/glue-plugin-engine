@@ -60,7 +60,6 @@ export const runner = async (glueStackPlugin: GlueStackPlugin) => {
             tree[pluginName].push(dependency);
           }
         }
-
       } catch (err) {
         console.log('>> Error:', err);
         continue;
@@ -116,6 +115,7 @@ export const runner = async (glueStackPlugin: GlueStackPlugin) => {
 
   for await (const plugin of statelessPlugins) {
     await nginxConf.addRouter(
+      plugin.instance,
       plugin.port,
       join(plugin.path, 'router.js')
     );

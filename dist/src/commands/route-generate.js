@@ -216,7 +216,7 @@ var runner = function (glueStackPlugin) { return __awaiter(void 0, void 0, void 
             case 28:
                 _q.trys.push([28, , 30, 31]);
                 plugin = _p;
-                return [4, nginxConf.addRouter(plugin.port, (0, path_1.join)(plugin.path, 'router.js'))];
+                return [4, nginxConf.addRouter(plugin.instance, plugin.port, (0, path_1.join)(plugin.path, 'router.js'))];
             case 29:
                 _q.sent();
                 return [3, 31];

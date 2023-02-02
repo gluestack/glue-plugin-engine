@@ -1,0 +1,1 @@
+{"version":3,"file":"add-forward-slash.js","sourceRoot":"","sources":["../../../src/helpers/add-forward-slash.ts"],"names":[],"mappings":";;;AAAO,IAAM,eAAe,GAAG,UAAC,GAAW;IACzC,IAAI,GAAG,CAAC,CAAC,CAAC,KAAK,GAAG,EAAE;QAClB,OAAO,GAAG,CAAC;KACZ;SAAM;QACL,OAAO,GAAG,GAAG,GAAG,CAAC;KAClB;AACH,CAAC,CAAC;AANW,QAAA,eAAe,mBAM1B"}

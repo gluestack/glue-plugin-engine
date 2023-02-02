@@ -36,46 +36,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.runner = exports.developUp = void 0;
-var route_list_1 = require("../helpers/route-list");
-function developUp(program, glueStackPlugin) {
-    var command = program
-        .command("develop:up")
-        .argument("[instance-name]", "Name of the container instance to up (optional)")
-        .description("Starts provided container instances or all the containers if no instance is provided")
-        .action(function (instanceName) { return runner(instanceName, glueStackPlugin); });
-}
-exports.developUp = developUp;
-function runner(instanceName, glueStackPlugin) {
-    return __awaiter(this, void 0, void 0, function () {
-        var instances, upInstances, found, _i, instances_1, instance;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    instances = glueStackPlugin.app.getContainerTypePluginInstances(true);
-                    upInstances = instances;
-                    found = false;
-                    if (instanceName) {
-                        for (_i = 0, instances_1 = instances; _i < instances_1.length; _i++) {
-                            instance = instances_1[_i];
-                            if (instance.getName() === instanceName) {
-                                found = true;
-                                upInstances = [instance];
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            console.log("Error: could not up ".concat(instanceName, " instance not found"));
-                            return [2];
-                        }
-                    }
-                    return [4, (0, route_list_1.routesList)(upInstances, true)];
-                case 1:
-                    _a.sent();
-                    return [2];
-            }
-        });
+exports.createFolder = void 0;
+var promises_1 = require("node:fs/promises");
+var createFolder = function (path) { return __awaiter(void 0, void 0, void 0, function () {
+    var error_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4, (0, promises_1.mkdir)(path, { recursive: true })];
+            case 1:
+                _a.sent();
+                return [3, 3];
+            case 2:
+                error_1 = _a.sent();
+                return [2, false];
+            case 3: return [2];
+        }
     });
-}
-exports.runner = runner;
-//# sourceMappingURL=develop-up.js.map
+}); };
+exports.createFolder = createFolder;
+//# sourceMappingURL=create-folder.js.map

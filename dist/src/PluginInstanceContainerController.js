@@ -64,6 +64,7 @@ var path_1 = require("path");
 var dotenv = __importStar(require("dotenv"));
 var spawn_1 = require("./helpers/spawn");
 var DockerodeHelper = require("@gluestack/helpers").DockerodeHelper;
+var file_exists_1 = require("./helpers/file-exists");
 var PluginInstanceContainerController = (function () {
     function PluginInstanceContainerController(app, callerInstance) {
         this.status = "down";
@@ -85,45 +86,45 @@ var PluginInstanceContainerController = (function () {
     };
     PluginInstanceContainerController.prototype.getDockerJson = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var data, _a, _b, _c, _d, _e, SSL_FILES_PATH, _f, _g;
-            var _h;
-            return __generator(this, function (_j) {
-                switch (_j.label) {
+            var SSL_FILES_PATH, _a, _b, data, filesExist, _c, _d;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
                     case 0:
+                        _a = path_1.join;
+                        _b = [process.cwd()];
+                        return [4, this.getSslFilesPath()];
+                    case 1:
+                        SSL_FILES_PATH = _a.apply(void 0, _b.concat([_e.sent()]));
                         data = {};
                         data.Image = "nginx:latest";
                         data.RestartPolicy = {
                             Name: "always"
                         };
-                        _a = data;
-                        _h = {
+                        data.HostConfig = {
                             PortBindings: {
-                                "80/tcp": [{ HostPort: '80' }]
+                                "80/tcp": [{ HostPort: '80' }],
+                                "443/tcp": [{ HostPort: '443' }]
                             }
                         };
-                        _b = "".concat;
-                        return [4, this.getDefaultConfPath()];
-                    case 1:
-                        _a.HostConfig = (_h.Binds = [
-                            _b.apply("", [_j.sent(), ":/etc/nginx/nginx.conf"])
-                        ],
-                            _h);
-                        data.ExposedPorts = {
-                            "80/tcp": {}
-                        };
-                        data.Binds = [];
-                        _d = (_c = data.Binds).push;
-                        _e = "".concat;
-                        return [4, this.getDefaultConfPath()];
+                        return [4, (0, file_exists_1.fileExists)(SSL_FILES_PATH)];
                     case 2:
-                        _d.apply(_c, [_e.apply("", [_j.sent(), ":/etc/nginx/nginx.conf"])]);
-                        _f = path_1.join;
-                        _g = [process.cwd()];
-                        return [4, this.getSslFilesPath()];
+                        filesExist = _e.sent();
+                        if (!filesExist) return [3, 4];
+                        _c = data.HostConfig;
+                        _d = "".concat;
+                        return [4, this.getDefaultConfPath()];
                     case 3:
-                        SSL_FILES_PATH = _f.apply(void 0, _g.concat([_j.sent()]));
-                        data.Binds.push("".concat(SSL_FILES_PATH, "/fullchain.pem:/etc/ssl/fullchain.pem"));
-                        data.Binds.push("".concat(SSL_FILES_PATH, "/privkey.pem:/etc/ssl/privkey.pem"));
+                        _c.Binds = [
+                            _d.apply("", [_e.sent(), ":/etc/nginx/nginx.conf"]),
+                            "".concat(SSL_FILES_PATH, "/fullchain.pem:/etc/ssl/fullchain.pem"),
+                            "".concat(SSL_FILES_PATH, "/privkey.pem:/etc/ssl/privkey.pem")
+                        ];
+                        _e.label = 4;
+                    case 4:
+                        data.ExposedPorts = {
+                            "80/tcp": {},
+                            "443/tcp": {}
+                        };
                         return [2, data];
                 }
             });
@@ -142,7 +143,7 @@ var PluginInstanceContainerController = (function () {
     PluginInstanceContainerController.prototype.getDefaultConfPath = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2, (0, path_1.join)(process.cwd(), 'nginx.conf')];
+                return [2, (0, path_1.join)(process.cwd(), 'meta/router', 'nginx.conf')];
             });
         });
     };

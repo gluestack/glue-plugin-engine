@@ -1,6 +1,7 @@
 import { GlueStackPlugin } from "src";
 import IPlugin from "@gluestack/framework/types/plugin/interface/IPlugin";
 import IHasContainerController from "@gluestack/framework/types/plugin/interface/IHasContainerController";
+import { routesList } from "../helpers/route-list";
 
 export function developUp(program: any, glueStackPlugin: GlueStackPlugin) {
   const command = program
@@ -20,8 +21,10 @@ export async function runner(
   glueStackPlugin: GlueStackPlugin,
 ) {
   const instances = glueStackPlugin.app.getContainerTypePluginInstances(true);
+
   let upInstances: (IPlugin & IHasContainerController)[] = instances;
   let found = false;
+
   if (instanceName) {
     for (const instance of instances) {
       if (instance.getName() === instanceName) {
@@ -36,20 +39,5 @@ export async function runner(
     }
   }
 
-  for (const instance of upInstances) {
-    if (instance && instance?.containerController) {
-      console.log(`Starting: ${instance.getName()} instance`);
-      try {
-        await instance.containerController.up();
-        console.log(`Success: ${instance.getName()} instance is up`);
-      } catch (e) {
-        console.log(
-          `Failed: ${instance.getName()} instance could not be started`,
-        );
-
-        console.log("\x1b[33m\nError:\x1b[31m", e.message, "\x1b[0m");
-      }
-      console.log();
-    }
-  }
+  await routesList(upInstances, true);
 }
