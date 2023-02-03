@@ -51,7 +51,7 @@ var build_1 = require("./commands/build");
 var route_list_1 = require("./commands/route-list");
 var GlueStackPlugin = (function () {
     function GlueStackPlugin(app, gluePluginStore) {
-        this.type = "stateless";
+        this.type = "devonly";
         this.app = app;
         this.instances = [];
         this.gluePluginStore = gluePluginStore;
