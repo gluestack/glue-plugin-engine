@@ -2,3 +2,5 @@
 node_modules
 .vscode
 meta/
+*lock.json
+*.lock
