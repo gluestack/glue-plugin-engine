@@ -11,7 +11,7 @@ export class PluginInstance implements IInstance, IHasContainerController, ILife
   app: IApp;
   name: string;
   callerPlugin: IPlugin;
-  isOfTypeInstance: boolean = true;
+  isOfTypeInstance: boolean = false;
   gluePluginStore: IGlueStorePlugin;
   installationPath: string;
   containerController: IContainerController;
