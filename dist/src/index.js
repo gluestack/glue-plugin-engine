@@ -42,16 +42,16 @@ exports.__esModule = true;
 exports.GlueStackPlugin = void 0;
 var package_json_1 = __importDefault(require("../package.json"));
 var PluginInstance_1 = require("./PluginInstance");
-var route_generate_1 = require("./commands/route-generate");
-var develop_list_1 = require("./commands/develop-list");
-var develop_watch_1 = require("./commands/develop-watch");
-var develop_up_1 = require("./commands/develop-up");
-var develop_down_1 = require("./commands/develop-down");
 var build_1 = require("./commands/build");
 var route_list_1 = require("./commands/route-list");
+var develop_up_1 = require("./commands/develop-up");
+var develop_down_1 = require("./commands/develop-down");
+var develop_list_1 = require("./commands/develop-list");
+var develop_watch_1 = require("./commands/develop-watch");
+var route_generate_1 = require("./commands/route-generate");
 var GlueStackPlugin = (function () {
     function GlueStackPlugin(app, gluePluginStore) {
-        this.type = "devonly";
+        this.type = "stateless";
         this.app = app;
         this.instances = [];
         this.gluePluginStore = gluePluginStore;
@@ -89,7 +89,7 @@ var GlueStackPlugin = (function () {
             return __generator(this, function (_a) {
                 instance = this.app.getPluginByName("@gluestack/glue-plugin-engine");
                 if (instance && instance.getInstances() && instance.getInstances()[0]) {
-                    throw new Error("Dev process manager instance already installed as ".concat(instance
+                    throw new Error("Engine instance already installed as ".concat(instance
                         .getInstances()[0]
                         .getName()));
                 }

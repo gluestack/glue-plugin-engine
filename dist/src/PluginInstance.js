@@ -23,6 +23,9 @@ var PluginInstance = (function () {
     PluginInstance.prototype.getInstallationPath = function () {
         return this.installationPath;
     };
+    PluginInstance.prototype.getContainerController = function () {
+        return this.containerController;
+    };
     return PluginInstance;
 }());
 exports.PluginInstance = PluginInstance;
