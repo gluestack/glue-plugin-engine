@@ -1,6 +1,7 @@
 "use strict";
 exports.__esModule = true;
 exports.PluginInstance = void 0;
+var PluginInstanceContainerController_1 = require("./PluginInstanceContainerController");
 var PluginInstance = (function () {
     function PluginInstance(app, callerPlugin, name, gluePluginStore, installationPath) {
         this.isOfTypeInstance = true;
@@ -9,6 +10,7 @@ var PluginInstance = (function () {
         this.callerPlugin = callerPlugin;
         this.gluePluginStore = gluePluginStore;
         this.installationPath = installationPath;
+        this.containerController = new PluginInstanceContainerController_1.PluginInstanceContainerController(app, this);
     }
     PluginInstance.prototype.init = function () {
     };
