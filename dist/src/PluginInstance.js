@@ -4,7 +4,7 @@ exports.PluginInstance = void 0;
 var PluginInstanceContainerController_1 = require("./PluginInstanceContainerController");
 var PluginInstance = (function () {
     function PluginInstance(app, callerPlugin, name, gluePluginStore, installationPath) {
-        this.isOfTypeInstance = true;
+        this.isOfTypeInstance = false;
         this.app = app;
         this.name = name;
         this.callerPlugin = callerPlugin;
