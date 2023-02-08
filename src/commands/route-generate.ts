@@ -12,8 +12,9 @@ import { IStatelessPlugin } from "../types/IStatelessPlugin";
 export const routeGenerate = async (program: any, glueStackPlugin: GlueStackPlugin) => {
   program
     .command("route:generate")
+    .option("--build <build>", "Generates build based on the platform . Options: 'dev' or 'prod'", "dev")
     .description("Generates router file for all the container instances")
-    .action(() => runner(glueStackPlugin));
+    .action((options: any) => runner(glueStackPlugin, options));
 };
 
 export const metaPlugins = async (): Promise<string[]> => {
@@ -26,7 +27,9 @@ export const metaPlugins = async (): Promise<string[]> => {
   return Object.keys(metaInstanceContent);
 };
 
-export const runner = async (glueStackPlugin: GlueStackPlugin) => {
+export const runner = async (glueStackPlugin: GlueStackPlugin, options: any) => {
+  const { build } = options;
+
   const tree: any = {};
   const statelessPlugins: IStatelessPlugin[] = [];
   const app: IApp = glueStackPlugin.app;
@@ -111,15 +114,39 @@ export const runner = async (glueStackPlugin: GlueStackPlugin) => {
     }
   }
 
+  if (build === 'prod') {
+    await generateProdRouter(statelessPlugins);
+  } else {
+    await generateDevRouter(statelessPlugins);
+  }
+};
+
+const generateProdRouter = async (statelessPlugins: IStatelessPlugin[]) => {
   const nginxConf = new NginxConf();
 
   for await (const plugin of statelessPlugins) {
     await nginxConf.addRouter(
+      plugin.name,
       plugin.instance,
       plugin.port,
       join(plugin.path, 'router.js')
     );
   }
 
-  await nginxConf.generate();
+  await nginxConf.generateProd();
+};
+
+const generateDevRouter = async (statelessPlugins: IStatelessPlugin[]) => {
+  const nginxConf = new NginxConf();
+
+  for await (const plugin of statelessPlugins) {
+    await nginxConf.addRouter(
+      plugin.name,
+      plugin.instance,
+      plugin.port,
+      join(plugin.path, 'router.js')
+    );
+  }
+
+  await nginxConf.generateDev();
 };

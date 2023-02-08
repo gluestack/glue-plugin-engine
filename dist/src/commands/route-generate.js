@@ -55,8 +55,9 @@ var routeGenerate = function (program, glueStackPlugin) { return __awaiter(void 
     return __generator(this, function (_a) {
         program
             .command("route:generate")
+            .option("--build <build>", "Generates build based on the platform . Options: 'dev' or 'prod'", "dev")
             .description("Generates router file for all the container instances")
-            .action(function () { return (0, exports.runner)(glueStackPlugin); });
+            .action(function (options) { return (0, exports.runner)(glueStackPlugin, options); });
         return [2];
     });
 }); };
@@ -78,28 +79,29 @@ var metaPlugins = function () { return __awaiter(void 0, void 0, void 0, functio
     });
 }); };
 exports.metaPlugins = metaPlugins;
-var runner = function (glueStackPlugin) { return __awaiter(void 0, void 0, void 0, function () {
-    var tree, statelessPlugins, app, meta, instancesAndTree, plugins, _i, _a, pluginName, _b, _c, instanceName, instance, packageJSON, peerDependencies, _d, _e, dependency, dataTree, packages, instances, _f, instances_1, instances_1_1, instance, type, name_1, details, _g, e_1_1, nginxConf, _h, statelessPlugins_1, statelessPlugins_1_1, plugin, e_2_1;
-    var _j, e_1, _k, _l, _m, e_2, _o, _p;
-    return __generator(this, function (_q) {
-        switch (_q.label) {
+var runner = function (glueStackPlugin, options) { return __awaiter(void 0, void 0, void 0, function () {
+    var build, tree, statelessPlugins, app, meta, instancesAndTree, plugins, _i, _a, pluginName, _b, _c, instanceName, instance, packageJSON, peerDependencies, _d, _e, dependency, dataTree, packages, instances, _f, instances_1, instances_1_1, instance, type, name_1, details, _g, e_1_1;
+    var _h, e_1, _j, _k;
+    return __generator(this, function (_l) {
+        switch (_l.label) {
             case 0:
+                build = options.build;
                 tree = {};
                 statelessPlugins = [];
                 app = glueStackPlugin.app;
                 return [4, (0, exports.metaPlugins)()];
             case 1:
-                meta = _q.sent();
+                meta = _l.sent();
                 instancesAndTree = app.getContainerTypePluginInstances(false, true);
                 plugins = instancesAndTree.tree;
                 _i = 0, _a = Object.keys(plugins);
-                _q.label = 2;
+                _l.label = 2;
             case 2:
                 if (!(_i < _a.length)) return [3, 7];
                 pluginName = _a[_i];
                 tree[pluginName] = [];
                 _b = 0, _c = Object.keys(plugins[pluginName]);
-                _q.label = 3;
+                _l.label = 3;
             case 3:
                 if (!(_b < _c.length)) return [3, 6];
                 instanceName = _c[_b];
@@ -107,7 +109,7 @@ var runner = function (glueStackPlugin) { return __awaiter(void 0, void 0, void 
                 packageJSON = (0, path_1.join)(instance.callerPlugin.getTemplateFolderPath(), '..', 'package.json');
                 return [4, (0, file_exists_1.fileExists)(packageJSON)];
             case 4:
-                if (!(_q.sent()))
+                if (!(_l.sent()))
                     return [3, 5];
                 try {
                     peerDependencies = require(packageJSON).peerDependencies;
@@ -125,7 +127,7 @@ var runner = function (glueStackPlugin) { return __awaiter(void 0, void 0, void 
                     console.log('>> Error:', err);
                     return [3, 5];
                 }
-                _q.label = 5;
+                _l.label = 5;
             case 5:
                 _b++;
                 return [3, 3];
@@ -134,27 +136,27 @@ var runner = function (glueStackPlugin) { return __awaiter(void 0, void 0, void 
                 return [3, 2];
             case 7: return [4, (0, create_tree_1.createTree)(tree, 1)];
             case 8:
-                dataTree = _q.sent();
+                dataTree = _l.sent();
                 if (dataTree.length <= 0) {
                     console.log('> No package installed, please install at least one stateless or stateful package!');
                     process.exit(0);
                 }
                 packages = dataTree.map(function (node) { return node.name; });
                 instances = instancesAndTree.instances;
-                _q.label = 9;
+                _l.label = 9;
             case 9:
-                _q.trys.push([9, 18, 19, 24]);
+                _l.trys.push([9, 18, 19, 24]);
                 _f = true, instances_1 = __asyncValues(instances);
-                _q.label = 10;
+                _l.label = 10;
             case 10: return [4, instances_1.next()];
             case 11:
-                if (!(instances_1_1 = _q.sent(), _j = instances_1_1.done, !_j)) return [3, 17];
-                _l = instances_1_1.value;
+                if (!(instances_1_1 = _l.sent(), _h = instances_1_1.done, !_h)) return [3, 17];
+                _k = instances_1_1.value;
                 _f = false;
-                _q.label = 12;
+                _l.label = 12;
             case 12:
-                _q.trys.push([12, , 15, 16]);
-                instance = _l;
+                _l.trys.push([12, , 15, 16]);
+                instance = _k;
                 type = instance === null || instance === void 0 ? void 0 : instance.callerPlugin.getType();
                 name_1 = instance === null || instance === void 0 ? void 0 : instance.callerPlugin.getName();
                 if (!(instance && type && name_1 &&
@@ -175,9 +177,9 @@ var runner = function (glueStackPlugin) { return __awaiter(void 0, void 0, void 
                 _g = details;
                 return [4, instance.getContainerController().getPortNumber()];
             case 13:
-                _g.port = _q.sent();
+                _g.port = _l.sent();
                 statelessPlugins.push(details);
-                _q.label = 14;
+                _l.label = 14;
             case 14: return [3, 16];
             case 15:
                 _f = true;
@@ -185,68 +187,140 @@ var runner = function (glueStackPlugin) { return __awaiter(void 0, void 0, void 
             case 16: return [3, 10];
             case 17: return [3, 24];
             case 18:
-                e_1_1 = _q.sent();
+                e_1_1 = _l.sent();
                 e_1 = { error: e_1_1 };
                 return [3, 24];
             case 19:
-                _q.trys.push([19, , 22, 23]);
-                if (!(!_f && !_j && (_k = instances_1["return"]))) return [3, 21];
-                return [4, _k.call(instances_1)];
+                _l.trys.push([19, , 22, 23]);
+                if (!(!_f && !_h && (_j = instances_1["return"]))) return [3, 21];
+                return [4, _j.call(instances_1)];
             case 20:
-                _q.sent();
-                _q.label = 21;
+                _l.sent();
+                _l.label = 21;
             case 21: return [3, 23];
             case 22:
                 if (e_1) throw e_1.error;
                 return [7];
             case 23: return [7];
             case 24:
-                nginxConf = new nginx_conf_1["default"]();
-                _q.label = 25;
+                if (!(build === 'prod')) return [3, 26];
+                return [4, generateProdRouter(statelessPlugins)];
             case 25:
-                _q.trys.push([25, 33, 34, 39]);
-                _h = true, statelessPlugins_1 = __asyncValues(statelessPlugins);
-                _q.label = 26;
-            case 26: return [4, statelessPlugins_1.next()];
+                _l.sent();
+                return [3, 28];
+            case 26: return [4, generateDevRouter(statelessPlugins)];
             case 27:
-                if (!(statelessPlugins_1_1 = _q.sent(), _m = statelessPlugins_1_1.done, !_m)) return [3, 32];
-                _p = statelessPlugins_1_1.value;
-                _h = false;
-                _q.label = 28;
-            case 28:
-                _q.trys.push([28, , 30, 31]);
-                plugin = _p;
-                return [4, nginxConf.addRouter(plugin.instance, plugin.port, (0, path_1.join)(plugin.path, 'router.js'))];
-            case 29:
-                _q.sent();
-                return [3, 31];
-            case 30:
-                _h = true;
-                return [7];
-            case 31: return [3, 26];
-            case 32: return [3, 39];
-            case 33:
-                e_2_1 = _q.sent();
-                e_2 = { error: e_2_1 };
-                return [3, 39];
-            case 34:
-                _q.trys.push([34, , 37, 38]);
-                if (!(!_h && !_m && (_o = statelessPlugins_1["return"]))) return [3, 36];
-                return [4, _o.call(statelessPlugins_1)];
-            case 35:
-                _q.sent();
-                _q.label = 36;
-            case 36: return [3, 38];
-            case 37:
-                if (e_2) throw e_2.error;
-                return [7];
-            case 38: return [7];
-            case 39: return [4, nginxConf.generate()];
-            case 40:
-                _q.sent();
-                return [2];
+                _l.sent();
+                _l.label = 28;
+            case 28: return [2];
         }
     });
 }); };
 exports.runner = runner;
+var generateProdRouter = function (statelessPlugins) { var _a, statelessPlugins_1, statelessPlugins_1_1; return __awaiter(void 0, void 0, void 0, function () {
+    var nginxConf, plugin, e_2_1;
+    var _b, e_2, _c, _d;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
+            case 0:
+                nginxConf = new nginx_conf_1["default"]();
+                _e.label = 1;
+            case 1:
+                _e.trys.push([1, 9, 10, 15]);
+                _a = true, statelessPlugins_1 = __asyncValues(statelessPlugins);
+                _e.label = 2;
+            case 2: return [4, statelessPlugins_1.next()];
+            case 3:
+                if (!(statelessPlugins_1_1 = _e.sent(), _b = statelessPlugins_1_1.done, !_b)) return [3, 8];
+                _d = statelessPlugins_1_1.value;
+                _a = false;
+                _e.label = 4;
+            case 4:
+                _e.trys.push([4, , 6, 7]);
+                plugin = _d;
+                return [4, nginxConf.addRouter(plugin.name, plugin.instance, plugin.port, (0, path_1.join)(plugin.path, 'router.js'))];
+            case 5:
+                _e.sent();
+                return [3, 7];
+            case 6:
+                _a = true;
+                return [7];
+            case 7: return [3, 2];
+            case 8: return [3, 15];
+            case 9:
+                e_2_1 = _e.sent();
+                e_2 = { error: e_2_1 };
+                return [3, 15];
+            case 10:
+                _e.trys.push([10, , 13, 14]);
+                if (!(!_a && !_b && (_c = statelessPlugins_1["return"]))) return [3, 12];
+                return [4, _c.call(statelessPlugins_1)];
+            case 11:
+                _e.sent();
+                _e.label = 12;
+            case 12: return [3, 14];
+            case 13:
+                if (e_2) throw e_2.error;
+                return [7];
+            case 14: return [7];
+            case 15: return [4, nginxConf.generateProd()];
+            case 16:
+                _e.sent();
+                return [2];
+        }
+    });
+}); };
+var generateDevRouter = function (statelessPlugins) { var _a, statelessPlugins_2, statelessPlugins_2_1; return __awaiter(void 0, void 0, void 0, function () {
+    var nginxConf, plugin, e_3_1;
+    var _b, e_3, _c, _d;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
+            case 0:
+                nginxConf = new nginx_conf_1["default"]();
+                _e.label = 1;
+            case 1:
+                _e.trys.push([1, 9, 10, 15]);
+                _a = true, statelessPlugins_2 = __asyncValues(statelessPlugins);
+                _e.label = 2;
+            case 2: return [4, statelessPlugins_2.next()];
+            case 3:
+                if (!(statelessPlugins_2_1 = _e.sent(), _b = statelessPlugins_2_1.done, !_b)) return [3, 8];
+                _d = statelessPlugins_2_1.value;
+                _a = false;
+                _e.label = 4;
+            case 4:
+                _e.trys.push([4, , 6, 7]);
+                plugin = _d;
+                return [4, nginxConf.addRouter(plugin.name, plugin.instance, plugin.port, (0, path_1.join)(plugin.path, 'router.js'))];
+            case 5:
+                _e.sent();
+                return [3, 7];
+            case 6:
+                _a = true;
+                return [7];
+            case 7: return [3, 2];
+            case 8: return [3, 15];
+            case 9:
+                e_3_1 = _e.sent();
+                e_3 = { error: e_3_1 };
+                return [3, 15];
+            case 10:
+                _e.trys.push([10, , 13, 14]);
+                if (!(!_a && !_b && (_c = statelessPlugins_2["return"]))) return [3, 12];
+                return [4, _c.call(statelessPlugins_2)];
+            case 11:
+                _e.sent();
+                _e.label = 12;
+            case 12: return [3, 14];
+            case 13:
+                if (e_3) throw e_3.error;
+                return [7];
+            case 14: return [7];
+            case 15: return [4, nginxConf.generateDev()];
+            case 16:
+                _e.sent();
+                return [2];
+        }
+    });
+}); };
 //# sourceMappingURL=route-generate.js.map

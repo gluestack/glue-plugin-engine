@@ -13,7 +13,8 @@ http {
 export const endsWith = `}
 `;
 
-export const setServer = (domain: string, locations: string[]): string => `
+export const setServer = (domain: string, locations: string[], containsBackend: boolean = false): string => {
+  return `
   server {
     listen 80;
     server_name ${domain};
@@ -51,9 +52,10 @@ export const setServer = (domain: string, locations: string[]): string => `
         application/xml
         application/rss+xml
         image/svg+xml;
-    ${locations.join('\n')}
+    ${locations.join('\n')}${containsBackend ? '\n\n\t\tinclude backend.conf;' : ''}
   }
-`;
+`
+};
 
 export const createRewriteRule = (
   path: string, proxy_path: string

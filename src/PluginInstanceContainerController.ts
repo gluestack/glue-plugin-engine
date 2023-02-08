@@ -195,14 +195,21 @@ export class PluginInstanceContainerController implements IContainerController {
   }
 
   async build() {
-    // do nothing
+    await this.routeGenerate(true);
   }
 
-  private async routeGenerate() {
-    await execute('node', [
+  private async routeGenerate(isProd: boolean = false) {
+    let args: string[] = [
       'glue',
       'route:generate'
-    ], {
+    ];
+
+    if (isProd) {
+      args.push('--build');
+      args.push('prod');
+    }
+
+    await execute('node', args, {
       cwd: process.cwd(),
       stdio: 'inherit',
       shell: true,
