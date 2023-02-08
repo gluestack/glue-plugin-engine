@@ -289,7 +289,8 @@ var PluginInstanceContainerController = (function () {
                             'route:generate'
                         ], {
                             cwd: process.cwd(),
-                            stdio: 'inherit'
+                            stdio: 'inherit',
+                            shell: true
                         })];
                     case 1:
                         _a.sent();

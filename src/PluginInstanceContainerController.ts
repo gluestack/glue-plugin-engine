@@ -138,7 +138,7 @@ export class PluginInstanceContainerController implements IContainerController {
     // do nothing
   }
 
-  getConfig(): any {}
+  getConfig(): any { }
 
   async up() {
     // shutdown if already up
@@ -204,7 +204,8 @@ export class PluginInstanceContainerController implements IContainerController {
       'route:generate'
     ], {
       cwd: process.cwd(),
-      stdio: 'inherit'
+      stdio: 'inherit',
+      shell: true,
     });
   }
 }
