@@ -49,6 +49,7 @@ exports.__esModule = true;
 exports.runner = exports.metaPlugins = exports.routeGenerate = void 0;
 var path_1 = require("path");
 var nginx_conf_1 = __importDefault(require("../helpers/nginx-conf"));
+var constants_1 = require("../constants");
 var create_tree_1 = require("../helpers/create-tree");
 var file_exists_1 = require("../helpers/file-exists");
 var routeGenerate = function (program, glueStackPlugin) { return __awaiter(void 0, void 0, void 0, function () {
@@ -165,10 +166,12 @@ var runner = function (glueStackPlugin, options) { return __awaiter(void 0, void
                 details = {
                     name: name_1,
                     type: type,
-                    instance: instance.getName()
+                    instance: instance.getName(),
+                    is_backend: false
                 };
                 if (name_1 === '@gluestack/glue-plugin-backend-engine') {
                     details.path = (0, path_1.join)(process.cwd(), instance.getInstallationPath(), '..');
+                    details.is_backend = true;
                 }
                 else {
                     details.path = (0, path_1.join)(process.cwd(), instance.getInstallationPath());
@@ -212,7 +215,9 @@ var runner = function (glueStackPlugin, options) { return __awaiter(void 0, void
             case 27:
                 _l.sent();
                 _l.label = 28;
-            case 28: return [2];
+            case 28:
+                console.log(JSON.stringify((0, constants_1.getDomainMappings)()));
+                return [2];
         }
     });
 }); };
@@ -238,7 +243,7 @@ var generateProdRouter = function (statelessPlugins) { var _a, statelessPlugins_
             case 4:
                 _e.trys.push([4, , 6, 7]);
                 plugin = _d;
-                return [4, nginxConf.addRouter(plugin.name, plugin.instance, plugin.port, (0, path_1.join)(plugin.path, 'router.js'))];
+                return [4, nginxConf.addRouter(plugin.name, plugin.instance, plugin.port, (0, path_1.join)(plugin.path, 'router.js'), plugin.is_backend)];
             case 5:
                 _e.sent();
                 return [3, 7];
@@ -291,7 +296,7 @@ var generateDevRouter = function (statelessPlugins) { var _a, statelessPlugins_2
             case 4:
                 _e.trys.push([4, , 6, 7]);
                 plugin = _d;
-                return [4, nginxConf.addRouter(plugin.name, plugin.instance, plugin.port, (0, path_1.join)(plugin.path, 'router.js'))];
+                return [4, nginxConf.addRouter(plugin.name, plugin.instance, plugin.port, (0, path_1.join)(plugin.path, 'router.js'), false)];
             case 5:
                 _e.sent();
                 return [3, 7];

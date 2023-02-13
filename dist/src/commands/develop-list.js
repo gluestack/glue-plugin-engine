@@ -35,8 +35,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
 exports.runner = exports.developList = void 0;
+var colors_1 = __importDefault(require("colors"));
+var cli_table3_1 = __importDefault(require("cli-table3"));
 function isGluePackage(packageName, gluePackageName) {
     if (packageName === gluePackageName) {
         return true;
@@ -60,9 +65,27 @@ function developList(program, glueStackPlugin) {
 exports.developList = developList;
 function runner(glueStackPlugin, args) {
     return __awaiter(this, void 0, void 0, function () {
-        var arr;
+        var i, table;
         return __generator(this, function (_a) {
-            arr = [];
+            i = 1;
+            table = new cli_table3_1["default"]({
+                head: [
+                    colors_1["default"].green('#'),
+                    colors_1["default"].green('Instance Name'),
+                    colors_1["default"].green('Plugin Name'),
+                    colors_1["default"].green('Plugin Version'),
+                    colors_1["default"].green('Plugin Type'),
+                    colors_1["default"].green('Instance Status'),
+                    colors_1["default"].green('Instance Port'),
+                    colors_1["default"].green('Instance Container ID / PID')
+                ],
+                chars: {
+                    'top': '═', 'top-mid': '╤', 'top-left': '╔', 'top-right': '╗',
+                    'bottom': '═', 'bottom-mid': '╧', 'bottom-left': '╚', 'bottom-right': '╝',
+                    'left': '║', 'left-mid': '╟', 'mid': '─', 'mid-mid': '┼',
+                    'right': '║', 'right-mid': '╢', 'middle': '│'
+                }
+            });
             glueStackPlugin.app.getContainerTypePluginInstances(false)
                 .filter(function (instance) {
                 var packageName = args.filter;
@@ -78,24 +101,21 @@ function runner(glueStackPlugin, args) {
             })
                 .forEach(function (instance) {
                 if (instance && (instance === null || instance === void 0 ? void 0 : instance.containerController)) {
-                    arr.push({
-                        instance: instance.getName(),
-                        package: instance.callerPlugin.getName(),
-                        version: instance.callerPlugin.getVersion(),
-                        type: instance.callerPlugin.getType(),
-                        status: instance.getContainerController().getStatus(),
-                        port: instance.getContainerController().getStatus() === "up"
+                    table.push([
+                        i++,
+                        instance.getName(),
+                        instance.callerPlugin.getName(),
+                        instance.callerPlugin.getVersion(),
+                        instance.callerPlugin.getType(),
+                        instance.getContainerController().getStatus(),
+                        instance.getContainerController().getStatus() === "up"
                             ? instance.getContainerController().portNumber || "-"
                             : "-",
-                        "container_id/pid": instance.getContainerController().getContainerId() || "-"
-                    });
+                        instance.getContainerController().getContainerId() || "-",
+                    ]);
                 }
             });
-            if (!arr.length) {
-                return [2, console.error("No package exist!")];
-            }
-            ;
-            console.table(arr);
+            console.log(table.toString());
             return [2];
         });
     });

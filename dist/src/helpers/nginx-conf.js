@@ -117,7 +117,8 @@ var NginxConf = (function () {
             });
         });
     };
-    NginxConf.prototype.addRouter = function (packageName, instance, port, string) {
+    NginxConf.prototype.addRouter = function (packageName, instance, port, string, isBackend) {
+        if (isBackend === void 0) { isBackend = false; }
         return __awaiter(this, void 0, void 0, function () {
             var upstreams, exist;
             return __generator(this, function (_a) {
@@ -130,6 +131,7 @@ var NginxConf = (function () {
                         if (!exist)
                             return [2, Promise.resolve(false)];
                         upstreams.push({
+                            isBackend: isBackend,
                             locations: __spreadArray([], require(string)(), true),
                             port: port,
                             instance: (0, remove_special_chars_1.removeSpecialChars)(instance),
@@ -143,43 +145,43 @@ var NginxConf = (function () {
     NginxConf.prototype.toConf = function () {
         var _a, e_1, _b, _c, _d, e_2, _e, _f, _g, e_3, _h, _j, _k, e_4, _l, _m;
         return __awaiter(this, void 0, void 0, function () {
-            var content, upstreams, mainStreams, _o, upstreams_1, upstreams_1_1, upstream, locations_1, server_name, _p, _q, _r, location_1, e_2_1, e_1_1, locations, _s, mainStreams_1, mainStreams_1_1, mainStream, _t, _u, _v, location_2, e_4_1, e_3_1, server_name;
-            return __generator(this, function (_w) {
-                switch (_w.label) {
+            var content, upstreams, mainStreams, _o, upstreams_1, upstreams_1_1, upstream, locations_1, server_name, _p, _q, _r, location_1, e_2_1, _s, e_1_1, locations, _t, mainStreams_1, mainStreams_1_1, mainStream, _u, _v, _w, location_2, e_4_1, e_3_1, server_name, _x;
+            return __generator(this, function (_y) {
+                switch (_y.label) {
                     case 0:
                         content = '';
                         upstreams = this.upstreams;
                         mainStreams = [];
-                        _w.label = 1;
+                        _y.label = 1;
                     case 1:
-                        _w.trys.push([1, 21, 22, 27]);
+                        _y.trys.push([1, 22, 23, 28]);
                         _o = true, upstreams_1 = __asyncValues(upstreams);
-                        _w.label = 2;
+                        _y.label = 2;
                     case 2: return [4, upstreams_1.next()];
                     case 3:
-                        if (!(upstreams_1_1 = _w.sent(), _a = upstreams_1_1.done, !_a)) return [3, 20];
+                        if (!(upstreams_1_1 = _y.sent(), _a = upstreams_1_1.done, !_a)) return [3, 21];
                         _c = upstreams_1_1.value;
                         _o = false;
-                        _w.label = 4;
+                        _y.label = 4;
                     case 4:
-                        _w.trys.push([4, , 18, 19]);
+                        _y.trys.push([4, , 19, 20]);
                         upstream = _c;
                         return [4, this.hasServerName(upstream.locations)];
                     case 5:
-                        if (!(_w.sent())) {
+                        if (!(_y.sent())) {
                             mainStreams.push({ locations: __spreadArray([], upstream.locations, true), port: upstream.port });
-                            return [3, 19];
+                            return [3, 20];
                         }
                         locations_1 = [];
                         server_name = '';
-                        _w.label = 6;
+                        _y.label = 6;
                     case 6:
-                        _w.trys.push([6, 11, 12, 17]);
+                        _y.trys.push([6, 11, 12, 17]);
                         _p = true, _q = (e_2 = void 0, __asyncValues(upstream.locations));
-                        _w.label = 7;
+                        _y.label = 7;
                     case 7: return [4, _q.next()];
                     case 8:
-                        if (!(_r = _w.sent(), _d = _r.done, !_d)) return [3, 10];
+                        if (!(_r = _y.sent(), _d = _r.done, !_d)) return [3, 10];
                         _f = _r.value;
                         _p = false;
                         try {
@@ -194,75 +196,78 @@ var NginxConf = (function () {
                         finally {
                             _p = true;
                         }
-                        _w.label = 9;
+                        _y.label = 9;
                     case 9: return [3, 7];
                     case 10: return [3, 17];
                     case 11:
-                        e_2_1 = _w.sent();
+                        e_2_1 = _y.sent();
                         e_2 = { error: e_2_1 };
                         return [3, 17];
                     case 12:
-                        _w.trys.push([12, , 15, 16]);
+                        _y.trys.push([12, , 15, 16]);
                         if (!(!_p && !_d && (_e = _q["return"]))) return [3, 14];
                         return [4, _e.call(_q)];
                     case 13:
-                        _w.sent();
-                        _w.label = 14;
+                        _y.sent();
+                        _y.label = 14;
                     case 14: return [3, 16];
                     case 15:
                         if (e_2) throw e_2.error;
                         return [7];
                     case 16: return [7];
                     case 17:
-                        content += (0, nginx_literals_1.setServer)("".concat(server_name, ".local.gluestack.app"), locations_1);
-                        return [3, 19];
+                        _s = content;
+                        return [4, (0, nginx_literals_1.setServer)("".concat(server_name, ".local.gluestack.app"), locations_1, upstream.isBackend)];
                     case 18:
+                        content = _s + _y.sent();
+                        return [3, 20];
+                    case 19:
                         _o = true;
                         return [7];
-                    case 19: return [3, 2];
-                    case 20: return [3, 27];
-                    case 21:
-                        e_1_1 = _w.sent();
-                        e_1 = { error: e_1_1 };
-                        return [3, 27];
+                    case 20: return [3, 2];
+                    case 21: return [3, 28];
                     case 22:
-                        _w.trys.push([22, , 25, 26]);
-                        if (!(!_o && !_a && (_b = upstreams_1["return"]))) return [3, 24];
-                        return [4, _b.call(upstreams_1)];
+                        e_1_1 = _y.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3, 28];
                     case 23:
-                        _w.sent();
-                        _w.label = 24;
-                    case 24: return [3, 26];
-                    case 25:
+                        _y.trys.push([23, , 26, 27]);
+                        if (!(!_o && !_a && (_b = upstreams_1["return"]))) return [3, 25];
+                        return [4, _b.call(upstreams_1)];
+                    case 24:
+                        _y.sent();
+                        _y.label = 25;
+                    case 25: return [3, 27];
+                    case 26:
                         if (e_1) throw e_1.error;
                         return [7];
-                    case 26: return [7];
-                    case 27:
-                        locations = [];
-                        _w.label = 28;
+                    case 27: return [7];
                     case 28:
-                        _w.trys.push([28, 47, 48, 53]);
-                        _s = true, mainStreams_1 = __asyncValues(mainStreams);
-                        _w.label = 29;
-                    case 29: return [4, mainStreams_1.next()];
-                    case 30:
-                        if (!(mainStreams_1_1 = _w.sent(), _g = mainStreams_1_1.done, !_g)) return [3, 46];
-                        _j = mainStreams_1_1.value;
-                        _s = false;
-                        _w.label = 31;
+                        locations = [];
+                        _y.label = 29;
+                    case 29:
+                        _y.trys.push([29, 48, 49, 54]);
+                        _t = true, mainStreams_1 = __asyncValues(mainStreams);
+                        _y.label = 30;
+                    case 30: return [4, mainStreams_1.next()];
                     case 31:
-                        _w.trys.push([31, , 44, 45]);
-                        mainStream = _j;
-                        _w.label = 32;
-                    case 32:
-                        _w.trys.push([32, 37, 38, 43]);
-                        _t = true, _u = (e_4 = void 0, __asyncValues(mainStream.locations));
-                        _w.label = 33;
-                    case 33: return [4, _u.next()];
-                    case 34:
-                        if (!(_v = _w.sent(), _k = _v.done, !_k)) return [3, 36];
-                        _m = _v.value;
+                        if (!(mainStreams_1_1 = _y.sent(), _g = mainStreams_1_1.done, !_g)) return [3, 47];
+                        _j = mainStreams_1_1.value;
                         _t = false;
+                        _y.label = 32;
+                    case 32:
+                        _y.trys.push([32, , 45, 46]);
+                        mainStream = _j;
+                        _y.label = 33;
+                    case 33:
+                        _y.trys.push([33, 38, 39, 44]);
+                        _u = true, _v = (e_4 = void 0, __asyncValues(mainStream.locations));
+                        _y.label = 34;
+                    case 34: return [4, _v.next()];
+                    case 35:
+                        if (!(_w = _y.sent(), _k = _w.done, !_k)) return [3, 37];
+                        _m = _w.value;
+                        _u = false;
                         try {
                             location_2 = _m;
                             if (location_2.hasOwnProperty('path')) {
@@ -270,56 +275,59 @@ var NginxConf = (function () {
                             }
                         }
                         finally {
-                            _t = true;
+                            _u = true;
                         }
-                        _w.label = 35;
-                    case 35: return [3, 33];
-                    case 36: return [3, 43];
-                    case 37:
-                        e_4_1 = _w.sent();
-                        e_4 = { error: e_4_1 };
-                        return [3, 43];
+                        _y.label = 36;
+                    case 36: return [3, 34];
+                    case 37: return [3, 44];
                     case 38:
-                        _w.trys.push([38, , 41, 42]);
-                        if (!(!_t && !_k && (_l = _u["return"]))) return [3, 40];
-                        return [4, _l.call(_u)];
+                        e_4_1 = _y.sent();
+                        e_4 = { error: e_4_1 };
+                        return [3, 44];
                     case 39:
-                        _w.sent();
-                        _w.label = 40;
-                    case 40: return [3, 42];
-                    case 41:
+                        _y.trys.push([39, , 42, 43]);
+                        if (!(!_u && !_k && (_l = _v["return"]))) return [3, 41];
+                        return [4, _l.call(_v)];
+                    case 40:
+                        _y.sent();
+                        _y.label = 41;
+                    case 41: return [3, 43];
+                    case 42:
                         if (e_4) throw e_4.error;
                         return [7];
-                    case 42: return [7];
-                    case 43: return [3, 45];
-                    case 44:
-                        _s = true;
+                    case 43: return [7];
+                    case 44: return [3, 46];
+                    case 45:
+                        _t = true;
                         return [7];
-                    case 45: return [3, 29];
-                    case 46: return [3, 53];
-                    case 47:
-                        e_3_1 = _w.sent();
-                        e_3 = { error: e_3_1 };
-                        return [3, 53];
+                    case 46: return [3, 30];
+                    case 47: return [3, 54];
                     case 48:
-                        _w.trys.push([48, , 51, 52]);
-                        if (!(!_s && !_g && (_h = mainStreams_1["return"]))) return [3, 50];
-                        return [4, _h.call(mainStreams_1)];
+                        e_3_1 = _y.sent();
+                        e_3 = { error: e_3_1 };
+                        return [3, 54];
                     case 49:
-                        _w.sent();
-                        _w.label = 50;
-                    case 50: return [3, 52];
-                    case 51:
+                        _y.trys.push([49, , 52, 53]);
+                        if (!(!_t && !_g && (_h = mainStreams_1["return"]))) return [3, 51];
+                        return [4, _h.call(mainStreams_1)];
+                    case 50:
+                        _y.sent();
+                        _y.label = 51;
+                    case 51: return [3, 53];
+                    case 52:
                         if (e_3) throw e_3.error;
                         return [7];
-                    case 52: return [7];
-                    case 53:
-                        if (locations.length > 0) {
-                            server_name = process
-                                .cwd().split('/')[process.cwd().split('/').length - 1];
-                            content += (0, nginx_literals_1.setServer)("".concat(server_name, ".local.gluestack.app"), locations);
-                        }
-                        return [2, Promise.resolve(nginx_literals_1.startsWith + content + nginx_literals_1.endsWith)];
+                    case 53: return [7];
+                    case 54:
+                        if (!(locations.length > 0)) return [3, 56];
+                        server_name = process
+                            .cwd().split('/')[process.cwd().split('/').length - 1];
+                        _x = content;
+                        return [4, (0, nginx_literals_1.setServer)("".concat(server_name, ".local.gluestack.app"), locations)];
+                    case 55:
+                        content = _x + _y.sent();
+                        _y.label = 56;
+                    case 56: return [2, Promise.resolve(nginx_literals_1.startsWith + content + nginx_literals_1.endsWith)];
                 }
             });
         });
@@ -327,48 +335,52 @@ var NginxConf = (function () {
     NginxConf.prototype.toProdConf = function () {
         var _a, e_5, _b, _c, _d, e_6, _e, _f, _g, e_7, _h, _j, _k, e_8, _l, _m;
         return __awaiter(this, void 0, void 0, function () {
-            var content, upstreams, mainStreams, _o, upstreams_2, upstreams_2_1, upstream, locations_2, server_name, _p, _q, _r, location_3, port, e_6_1, e_5_1, locations, _s, mainStreams_2, mainStreams_2_1, mainStream, _t, _u, _v, location_4, port, e_8_1, e_7_1, server_name;
-            return __generator(this, function (_w) {
-                switch (_w.label) {
+            var content, upstreams, mainStreams, _o, upstreams_2, upstreams_2_1, upstream, locations_2, server_name, _p, _q, _r, location_3, port, e_6_1, _s, e_5_1, locations, _t, mainStreams_2, mainStreams_2_1, mainStream, _u, _v, _w, location_4, port, e_8_1, e_7_1, server_name, _x;
+            return __generator(this, function (_y) {
+                switch (_y.label) {
                     case 0:
                         content = '';
                         upstreams = this.upstreams;
                         mainStreams = [];
-                        _w.label = 1;
+                        _y.label = 1;
                     case 1:
-                        _w.trys.push([1, 21, 22, 27]);
+                        _y.trys.push([1, 22, 23, 28]);
                         _o = true, upstreams_2 = __asyncValues(upstreams);
-                        _w.label = 2;
+                        _y.label = 2;
                     case 2: return [4, upstreams_2.next()];
                     case 3:
-                        if (!(upstreams_2_1 = _w.sent(), _a = upstreams_2_1.done, !_a)) return [3, 20];
+                        if (!(upstreams_2_1 = _y.sent(), _a = upstreams_2_1.done, !_a)) return [3, 21];
                         _c = upstreams_2_1.value;
                         _o = false;
-                        _w.label = 4;
+                        _y.label = 4;
                     case 4:
-                        _w.trys.push([4, , 18, 19]);
+                        _y.trys.push([4, , 19, 20]);
                         upstream = _c;
                         return [4, this.hasServerName(upstream.locations)];
                     case 5:
-                        if (!(_w.sent())) {
+                        if (!(_y.sent())) {
                             mainStreams.push({
                                 locations: __spreadArray([], upstream.locations, true),
                                 port: upstream.port,
                                 packageName: upstream.packageName,
-                                instance: upstream.instance
+                                instance: upstream.instance,
+                                isBackend: upstream.isBackend
                             });
-                            return [3, 19];
+                            return [3, 20];
                         }
                         locations_2 = [];
                         server_name = '';
-                        _w.label = 6;
+                        if (upstream.isBackend) {
+                            locations_2.push((0, nginx_literals_1.includeBackend)());
+                        }
+                        _y.label = 6;
                     case 6:
-                        _w.trys.push([6, 11, 12, 17]);
+                        _y.trys.push([6, 11, 12, 17]);
                         _p = true, _q = (e_6 = void 0, __asyncValues(upstream.locations));
-                        _w.label = 7;
+                        _y.label = 7;
                     case 7: return [4, _q.next()];
                     case 8:
-                        if (!(_r = _w.sent(), _d = _r.done, !_d)) return [3, 10];
+                        if (!(_r = _y.sent(), _d = _r.done, !_d)) return [3, 10];
                         _f = _r.value;
                         _p = false;
                         try {
@@ -377,85 +389,88 @@ var NginxConf = (function () {
                                 server_name = location_3.server_name;
                             }
                             port = upstream.packageName === '@gluestack/glue-plugin-web' ? 3000 : upstream.port;
-                            if (location_3.hasOwnProperty('path')) {
+                            if (!upstream.isBackend && location_3.hasOwnProperty('path')) {
                                 locations_2.push((0, nginx_literals_1.setLocation)(location_3.path, "".concat(upstream.instance, ":").concat(port), location_3.proxy.path, location_3.host, location_3.size_in_mb || 50));
                             }
                         }
                         finally {
                             _p = true;
                         }
-                        _w.label = 9;
+                        _y.label = 9;
                     case 9: return [3, 7];
                     case 10: return [3, 17];
                     case 11:
-                        e_6_1 = _w.sent();
+                        e_6_1 = _y.sent();
                         e_6 = { error: e_6_1 };
                         return [3, 17];
                     case 12:
-                        _w.trys.push([12, , 15, 16]);
+                        _y.trys.push([12, , 15, 16]);
                         if (!(!_p && !_d && (_e = _q["return"]))) return [3, 14];
                         return [4, _e.call(_q)];
                     case 13:
-                        _w.sent();
-                        _w.label = 14;
+                        _y.sent();
+                        _y.label = 14;
                     case 14: return [3, 16];
                     case 15:
                         if (e_6) throw e_6.error;
                         return [7];
                     case 16: return [7];
                     case 17:
-                        content += (0, nginx_literals_1.setServer)("".concat(server_name, ".local.gluestack.app"), locations_2);
-                        return [3, 19];
+                        _s = content;
+                        return [4, (0, nginx_literals_1.setServer)("".concat(server_name, ".local.gluestack.app"), locations_2)];
                     case 18:
+                        content = _s + _y.sent();
+                        return [3, 20];
+                    case 19:
                         _o = true;
                         return [7];
-                    case 19: return [3, 2];
-                    case 20: return [3, 27];
-                    case 21:
-                        e_5_1 = _w.sent();
-                        e_5 = { error: e_5_1 };
-                        return [3, 27];
+                    case 20: return [3, 2];
+                    case 21: return [3, 28];
                     case 22:
-                        _w.trys.push([22, , 25, 26]);
-                        if (!(!_o && !_a && (_b = upstreams_2["return"]))) return [3, 24];
-                        return [4, _b.call(upstreams_2)];
+                        e_5_1 = _y.sent();
+                        e_5 = { error: e_5_1 };
+                        return [3, 28];
                     case 23:
-                        _w.sent();
-                        _w.label = 24;
-                    case 24: return [3, 26];
-                    case 25:
+                        _y.trys.push([23, , 26, 27]);
+                        if (!(!_o && !_a && (_b = upstreams_2["return"]))) return [3, 25];
+                        return [4, _b.call(upstreams_2)];
+                    case 24:
+                        _y.sent();
+                        _y.label = 25;
+                    case 25: return [3, 27];
+                    case 26:
                         if (e_5) throw e_5.error;
                         return [7];
-                    case 26: return [7];
-                    case 27:
-                        locations = [];
-                        _w.label = 28;
+                    case 27: return [7];
                     case 28:
-                        _w.trys.push([28, 47, 48, 53]);
-                        _s = true, mainStreams_2 = __asyncValues(mainStreams);
-                        _w.label = 29;
-                    case 29: return [4, mainStreams_2.next()];
-                    case 30:
-                        if (!(mainStreams_2_1 = _w.sent(), _g = mainStreams_2_1.done, !_g)) return [3, 46];
-                        _j = mainStreams_2_1.value;
-                        _s = false;
-                        _w.label = 31;
+                        locations = [];
+                        _y.label = 29;
+                    case 29:
+                        _y.trys.push([29, 48, 49, 54]);
+                        _t = true, mainStreams_2 = __asyncValues(mainStreams);
+                        _y.label = 30;
+                    case 30: return [4, mainStreams_2.next()];
                     case 31:
-                        _w.trys.push([31, , 44, 45]);
+                        if (!(mainStreams_2_1 = _y.sent(), _g = mainStreams_2_1.done, !_g)) return [3, 47];
+                        _j = mainStreams_2_1.value;
+                        _t = false;
+                        _y.label = 32;
+                    case 32:
+                        _y.trys.push([32, , 45, 46]);
                         mainStream = _j;
                         if (mainStream.packageName === '@gluestack/glue-plugin-backend-engine') {
-                            return [3, 45];
+                            return [3, 46];
                         }
-                        _w.label = 32;
-                    case 32:
-                        _w.trys.push([32, 37, 38, 43]);
-                        _t = true, _u = (e_8 = void 0, __asyncValues(mainStream.locations));
-                        _w.label = 33;
-                    case 33: return [4, _u.next()];
-                    case 34:
-                        if (!(_v = _w.sent(), _k = _v.done, !_k)) return [3, 36];
-                        _m = _v.value;
-                        _t = false;
+                        _y.label = 33;
+                    case 33:
+                        _y.trys.push([33, 38, 39, 44]);
+                        _u = true, _v = (e_8 = void 0, __asyncValues(mainStream.locations));
+                        _y.label = 34;
+                    case 34: return [4, _v.next()];
+                    case 35:
+                        if (!(_w = _y.sent(), _k = _w.done, !_k)) return [3, 37];
+                        _m = _w.value;
+                        _u = false;
                         try {
                             location_4 = _m;
                             port = mainStream.port;
@@ -475,56 +490,59 @@ var NginxConf = (function () {
                             }
                         }
                         finally {
-                            _t = true;
+                            _u = true;
                         }
-                        _w.label = 35;
-                    case 35: return [3, 33];
-                    case 36: return [3, 43];
-                    case 37:
-                        e_8_1 = _w.sent();
-                        e_8 = { error: e_8_1 };
-                        return [3, 43];
+                        _y.label = 36;
+                    case 36: return [3, 34];
+                    case 37: return [3, 44];
                     case 38:
-                        _w.trys.push([38, , 41, 42]);
-                        if (!(!_t && !_k && (_l = _u["return"]))) return [3, 40];
-                        return [4, _l.call(_u)];
+                        e_8_1 = _y.sent();
+                        e_8 = { error: e_8_1 };
+                        return [3, 44];
                     case 39:
-                        _w.sent();
-                        _w.label = 40;
-                    case 40: return [3, 42];
-                    case 41:
+                        _y.trys.push([39, , 42, 43]);
+                        if (!(!_u && !_k && (_l = _v["return"]))) return [3, 41];
+                        return [4, _l.call(_v)];
+                    case 40:
+                        _y.sent();
+                        _y.label = 41;
+                    case 41: return [3, 43];
+                    case 42:
                         if (e_8) throw e_8.error;
                         return [7];
-                    case 42: return [7];
-                    case 43: return [3, 45];
-                    case 44:
-                        _s = true;
+                    case 43: return [7];
+                    case 44: return [3, 46];
+                    case 45:
+                        _t = true;
                         return [7];
-                    case 45: return [3, 29];
-                    case 46: return [3, 53];
-                    case 47:
-                        e_7_1 = _w.sent();
-                        e_7 = { error: e_7_1 };
-                        return [3, 53];
+                    case 46: return [3, 30];
+                    case 47: return [3, 54];
                     case 48:
-                        _w.trys.push([48, , 51, 52]);
-                        if (!(!_s && !_g && (_h = mainStreams_2["return"]))) return [3, 50];
-                        return [4, _h.call(mainStreams_2)];
+                        e_7_1 = _y.sent();
+                        e_7 = { error: e_7_1 };
+                        return [3, 54];
                     case 49:
-                        _w.sent();
-                        _w.label = 50;
-                    case 50: return [3, 52];
-                    case 51:
+                        _y.trys.push([49, , 52, 53]);
+                        if (!(!_t && !_g && (_h = mainStreams_2["return"]))) return [3, 51];
+                        return [4, _h.call(mainStreams_2)];
+                    case 50:
+                        _y.sent();
+                        _y.label = 51;
+                    case 51: return [3, 53];
+                    case 52:
                         if (e_7) throw e_7.error;
                         return [7];
-                    case 52: return [7];
-                    case 53:
-                        if (locations.length > 0) {
-                            server_name = process
-                                .cwd().split('/')[process.cwd().split('/').length - 1];
-                            content += (0, nginx_literals_1.setServer)("".concat(server_name, ".local.gluestack.app"), locations, true);
-                        }
-                        return [2, Promise.resolve(nginx_literals_1.startsWith + content + nginx_literals_1.endsWith)];
+                    case 53: return [7];
+                    case 54:
+                        if (!(locations.length > 0)) return [3, 56];
+                        server_name = process
+                            .cwd().split('/')[process.cwd().split('/').length - 1];
+                        _x = content;
+                        return [4, (0, nginx_literals_1.setServer)("".concat(server_name, ".local.gluestack.app"), locations)];
+                    case 55:
+                        content = _x + _y.sent();
+                        _y.label = 56;
+                    case 56: return [2, Promise.resolve(nginx_literals_1.startsWith + content + nginx_literals_1.endsWith)];
                 }
             });
         });

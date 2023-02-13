@@ -6,11 +6,16 @@ export const execute = (
   options: any
 ) =>
   new Promise((resolve, reject) => {
+    let result: string = '';
     const child = spawn(command, args, options);
 
-    child.on('exit', () => resolve('done'));
+    child.on('exit', () => resolve(result));
+
+    child.stdout.on('data', (data) => {
+      result += data.toString();
+    });
 
     child.on('close',
       (code) => (code === 0)
-        ? resolve('done') : reject('failed'));
+        ? resolve(result) : reject('failed'));
   });

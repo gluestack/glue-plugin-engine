@@ -4,10 +4,14 @@ exports.execute = void 0;
 var node_child_process_1 = require("node:child_process");
 var execute = function (command, args, options) {
     return new Promise(function (resolve, reject) {
+        var result = '';
         var child = (0, node_child_process_1.spawn)(command, args, options);
-        child.on('exit', function () { return resolve('done'); });
+        child.on('exit', function () { return resolve(result); });
+        child.stdout.on('data', function (data) {
+            result += data.toString();
+        });
         child.on('close', function (code) { return (code === 0)
-            ? resolve('done') : reject('failed'); });
+            ? resolve(result) : reject('failed'); });
     });
 };
 exports.execute = execute;

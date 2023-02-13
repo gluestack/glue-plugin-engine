@@ -2,7 +2,7 @@ import { join } from 'path';
 import { writeFileSync } from 'fs';
 import { fileExists } from './file-exists';
 import {
-  endsWith, startsWith, setServer, setLocation
+  endsWith, startsWith, setServer, setLocation, includeBackend
 } from './nginx-literals';
 import { createFolder } from './create-folder';
 import { removeSpecialChars } from './remove-special-chars';
@@ -56,17 +56,19 @@ export default class NginxConf {
 
   // Adds router.js data to the nginx conf data
   // if and only if the given path exists
-  public async addRouter(packageName:string, instance: string, port: number, string: string): Promise<boolean> {
+  public async addRouter(packageName:string, instance: string, port: number, string: string, isBackend: boolean = false): Promise<boolean> {
     const upstreams: any[] = this.upstreams;
 
     const exist = await fileExists(string);
     if (!exist) return Promise.resolve(false);
 
     upstreams.push({
+      isBackend,
       locations: [...require(string)()],
       port,
       instance: removeSpecialChars(instance),
-      packageName});
+      packageName
+    });
 
     return Promise.resolve(true);
   }
@@ -99,10 +101,10 @@ export default class NginxConf {
         }
       }
 
-      content += setServer(`${server_name}.local.gluestack.app`, locations);
+      content += await setServer(`${server_name}.local.gluestack.app`, locations, upstream.isBackend);
     }
 
-    // Add upstreams without server_name into project name as server_name
+    // Add main-streams ie. streams without server_name into project name as server_name
     const locations: string[] = [];
     for await (const mainStream of mainStreams) {
       for await (const location of mainStream.locations) {
@@ -118,7 +120,7 @@ export default class NginxConf {
       const server_name: string = process
         .cwd().split('/')[process.cwd().split('/').length - 1];
 
-      content += setServer(`${server_name}.local.gluestack.app`, locations);
+      content += await setServer(`${server_name}.local.gluestack.app`, locations);
     }
 
     return Promise.resolve(startsWith + content + endsWith);
@@ -137,7 +139,8 @@ export default class NginxConf {
           locations: [...upstream.locations],
           port: upstream.port,
           packageName: upstream.packageName,
-          instance: upstream.instance
+          instance: upstream.instance,
+          isBackend: upstream.isBackend
         });
         continue;
       }
@@ -145,20 +148,24 @@ export default class NginxConf {
       let locations: string[] = [];
       let server_name: string = '';
 
+      if (upstream.isBackend) {
+        locations.push(includeBackend());
+      }
+
       for await (const location of upstream.locations) {
         if (location.hasOwnProperty('server_name') && location.server_name !== '') {
           server_name = location.server_name;
         }
 
         const port: any = upstream.packageName === '@gluestack/glue-plugin-web' ? 3000 : upstream.port;
-        if (location.hasOwnProperty('path')) {
+        if (!upstream.isBackend && location.hasOwnProperty('path')) {
           locations.push(setLocation(
             location.path, `${upstream.instance}:${port}`, location.proxy.path, location.host, location.size_in_mb || 50
           ));
         }
       }
 
-      content += setServer(`${server_name}.local.gluestack.app`, locations);
+      content += await setServer(`${server_name}.local.gluestack.app`, locations);
     }
 
     // Add upstreams without server_name into project name as server_name
@@ -193,7 +200,7 @@ export default class NginxConf {
       const server_name: string = process
         .cwd().split('/')[process.cwd().split('/').length - 1];
 
-      content += setServer(`${server_name}.local.gluestack.app`, locations, true);
+      content += await setServer(`${server_name}.local.gluestack.app`, locations);
     }
 
     return Promise.resolve(startsWith + content + endsWith);

@@ -1,3 +1,6 @@
+import colors from "colors";
+import Table from "cli-table3";
+
 import { GlueStackPlugin } from "src";
 import IApp from "@gluestack/framework/types/app/interface/IApp";
 import IInstance from "@gluestack/framework/types/plugin/interface/IInstance";
@@ -5,6 +8,7 @@ import IHasContainerController from "@gluestack/framework/types/plugin/interface
 
 import { join } from "path";
 import NginxConf from "../helpers/nginx-conf";
+import { getDomainMappings } from '../constants';
 import { createTree } from "../helpers/create-tree";
 import { fileExists } from "../helpers/file-exists";
 import { IStatelessPlugin } from "../types/IStatelessPlugin";
@@ -98,11 +102,13 @@ export const runner = async (glueStackPlugin: GlueStackPlugin, options: any) => 
       const details: IStatelessPlugin = {
         name,
         type,
-        instance: instance.getName()
+        instance: instance.getName(),
+        is_backend: false
       };
 
       if (name === '@gluestack/glue-plugin-backend-engine') {
         details.path = join(process.cwd(), instance.getInstallationPath(), '..');
+        details.is_backend = true;
       } else {
         details.path = join(process.cwd(), instance.getInstallationPath())
       }
@@ -119,6 +125,8 @@ export const runner = async (glueStackPlugin: GlueStackPlugin, options: any) => 
   } else {
     await generateDevRouter(statelessPlugins);
   }
+
+  console.log(JSON.stringify(getDomainMappings()));
 };
 
 const generateProdRouter = async (statelessPlugins: IStatelessPlugin[]) => {
@@ -129,7 +137,8 @@ const generateProdRouter = async (statelessPlugins: IStatelessPlugin[]) => {
       plugin.name,
       plugin.instance,
       plugin.port,
-      join(plugin.path, 'router.js')
+      join(plugin.path, 'router.js'),
+      plugin.is_backend
     );
   }
 
@@ -144,9 +153,37 @@ const generateDevRouter = async (statelessPlugins: IStatelessPlugin[]) => {
       plugin.name,
       plugin.instance,
       plugin.port,
-      join(plugin.path, 'router.js')
+      join(plugin.path, 'router.js'),
+      false
     );
   }
 
   await nginxConf.generateDev();
 };
+
+// const consoleTable = async () => {
+//   let i: number = 1;
+//   const table = new Table({
+// 		head: [
+//       colors.green('#'),
+//       colors.green('Domain Mapping'),
+//       colors.green('Server Name Mapping'),
+//     ],
+// 		chars: {
+// 			'top': '═', 'top-mid': '╤', 'top-left': '╔', 'top-right': '╗'
+// 			, 'bottom': '═', 'bottom-mid': '╧', 'bottom-left': '╚', 'bottom-right': '╝'
+// 			, 'left': '║', 'left-mid': '╟', 'mid': '─', 'mid-mid': '┼'
+// 			, 'right': '║', 'right-mid': '╢', 'middle': '│'
+// 		}
+// 	});
+
+//   const mappings = getDomainMappings();
+//   for await (const mapping of mappings) {
+//     table.push([
+//       colors.yellow(`${i++}`),
+//       colors.yellow(`http://localhost:${mapping.port}`),
+//       colors.yellow(`http://${mapping.domain}:${mapping.port}`)
+//     ]);
+//   }
+//   console.log(table.toString());
+// };

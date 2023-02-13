@@ -1,3 +1,6 @@
+const { DockerodeHelper } = require('@gluestack/helpers');
+
+import { getOccupiedPorts, getDomainMappings, setDomainMappings, setOccupiedPorts } from "../constants";
 import { removeTrailingSlash } from "./remove-trailing-slash";
 
 export const startsWith = `
@@ -13,10 +16,16 @@ http {
 export const endsWith = `}
 `;
 
-export const setServer = (domain: string, locations: string[], containsBackend: boolean = false): string => {
+export const setServer = async (domain: string, locations: string[], containsBackend: boolean = false): Promise<string> => {
+  const ports = getOccupiedPorts();
+  const port = await DockerodeHelper.getPort(7000, ports);
+
+  setOccupiedPorts([...ports, port]);
+  setDomainMappings({ domain, port });
+
   return `
   server {
-    listen 80;
+    listen ${port};
 
     server_name ${domain};
 
@@ -52,6 +61,10 @@ export const createRewriteRule = (
 
   return '';
 };
+
+export const includeBackend = () => `
+    include backend.conf;
+`;
 
 export const setLocation = (
   path: string,

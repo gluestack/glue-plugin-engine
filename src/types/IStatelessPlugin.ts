@@ -8,6 +8,7 @@ export interface IStatelessPlugin {
   path?: string;
   status?: string;
   template_folder?: string;
+  is_backend?: boolean;
 
   getInitDbPath?: () => string;
   gluePluginStore?: IGlueStorePlugin;

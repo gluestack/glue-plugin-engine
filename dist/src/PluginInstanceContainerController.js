@@ -64,10 +64,10 @@ var path_1 = require("path");
 var dotenv = __importStar(require("dotenv"));
 var spawn_1 = require("./helpers/spawn");
 var DockerodeHelper = require("@gluestack/helpers").DockerodeHelper;
-var file_exists_1 = require("./helpers/file-exists");
 var PluginInstanceContainerController = (function () {
     function PluginInstanceContainerController(app, callerInstance) {
         this.status = "down";
+        this.appPorts = [];
         this.app = app;
         this.callerInstance = callerInstance;
         this.setStatus(this.callerInstance.gluePluginStore.get("status"));
@@ -86,45 +86,32 @@ var PluginInstanceContainerController = (function () {
     };
     PluginInstanceContainerController.prototype.getDockerJson = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var SSL_FILES_PATH, _a, _b, data, filesExist, _c, _d;
-            return __generator(this, function (_e) {
-                switch (_e.label) {
+            var appPorts, data, _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        _a = path_1.join;
-                        _b = [process.cwd()];
-                        return [4, this.getSslFilesPath()];
-                    case 1:
-                        SSL_FILES_PATH = _a.apply(void 0, _b.concat([_e.sent()]));
+                        appPorts = this.appPorts;
                         data = {};
                         data.Image = "nginx:latest";
                         data.RestartPolicy = {
                             Name: "always"
                         };
+                        data.ExposedPorts = {};
                         data.HostConfig = {
-                            PortBindings: {
-                                "80/tcp": [{ HostPort: '80' }],
-                                "443/tcp": [{ HostPort: '443' }]
-                            }
+                            PortBindings: {}
                         };
-                        return [4, (0, file_exists_1.fileExists)(SSL_FILES_PATH)];
-                    case 2:
-                        filesExist = _e.sent();
-                        if (!filesExist) return [3, 4];
-                        _c = data.HostConfig;
-                        _d = "".concat;
+                        appPorts.forEach(function (port) {
+                            data.ExposedPorts["".concat(port, "/tcp")] = {};
+                            data.HostConfig.PortBindings["".concat(port, "/tcp")] = [];
+                            data.HostConfig.PortBindings["".concat(port, "/tcp")].push({ HostPort: "".concat(port) });
+                        });
+                        _a = data.HostConfig;
+                        _b = "".concat;
                         return [4, this.getDefaultConfPath()];
-                    case 3:
-                        _c.Binds = [
-                            _d.apply("", [_e.sent(), ":/etc/nginx/nginx.conf"]),
-                            "".concat(SSL_FILES_PATH, "/fullchain.pem:/etc/ssl/fullchain.pem"),
-                            "".concat(SSL_FILES_PATH, "/privkey.pem:/etc/ssl/privkey.pem")
+                    case 1:
+                        _a.Binds = [
+                            _b.apply("", [_c.sent(), ":/etc/nginx/nginx.conf"])
                         ];
-                        _e.label = 4;
-                    case 4:
-                        data.ExposedPorts = {
-                            "80/tcp": {},
-                            "443/tcp": {}
-                        };
                         return [2, data];
                 }
             });
@@ -193,6 +180,7 @@ var PluginInstanceContainerController = (function () {
     PluginInstanceContainerController.prototype.getConfig = function () { };
     PluginInstanceContainerController.prototype.up = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var response;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -204,7 +192,15 @@ var PluginInstanceContainerController = (function () {
                         _a.label = 2;
                     case 2: return [4, this.routeGenerate()];
                     case 3:
-                        _a.sent();
+                        response = _a.sent();
+                        if (response.length <= 0) {
+                            throw new Error("No routes found");
+                        }
+                        response.forEach(function (route) {
+                            if (route.port) {
+                                _this.appPorts.push(route.port);
+                            }
+                        });
                         return [4, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
                                 var _a, _b;
                                 var _this = this;
@@ -288,7 +284,7 @@ var PluginInstanceContainerController = (function () {
     PluginInstanceContainerController.prototype.routeGenerate = function (isProd) {
         if (isProd === void 0) { isProd = false; }
         return __awaiter(this, void 0, void 0, function () {
-            var args;
+            var args, response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -302,11 +298,16 @@ var PluginInstanceContainerController = (function () {
                         }
                         return [4, (0, spawn_1.execute)('node', args, {
                                 cwd: process.cwd(),
-                                stdio: 'inherit',
                                 shell: true
                             })];
                     case 1:
-                        _a.sent();
+                        response = _a.sent();
+                        try {
+                            return [2, JSON.parse(response)];
+                        }
+                        catch (err) {
+                            return [2, []];
+                        }
                         return [2];
                 }
             });

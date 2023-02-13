@@ -13,6 +13,7 @@ export class PluginInstanceContainerController implements IContainerController {
   portNumber: number;
   containerId: string;
   callerInstance: PluginInstance;
+  appPorts: number[] = [];
 
   constructor(app: IApp, callerInstance: PluginInstance) {
     this.app = app;
@@ -41,9 +42,7 @@ export class PluginInstanceContainerController implements IContainerController {
   }
 
   async getDockerJson() {
-    const SSL_FILES_PATH: string = join(
-      process.cwd(), await this.getSslFilesPath()
-    );
+    const { appPorts } = this;
 
     const data: any = {};
     data.Image = "nginx:latest";
@@ -51,26 +50,21 @@ export class PluginInstanceContainerController implements IContainerController {
       Name: "always"
     };
 
+    data.ExposedPorts = {};
     data.HostConfig = {
-      PortBindings: {
-        "80/tcp": [{ HostPort: '80' }],
-        "443/tcp": [{ HostPort: '443' }],
-      }
+      PortBindings: {}
     };
 
-    const filesExist: boolean = await fileExists(SSL_FILES_PATH);
-    if (filesExist) {
-      data.HostConfig.Binds = [
-        `${await this.getDefaultConfPath()}:/etc/nginx/nginx.conf`,
-        `${SSL_FILES_PATH}/fullchain.pem:/etc/ssl/fullchain.pem`,
-        `${SSL_FILES_PATH}/privkey.pem:/etc/ssl/privkey.pem`
-      ];
-    }
+    appPorts.forEach((port: number) => {
+      data.ExposedPorts[`${port}/tcp`] = {};
 
-    data.ExposedPorts = {
-      "80/tcp": {},
-      "443/tcp": {},
-    };
+      data.HostConfig.PortBindings[`${port}/tcp`] = [];
+      data.HostConfig.PortBindings[`${port}/tcp`].push({ HostPort: `${port}` });
+    });
+
+    data.HostConfig.Binds = [
+      `${await this.getDefaultConfPath()}:/etc/nginx/nginx.conf`
+    ];
 
     return data;
   }
@@ -147,7 +141,16 @@ export class PluginInstanceContainerController implements IContainerController {
     }
 
     // generate/refresh routes before starting
-    await this.routeGenerate();
+    const response = await this.routeGenerate();
+    if (response.length <= 0) {
+      throw new Error("No routes found");
+    }
+
+    response.forEach((route: any) => {
+      if (route.port) {
+        this.appPorts.push(route.port);
+      }
+    });
 
     // start
     await new Promise(async (resolve, reject) => {
@@ -209,10 +212,16 @@ export class PluginInstanceContainerController implements IContainerController {
       args.push('prod');
     }
 
-    await execute('node', args, {
+    const response = await execute('node', args, {
       cwd: process.cwd(),
-      stdio: 'inherit',
       shell: true,
     });
+
+    try {
+      // @ts-ignore
+      return JSON.parse(response);
+    } catch (err) {
+      return [];
+    }
   }
 }

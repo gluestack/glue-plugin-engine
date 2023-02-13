@@ -1,3 +1,6 @@
+import colors from "colors";
+import Table from "cli-table3";
+
 import { GlueStackPlugin } from "src";
 import IInstance from "@gluestack/framework/types/plugin/interface/IInstance";
 import IHasContainerController from "@gluestack/framework/types/plugin/interface/IHasContainerController";
@@ -25,7 +28,27 @@ export function developList(program: any, glueStackPlugin: GlueStackPlugin) {
 }
 
 export async function runner(glueStackPlugin: GlueStackPlugin, args: any) {
-  const arr: any = [];
+  let i: number = 1;
+
+  const table = new Table({
+		head: [
+      colors.green('#'),
+      colors.green('Instance Name'),
+      colors.green('Plugin Name'),
+      colors.green('Plugin Version'),
+      colors.green('Plugin Type'),
+      colors.green('Instance Status'),
+      colors.green('Instance Port'),
+      colors.green('Instance Container ID / PID')
+    ],
+		chars: {
+			'top': '═', 'top-mid': '╤', 'top-left': '╔', 'top-right': '╗'
+			, 'bottom': '═', 'bottom-mid': '╧', 'bottom-left': '╚', 'bottom-right': '╝'
+			, 'left': '║', 'left-mid': '╟', 'mid': '─', 'mid-mid': '┼'
+			, 'right': '║', 'right-mid': '╢', 'middle': '│'
+		}
+	});
+
   glueStackPlugin.app.getContainerTypePluginInstances(false)
     // @ts-ignore
     .filter((instance: IInstance & IHasContainerController) => {
@@ -46,25 +69,20 @@ export async function runner(glueStackPlugin: GlueStackPlugin, args: any) {
     // @ts-ignore
     .forEach((instance: IInstance & IHasContainerController) => {
       if (instance && instance?.containerController) {
-        arr.push({
-          instance: instance.getName(),
-          package: instance.callerPlugin.getName(),
-          version: instance.callerPlugin.getVersion(),
-          type: instance.callerPlugin.getType(),
-          status: instance.getContainerController().getStatus(),
-          port:
-            instance.getContainerController().getStatus() === "up"
-              ? instance.getContainerController().portNumber || "-"
-              : "-",
-          "container_id/pid":
-            instance.getContainerController().getContainerId() || "-",
-        });
+        table.push([
+          i++,
+          instance.getName(),
+          instance.callerPlugin.getName(),
+          instance.callerPlugin.getVersion(),
+          instance.callerPlugin.getType(),
+          instance.getContainerController().getStatus(),
+          instance.getContainerController().getStatus() === "up"
+            ? instance.getContainerController().portNumber || "-"
+            : "-",
+          instance.getContainerController().getContainerId() || "-",
+        ]);
       }
     });
 
-  if (!arr.length) {
-    return console.error("No package exist!");
-  };
-
-  console.table(arr);
+  console.log(table.toString());
 }
