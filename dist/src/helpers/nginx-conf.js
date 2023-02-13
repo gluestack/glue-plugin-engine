@@ -376,7 +376,18 @@ var NginxConf = (function () {
                             if (location_3.hasOwnProperty('server_name') && location_3.server_name !== '') {
                                 server_name = location_3.server_name;
                             }
-                            port = upstream.packageName === '@gluestack/glue-plugin-web' ? 3000 : upstream.port;
+                            port = upstream.port;
+                            switch (upstream.packageName) {
+                                case "@gluestack/glue-plugin-web":
+                                    port = 3000;
+                                    break;
+                                case "@gluestack/glue-plugin-backend-engine":
+                                    port = 3500;
+                                    break;
+                                default:
+                                    port = upstream.port;
+                                    break;
+                            }
                             if (location_3.hasOwnProperty('path')) {
                                 locations_2.push((0, nginx_literals_1.setLocation)(location_3.path, "".concat(upstream.instance, ":").concat(port), location_3.proxy.path, location_3.host, location_3.size_in_mb || 50));
                             }
@@ -458,18 +469,7 @@ var NginxConf = (function () {
                         _t = false;
                         try {
                             location_4 = _m;
-                            port = mainStream.port;
-                            switch (mainStream.packageName) {
-                                case '@gluestack/glue-plugin-web':
-                                    port = 3000;
-                                    break;
-                                case '@gluestack/glue-plugin-backend-engine':
-                                    port = 3500;
-                                    break;
-                                default:
-                                    port = mainStream.port;
-                                    break;
-                            }
+                            port = mainStream.packageName === '@gluestack/glue-plugin-web' ? 3000 : mainStream.port;
                             if (location_4.hasOwnProperty('path')) {
                                 locations.push((0, nginx_literals_1.setLocation)(location_4.path, "".concat(mainStream.instance, ":").concat(port), location_4.proxy.path, location_4.host, location_4.size_in_mb || 50));
                             }
