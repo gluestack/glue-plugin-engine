@@ -1,6 +1,3 @@
-import colors from "colors";
-import Table from "cli-table3";
-
 import { GlueStackPlugin } from "src";
 import IApp from "@gluestack/framework/types/app/interface/IApp";
 import IInstance from "@gluestack/framework/types/plugin/interface/IInstance";
@@ -160,30 +157,3 @@ const generateDevRouter = async (statelessPlugins: IStatelessPlugin[]) => {
 
   await nginxConf.generateDev();
 };
-
-// const consoleTable = async () => {
-//   let i: number = 1;
-//   const table = new Table({
-// 		head: [
-//       colors.green('#'),
-//       colors.green('Domain Mapping'),
-//       colors.green('Server Name Mapping'),
-//     ],
-// 		chars: {
-// 			'top': '═', 'top-mid': '╤', 'top-left': '╔', 'top-right': '╗'
-// 			, 'bottom': '═', 'bottom-mid': '╧', 'bottom-left': '╚', 'bottom-right': '╝'
-// 			, 'left': '║', 'left-mid': '╟', 'mid': '─', 'mid-mid': '┼'
-// 			, 'right': '║', 'right-mid': '╢', 'middle': '│'
-// 		}
-// 	});
-
-//   const mappings = getDomainMappings();
-//   for await (const mapping of mappings) {
-//     table.push([
-//       colors.yellow(`${i++}`),
-//       colors.yellow(`http://localhost:${mapping.port}`),
-//       colors.yellow(`http://${mapping.domain}:${mapping.port}`)
-//     ]);
-//   }
-//   console.log(table.toString());
-// };

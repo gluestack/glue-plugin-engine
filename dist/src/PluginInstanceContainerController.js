@@ -58,9 +58,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
 exports.PluginInstanceContainerController = void 0;
+var colors_1 = __importDefault(require("colors"));
 var path_1 = require("path");
+var cli_table3_1 = __importDefault(require("cli-table3"));
 var dotenv = __importStar(require("dotenv"));
 var spawn_1 = require("./helpers/spawn");
 var DockerodeHelper = require("@gluestack/helpers").DockerodeHelper;
@@ -196,6 +208,10 @@ var PluginInstanceContainerController = (function () {
                         if (response.length <= 0) {
                             throw new Error("No routes found");
                         }
+                        console.log(colors_1["default"].cyan('\n> Generating Domain Mapping...'));
+                        return [4, this.consoleTable(response)];
+                    case 4:
+                        _a.sent();
                         response.forEach(function (route) {
                             if (route.port) {
                                 _this.appPorts.push(route.port);
@@ -229,7 +245,7 @@ var PluginInstanceContainerController = (function () {
                                     }
                                 });
                             }); })];
-                    case 4:
+                    case 5:
                         _a.sent();
                         return [2];
                 }
@@ -308,6 +324,75 @@ var PluginInstanceContainerController = (function () {
                         catch (err) {
                             return [2, []];
                         }
+                        return [2];
+                }
+            });
+        });
+    };
+    PluginInstanceContainerController.prototype.consoleTable = function (mappings) {
+        var _a, mappings_1, mappings_1_1;
+        var _b, e_1, _c, _d;
+        return __awaiter(this, void 0, void 0, function () {
+            var i, table, mapping, e_1_1;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
+                    case 0:
+                        i = 1;
+                        table = new cli_table3_1["default"]({
+                            head: [
+                                colors_1["default"].green('#'),
+                                colors_1["default"].green('Domains'),
+                                colors_1["default"].green('Server Names'),
+                            ],
+                            chars: {
+                                'top': '═', 'top-mid': '╤', 'top-left': '╔', 'top-right': '╗',
+                                'bottom': '═', 'bottom-mid': '╧', 'bottom-left': '╚', 'bottom-right': '╝',
+                                'left': '║', 'left-mid': '╟', 'mid': '─', 'mid-mid': '┼',
+                                'right': '║', 'right-mid': '╢', 'middle': '│'
+                            }
+                        });
+                        _e.label = 1;
+                    case 1:
+                        _e.trys.push([1, 6, 7, 12]);
+                        _a = true, mappings_1 = __asyncValues(mappings);
+                        _e.label = 2;
+                    case 2: return [4, mappings_1.next()];
+                    case 3:
+                        if (!(mappings_1_1 = _e.sent(), _b = mappings_1_1.done, !_b)) return [3, 5];
+                        _d = mappings_1_1.value;
+                        _a = false;
+                        try {
+                            mapping = _d;
+                            table.push([
+                                colors_1["default"].yellow("".concat(i++)),
+                                colors_1["default"].yellow("http://localhost:".concat(mapping.port)),
+                                colors_1["default"].yellow("http://".concat(mapping.domain, ":").concat(mapping.port))
+                            ]);
+                        }
+                        finally {
+                            _a = true;
+                        }
+                        _e.label = 4;
+                    case 4: return [3, 2];
+                    case 5: return [3, 12];
+                    case 6:
+                        e_1_1 = _e.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3, 12];
+                    case 7:
+                        _e.trys.push([7, , 10, 11]);
+                        if (!(!_a && !_b && (_c = mappings_1["return"]))) return [3, 9];
+                        return [4, _c.call(mappings_1)];
+                    case 8:
+                        _e.sent();
+                        _e.label = 9;
+                    case 9: return [3, 11];
+                    case 10:
+                        if (e_1) throw e_1.error;
+                        return [7];
+                    case 11: return [7];
+                    case 12:
+                        console.log(table.toString());
                         return [2];
                 }
             });

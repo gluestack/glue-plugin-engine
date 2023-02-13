@@ -1,11 +1,13 @@
+import colors from "colors";
 import { join } from "path";
+import Table from "cli-table3";
 import * as dotenv from "dotenv";
+
 import { execute } from "./helpers/spawn";
 import { PluginInstance } from "./PluginInstance";
 const { DockerodeHelper } = require("@gluestack/helpers");
 import IApp from "@gluestack/framework/types/app/interface/IApp";
 import IContainerController from "@gluestack/framework/types/plugin/interface/IContainerController";
-import { fileExists } from "./helpers/file-exists";
 
 export class PluginInstanceContainerController implements IContainerController {
   app: IApp;
@@ -146,6 +148,9 @@ export class PluginInstanceContainerController implements IContainerController {
       throw new Error("No routes found");
     }
 
+    console.log(colors.cyan('\n> Generating Domain Mapping...'));
+    await this.consoleTable(response);
+
     response.forEach((route: any) => {
       if (route.port) {
         this.appPorts.push(route.port);
@@ -223,5 +228,32 @@ export class PluginInstanceContainerController implements IContainerController {
     } catch (err) {
       return [];
     }
+  }
+
+  private async consoleTable(mappings: any) {
+    let i: number = 1;
+    const table = new Table({
+      head: [
+        colors.green('#'),
+        colors.green('Domains'),
+        colors.green('Server Names'),
+      ],
+      chars: {
+        'top': '═', 'top-mid': '╤', 'top-left': '╔', 'top-right': '╗'
+        , 'bottom': '═', 'bottom-mid': '╧', 'bottom-left': '╚', 'bottom-right': '╝'
+        , 'left': '║', 'left-mid': '╟', 'mid': '─', 'mid-mid': '┼'
+        , 'right': '║', 'right-mid': '╢', 'middle': '│'
+      }
+    });
+
+    for await (const mapping of mappings) {
+      table.push([
+        colors.yellow(`${i++}`),
+        colors.yellow(`http://localhost:${mapping.port}`),
+        colors.yellow(`http://${mapping.domain}:${mapping.port}`)
+      ]);
+    }
+
+    console.log(table.toString());
   }
 }

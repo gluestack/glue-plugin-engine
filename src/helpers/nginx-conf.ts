@@ -157,7 +157,19 @@ export default class NginxConf {
           server_name = location.server_name;
         }
 
-        const port: any = upstream.packageName === '@gluestack/glue-plugin-web' ? 3000 : upstream.port;
+        let port: any = upstream.port;
+        switch (upstream.packageName) {
+          case "@gluestack/glue-plugin-web":
+            port = 3000;
+            break;
+          case "@gluestack/glue-plugin-backend-engine":
+            port = 3500;
+            break;
+          default:
+            port = upstream.port;
+            break;
+        }
+
         if (!upstream.isBackend && location.hasOwnProperty('path')) {
           locations.push(setLocation(
             location.path, `${upstream.instance}:${port}`, location.proxy.path, location.host, location.size_in_mb || 50
@@ -176,18 +188,7 @@ export default class NginxConf {
       }
 
       for await (const location of mainStream.locations) {
-        let port: any = mainStream.port;
-        switch (mainStream.packageName) {
-          case '@gluestack/glue-plugin-web':
-            port = 3000;
-            break;
-          case '@gluestack/glue-plugin-backend-engine':
-            port = 3500;
-            break;
-          default:
-            port = mainStream.port;
-            break;
-        }
+        const port: any = mainStream.packageName === '@gluestack/glue-plugin-web' ? 3000 : mainStream.port;
         if (location.hasOwnProperty('path')) {
           locations.push(setLocation(
             location.path, `${mainStream.instance}:${port}`, location.proxy.path, location.host, location.size_in_mb || 50
