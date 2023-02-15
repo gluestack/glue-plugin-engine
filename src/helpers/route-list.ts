@@ -9,7 +9,6 @@ const { fileExists } = require('@gluestack/helpers');
 const { ConsoleTable } = require('@gluestack/helpers');
 
 export async function routesList(upInstances: any, isUp: boolean) {
-
 	const head: string[] = ['Plugin Prefix Route', 'URI Route', 'URI Method']
 	const rows: any = [];
 
