@@ -35,31 +35,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 exports.__esModule = true;
 exports.routesList = void 0;
-var colors_1 = __importDefault(require("colors"));
-var cli_table3_1 = __importDefault(require("cli-table3"));
 var node_path_1 = require("node:path");
-var file_exists_1 = require("../helpers/file-exists");
 var add_forward_slash_1 = require("../helpers/add-forward-slash");
+var fileExists = require('@gluestack/helpers').fileExists;
+var ConsoleTable = require('@gluestack/helpers').ConsoleTable;
 function routesList(upInstances, isUp) {
     return __awaiter(this, void 0, void 0, function () {
-        var table, _i, upInstances_1, instance, paths, isService, routerPath, content, _a, content_1, data, routes, pluginData, subRoutes, subMethods, _b, paths_1, _path, _c, routes_1, route, _routePath, e_1;
+        var head, rows, _i, upInstances_1, instance, paths, isService, routerPath, content, _a, content_1, data, routes, pluginData, subRoutes, subMethods, _b, paths_1, _path, _c, routes_1, route, _routePath, e_1;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0:
-                    table = new cli_table3_1["default"]({
-                        head: [colors_1["default"].green('Plugin Prefix Route'), colors_1["default"].green('URI Route'), colors_1["default"].green('URI Method')],
-                        chars: {
-                            'top': '═', 'top-mid': '╤', 'top-left': '╔', 'top-right': '╗',
-                            'bottom': '═', 'bottom-mid': '╧', 'bottom-left': '╚', 'bottom-right': '╝',
-                            'left': '║', 'left-mid': '╟', 'mid': '─', 'mid-mid': '┼',
-                            'right': '║', 'right-mid': '╢', 'middle': '│'
-                        }
-                    });
+                    head = ['Plugin Prefix Route', 'URI Route', 'URI Method'];
+                    rows = [];
                     _i = 0, upInstances_1 = upInstances;
                     _d.label = 1;
                 case 1:
@@ -72,7 +61,7 @@ function routesList(upInstances, isUp) {
                     _d.trys.push([2, 14, , 15]);
                     isService = instance.callerPlugin.getName() === '@gluestack/glue-plugin-service-node';
                     routerPath = (0, node_path_1.join)(process.cwd(), instance.getInstallationPath(), "router.js");
-                    return [4, (0, file_exists_1.fileExists)(routerPath)];
+                    return [4, fileExists(routerPath)];
                 case 3:
                     if (!!(_d.sent())) return [3, 5];
                     return [4, runUpCommand(instance, isUp)];
@@ -93,7 +82,7 @@ function routesList(upInstances, isUp) {
                             paths.push(data.path);
                         }
                         if (data.hasOwnProperty("path") && !data.path.includes('(.*)')) {
-                            table.push([
+                            rows.push([
                                 data.path,
                                 data.proxy.path,
                                 '--'
@@ -134,7 +123,7 @@ function routesList(upInstances, isUp) {
                                 subMethods.push(route.method);
                             }
                         }
-                        table.push([
+                        rows.push([
                             pluginData,
                             subRoutes.join("\n"),
                             subMethods.join("\n")
@@ -153,7 +142,7 @@ function routesList(upInstances, isUp) {
                     _i++;
                     return [3, 1];
                 case 16:
-                    console.log(table.toString());
+                    ConsoleTable.print(head, rows);
                     return [2];
             }
         });

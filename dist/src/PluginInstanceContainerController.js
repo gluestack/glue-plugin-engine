@@ -72,9 +72,9 @@ exports.__esModule = true;
 exports.PluginInstanceContainerController = void 0;
 var colors_1 = __importDefault(require("colors"));
 var path_1 = require("path");
-var cli_table3_1 = __importDefault(require("cli-table3"));
 var dotenv = __importStar(require("dotenv"));
 var spawn_1 = require("./helpers/spawn");
+var ConsoleTable = require('@gluestack/helpers').ConsoleTable;
 var DockerodeHelper = require("@gluestack/helpers").DockerodeHelper;
 var PluginInstanceContainerController = (function () {
     function PluginInstanceContainerController(app, callerInstance) {
@@ -333,24 +333,17 @@ var PluginInstanceContainerController = (function () {
         var _a, mappings_1, mappings_1_1;
         var _b, e_1, _c, _d;
         return __awaiter(this, void 0, void 0, function () {
-            var i, table, mapping, e_1_1;
+            var i, rows, head, mapping, e_1_1;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
                         i = 1;
-                        table = new cli_table3_1["default"]({
-                            head: [
-                                colors_1["default"].green('#'),
-                                colors_1["default"].green('Domains'),
-                                colors_1["default"].green('Server Names'),
-                            ],
-                            chars: {
-                                'top': '═', 'top-mid': '╤', 'top-left': '╔', 'top-right': '╗',
-                                'bottom': '═', 'bottom-mid': '╧', 'bottom-left': '╚', 'bottom-right': '╝',
-                                'left': '║', 'left-mid': '╟', 'mid': '─', 'mid-mid': '┼',
-                                'right': '║', 'right-mid': '╢', 'middle': '│'
-                            }
-                        });
+                        rows = [];
+                        head = [
+                            '#',
+                            'Domains',
+                            'Server Names',
+                        ];
                         _e.label = 1;
                     case 1:
                         _e.trys.push([1, 6, 7, 12]);
@@ -363,7 +356,7 @@ var PluginInstanceContainerController = (function () {
                         _a = false;
                         try {
                             mapping = _d;
-                            table.push([
+                            rows.push([
                                 colors_1["default"].yellow("".concat(i++)),
                                 colors_1["default"].yellow("http://localhost:".concat(mapping.port)),
                                 colors_1["default"].yellow("http://".concat(mapping.domain, ":").concat(mapping.port))
@@ -392,7 +385,7 @@ var PluginInstanceContainerController = (function () {
                         return [7];
                     case 11: return [7];
                     case 12:
-                        console.log(table.toString());
+                        ConsoleTable.print(head, rows);
                         return [2];
                 }
             });

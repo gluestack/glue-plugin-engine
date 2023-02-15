@@ -1,5 +1,4 @@
-import colors from "colors";
-import Table from "cli-table3";
+const { ConsoleTable } = require("@gluestack/helpers");
 
 import { GlueStackPlugin } from "src";
 import IInstance from "@gluestack/framework/types/plugin/interface/IInstance";
@@ -9,6 +8,7 @@ function isGluePackage(packageName: string, gluePackageName: string): boolean {
   if (packageName === gluePackageName) {
     return true;
   }
+
   if (gluePackageName.startsWith('@')) {
     // @ts-ignore
     let arr = gluePackageName.split(['/']);
@@ -30,24 +30,18 @@ export function developList(program: any, glueStackPlugin: GlueStackPlugin) {
 export async function runner(glueStackPlugin: GlueStackPlugin, args: any) {
   let i: number = 1;
 
-  const table = new Table({
-		head: [
-      colors.green('#'),
-      colors.green('Instance Name'),
-      colors.green('Plugin Name'),
-      colors.green('Plugin Version'),
-      colors.green('Plugin Type'),
-      colors.green('Instance Status'),
-      colors.green('Instance Port'),
-      colors.green('Instance Container ID / PID')
-    ],
-		chars: {
-			'top': '═', 'top-mid': '╤', 'top-left': '╔', 'top-right': '╗'
-			, 'bottom': '═', 'bottom-mid': '╧', 'bottom-left': '╚', 'bottom-right': '╝'
-			, 'left': '║', 'left-mid': '╟', 'mid': '─', 'mid-mid': '┼'
-			, 'right': '║', 'right-mid': '╢', 'middle': '│'
-		}
-	});
+  const head: string[] = [
+    '#',
+    'Instance Name',
+    'Plugin Name',
+    'Plugin Version',
+    'Plugin Type',
+    'Instance Status',
+    'Instance Port',
+    'Instance Container ID / PID'
+  ];
+
+  const rows: any = [];
 
   glueStackPlugin.app.getContainerTypePluginInstances(false)
     // @ts-ignore
@@ -69,7 +63,7 @@ export async function runner(glueStackPlugin: GlueStackPlugin, args: any) {
     // @ts-ignore
     .forEach((instance: IInstance & IHasContainerController) => {
       if (instance && instance?.containerController) {
-        table.push([
+        rows.push([
           i++,
           instance.getName(),
           instance.callerPlugin.getName(),
@@ -84,5 +78,8 @@ export async function runner(glueStackPlugin: GlueStackPlugin, args: any) {
       }
     });
 
-  console.log(table.toString());
+  ConsoleTable.print(
+    head,
+    rows
+  );
 }
