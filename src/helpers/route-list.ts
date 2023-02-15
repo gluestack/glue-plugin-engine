@@ -1,23 +1,17 @@
-import colors from "colors";
-import Table from "cli-table3";
 import { join } from "node:path";
 
 import IPlugin from "@gluestack/framework/types/plugin/interface/IPlugin";
 import { IRoutes } from "@gluestack/framework/types/plugin/interface/IContainerController";
 import IHasContainerController from "@gluestack/framework/types/plugin/interface/IHasContainerController";
-import { fileExists } from "../helpers/file-exists";
 import { addForwardSlash } from "../helpers/add-forward-slash";
 
+const { fileExists } = require('@gluestack/helpers');
+const { ConsoleTable } = require('@gluestack/helpers');
+
 export async function routesList(upInstances: any, isUp: boolean) {
-	const table = new Table({
-		head: [colors.green('Plugin Prefix Route'), colors.green('URI Route'), colors.green('URI Method')],
-		chars: {
-			'top': '═', 'top-mid': '╤', 'top-left': '╔', 'top-right': '╗'
-			, 'bottom': '═', 'bottom-mid': '╧', 'bottom-left': '╚', 'bottom-right': '╝'
-			, 'left': '║', 'left-mid': '╟', 'mid': '─', 'mid-mid': '┼'
-			, 'right': '║', 'right-mid': '╢', 'middle': '│'
-		}
-	});
+
+	const head: string[] = ['Plugin Prefix Route', 'URI Route', 'URI Method']
+	const rows: any = [];
 
 	for (const instance of upInstances) {
 		const paths: string[] = [];
@@ -53,7 +47,7 @@ export async function routesList(upInstances: any, isUp: boolean) {
 					}
 
 					if (data.hasOwnProperty("path") && !data.path.includes('(.*)')) {
-						table.push([
+						rows.push([
 							data.path,
 							data.proxy.path,
 							'--'
@@ -93,7 +87,7 @@ export async function routesList(upInstances: any, isUp: boolean) {
 						}
 					}
 
-					table.push([
+					rows.push([
 						pluginData,
 						subRoutes.join("\n"),
 						subMethods.join("\n")
@@ -113,7 +107,7 @@ export async function routesList(upInstances: any, isUp: boolean) {
 		}
 	}
 
-	console.log(table.toString());
+	ConsoleTable.print(head, rows);
 }
 
 const runUpCommand = async (instance: IPlugin & IHasContainerController, isUp: boolean) => {

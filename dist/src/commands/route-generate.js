@@ -51,7 +51,7 @@ var path_1 = require("path");
 var nginx_conf_1 = __importDefault(require("../helpers/nginx-conf"));
 var constants_1 = require("../constants");
 var create_tree_1 = require("../helpers/create-tree");
-var file_exists_1 = require("../helpers/file-exists");
+var fileExists = require('@gluestack/helpers').fileExists;
 var routeGenerate = function (program, glueStackPlugin) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         program
@@ -69,7 +69,7 @@ var metaPlugins = function () { return __awaiter(void 0, void 0, void 0, functio
         switch (_a.label) {
             case 0:
                 metaPluginsPath = (0, path_1.join)(process.cwd(), 'meta', 'plugins.json');
-                return [4, (0, file_exists_1.fileExists)(metaPluginsPath)];
+                return [4, fileExists(metaPluginsPath)];
             case 1:
                 if (!(_a.sent())) {
                     return [2, []];
@@ -81,7 +81,7 @@ var metaPlugins = function () { return __awaiter(void 0, void 0, void 0, functio
 }); };
 exports.metaPlugins = metaPlugins;
 var runner = function (glueStackPlugin, options) { return __awaiter(void 0, void 0, void 0, function () {
-    var build, tree, statelessPlugins, app, meta, instancesAndTree, plugins, _i, _a, pluginName, _b, _c, instanceName, instance, packageJSON, peerDependencies, _d, _e, dependency, dataTree, packages, instances, _f, instances_1, instances_1_1, instance, type, name_1, details, _g, e_1_1;
+    var build, tree, statelessPlugins, app, meta, instancesAndTree, plugins, _i, _a, pluginName, _b, _c, instanceName, instance, packageJSON, peerDependencies, _d, _e, dependency, dataTree, packages, instances, _f, instances_1, instances_1_1, instance, type, name, details, _g, e_1_1;
     var _h, e_1, _j, _k;
     return __generator(this, function (_l) {
         switch (_l.label) {
@@ -108,7 +108,7 @@ var runner = function (glueStackPlugin, options) { return __awaiter(void 0, void
                 instanceName = _c[_b];
                 instance = plugins[pluginName][instanceName];
                 packageJSON = (0, path_1.join)(instance.callerPlugin.getTemplateFolderPath(), '..', 'package.json');
-                return [4, (0, file_exists_1.fileExists)(packageJSON)];
+                return [4, fileExists(packageJSON)];
             case 4:
                 if (!(_l.sent()))
                     return [3, 5];
@@ -159,17 +159,17 @@ var runner = function (glueStackPlugin, options) { return __awaiter(void 0, void
                 _l.trys.push([12, , 15, 16]);
                 instance = _k;
                 type = instance === null || instance === void 0 ? void 0 : instance.callerPlugin.getType();
-                name_1 = instance === null || instance === void 0 ? void 0 : instance.callerPlugin.getName();
-                if (!(instance && type && name_1 &&
+                name = instance === null || instance === void 0 ? void 0 : instance.callerPlugin.getName();
+                if (!(instance && type && name &&
                     (instance === null || instance === void 0 ? void 0 : instance.containerController) &&
-                    type === 'stateless' && packages.includes(name_1))) return [3, 14];
+                    type === 'stateless' && packages.includes(name))) return [3, 14];
                 details = {
-                    name: name_1,
+                    name: name,
                     type: type,
                     instance: instance.getName(),
                     is_backend: false
                 };
-                if (name_1 === '@gluestack/glue-plugin-backend-engine') {
+                if (name === '@gluestack/glue-plugin-backend-engine') {
                     details.path = (0, path_1.join)(process.cwd(), instance.getInstallationPath(), '..');
                     details.is_backend = true;
                 }

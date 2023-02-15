@@ -7,8 +7,9 @@ import { join } from "path";
 import NginxConf from "../helpers/nginx-conf";
 import { getDomainMappings } from '../constants';
 import { createTree } from "../helpers/create-tree";
-import { fileExists } from "../helpers/file-exists";
 import { IStatelessPlugin } from "../types/IStatelessPlugin";
+
+const { fileExists } = require('@gluestack/helpers');
 
 export const routeGenerate = async (program: any, glueStackPlugin: GlueStackPlugin) => {
   program

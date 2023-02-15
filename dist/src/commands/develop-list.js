@@ -35,13 +35,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 exports.__esModule = true;
 exports.runner = exports.developList = void 0;
-var colors_1 = __importDefault(require("colors"));
-var cli_table3_1 = __importDefault(require("cli-table3"));
+var ConsoleTable = require("@gluestack/helpers").ConsoleTable;
 function isGluePackage(packageName, gluePackageName) {
     if (packageName === gluePackageName) {
         return true;
@@ -65,27 +61,20 @@ function developList(program, glueStackPlugin) {
 exports.developList = developList;
 function runner(glueStackPlugin, args) {
     return __awaiter(this, void 0, void 0, function () {
-        var i, table;
+        var i, head, rows;
         return __generator(this, function (_a) {
             i = 1;
-            table = new cli_table3_1["default"]({
-                head: [
-                    colors_1["default"].green('#'),
-                    colors_1["default"].green('Instance Name'),
-                    colors_1["default"].green('Plugin Name'),
-                    colors_1["default"].green('Plugin Version'),
-                    colors_1["default"].green('Plugin Type'),
-                    colors_1["default"].green('Instance Status'),
-                    colors_1["default"].green('Instance Port'),
-                    colors_1["default"].green('Instance Container ID / PID')
-                ],
-                chars: {
-                    'top': '═', 'top-mid': '╤', 'top-left': '╔', 'top-right': '╗',
-                    'bottom': '═', 'bottom-mid': '╧', 'bottom-left': '╚', 'bottom-right': '╝',
-                    'left': '║', 'left-mid': '╟', 'mid': '─', 'mid-mid': '┼',
-                    'right': '║', 'right-mid': '╢', 'middle': '│'
-                }
-            });
+            head = [
+                '#',
+                'Instance Name',
+                'Plugin Name',
+                'Plugin Version',
+                'Plugin Type',
+                'Instance Status',
+                'Instance Port',
+                'Instance Container ID / PID'
+            ];
+            rows = [];
             glueStackPlugin.app.getContainerTypePluginInstances(false)
                 .filter(function (instance) {
                 var packageName = args.filter;
@@ -101,7 +90,7 @@ function runner(glueStackPlugin, args) {
             })
                 .forEach(function (instance) {
                 if (instance && (instance === null || instance === void 0 ? void 0 : instance.containerController)) {
-                    table.push([
+                    rows.push([
                         i++,
                         instance.getName(),
                         instance.callerPlugin.getName(),
@@ -115,7 +104,7 @@ function runner(glueStackPlugin, args) {
                     ]);
                 }
             });
-            console.log(table.toString());
+            ConsoleTable.print(head, rows);
             return [2];
         });
     });

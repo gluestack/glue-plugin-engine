@@ -54,10 +54,10 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 exports.__esModule = true;
 var path_1 = require("path");
 var fs_1 = require("fs");
-var file_exists_1 = require("./file-exists");
+var fileExists = require('@gluestack/helpers').fileExists;
 var nginx_literals_1 = require("./nginx-literals");
-var create_folder_1 = require("./create-folder");
-var remove_special_chars_1 = require("./remove-special-chars");
+var createFolder = require('@gluestack/helpers').createFolder;
+var removeSpecialChars = require('@gluestack/helpers').removeSpecialChars;
 var NginxConf = (function () {
     function NginxConf() {
         this.filename = 'nginx.conf';
@@ -76,7 +76,7 @@ var NginxConf = (function () {
                     case 1:
                         conf = _a.sent();
                         filepath = (0, path_1.join)(process.cwd(), this.subdirectory, this.filename);
-                        return [4, (0, create_folder_1.createFolder)((0, path_1.join)(process.cwd(), this.subdirectory))];
+                        return [4, createFolder((0, path_1.join)(process.cwd(), this.subdirectory))];
                     case 2:
                         _a.sent();
                         (0, fs_1.writeFileSync)(filepath, conf);
@@ -102,7 +102,7 @@ var NginxConf = (function () {
                     case 1:
                         conf = _a.sent();
                         filepath = (0, path_1.join)(process.cwd(), this.subdirectory, this.prodDir, this.filename);
-                        return [4, (0, create_folder_1.createFolder)((0, path_1.join)(process.cwd(), this.subdirectory, this.prodDir))];
+                        return [4, createFolder((0, path_1.join)(process.cwd(), this.subdirectory, this.prodDir))];
                     case 2:
                         _a.sent();
                         (0, fs_1.writeFileSync)(filepath, conf);
@@ -125,7 +125,7 @@ var NginxConf = (function () {
                 switch (_a.label) {
                     case 0:
                         upstreams = this.upstreams;
-                        return [4, (0, file_exists_1.fileExists)(string)];
+                        return [4, fileExists(string)];
                     case 1:
                         exist = _a.sent();
                         if (!exist)
@@ -134,7 +134,7 @@ var NginxConf = (function () {
                             isBackend: isBackend,
                             locations: __spreadArray([], require(string)(), true),
                             port: port,
-                            instance: (0, remove_special_chars_1.removeSpecialChars)(instance),
+                            instance: removeSpecialChars(instance),
                             packageName: packageName
                         });
                         return [2, Promise.resolve(true)];
@@ -145,7 +145,7 @@ var NginxConf = (function () {
     NginxConf.prototype.toConf = function () {
         var _a, e_1, _b, _c, _d, e_2, _e, _f, _g, e_3, _h, _j, _k, e_4, _l, _m;
         return __awaiter(this, void 0, void 0, function () {
-            var content, upstreams, mainStreams, _o, upstreams_1, upstreams_1_1, upstream, locations_1, server_name, _p, _q, _r, location_1, e_2_1, _s, e_1_1, locations, _t, mainStreams_1, mainStreams_1_1, mainStream, _u, _v, _w, location_2, e_4_1, e_3_1, server_name, _x;
+            var content, upstreams, mainStreams, _o, upstreams_1, upstreams_1_1, upstream, locations_1, server_name, _p, _q, _r, location, e_2_1, _s, e_1_1, locations, _t, mainStreams_1, mainStreams_1_1, mainStream, _u, _v, _w, location, e_4_1, e_3_1, server_name, _x;
             return __generator(this, function (_y) {
                 switch (_y.label) {
                     case 0:
@@ -185,12 +185,12 @@ var NginxConf = (function () {
                         _f = _r.value;
                         _p = false;
                         try {
-                            location_1 = _f;
-                            if (location_1.hasOwnProperty('server_name') && location_1.server_name !== '') {
-                                server_name = location_1.server_name;
+                            location = _f;
+                            if (location.hasOwnProperty('server_name') && location.server_name !== '') {
+                                server_name = location.server_name;
                             }
-                            if (location_1.hasOwnProperty('path')) {
-                                locations_1.push((0, nginx_literals_1.setLocation)(location_1.path, "host.docker.internal:".concat(upstream.port), location_1.proxy.path, location_1.host, location_1.size_in_mb || 50));
+                            if (location.hasOwnProperty('path')) {
+                                locations_1.push((0, nginx_literals_1.setLocation)(location.path, "host.docker.internal:".concat(upstream.port), location.proxy.path, location.host, location.size_in_mb || 50));
                             }
                         }
                         finally {
@@ -269,9 +269,9 @@ var NginxConf = (function () {
                         _m = _w.value;
                         _u = false;
                         try {
-                            location_2 = _m;
-                            if (location_2.hasOwnProperty('path')) {
-                                locations.push((0, nginx_literals_1.setLocation)(location_2.path, "host.docker.internal:".concat(mainStream.port), location_2.proxy.path, location_2.host, location_2.size_in_mb || 50));
+                            location = _m;
+                            if (location.hasOwnProperty('path')) {
+                                locations.push((0, nginx_literals_1.setLocation)(location.path, "host.docker.internal:".concat(mainStream.port), location.proxy.path, location.host, location.size_in_mb || 50));
                             }
                         }
                         finally {
@@ -335,7 +335,7 @@ var NginxConf = (function () {
     NginxConf.prototype.toProdConf = function () {
         var _a, e_5, _b, _c, _d, e_6, _e, _f, _g, e_7, _h, _j, _k, e_8, _l, _m;
         return __awaiter(this, void 0, void 0, function () {
-            var content, upstreams, mainStreams, _o, upstreams_2, upstreams_2_1, upstream, locations_2, server_name, _p, _q, _r, location_3, port, e_6_1, _s, e_5_1, locations, _t, mainStreams_2, mainStreams_2_1, mainStream, _u, _v, _w, location_4, port, e_8_1, e_7_1, server_name, _x;
+            var content, upstreams, mainStreams, _o, upstreams_2, upstreams_2_1, upstream, locations_2, server_name, _p, _q, _r, location, port, e_6_1, _s, e_5_1, locations, _t, mainStreams_2, mainStreams_2_1, mainStream, _u, _v, _w, location, port, e_8_1, e_7_1, server_name, _x;
             return __generator(this, function (_y) {
                 switch (_y.label) {
                     case 0:
@@ -384,9 +384,9 @@ var NginxConf = (function () {
                         _f = _r.value;
                         _p = false;
                         try {
-                            location_3 = _f;
-                            if (location_3.hasOwnProperty('server_name') && location_3.server_name !== '') {
-                                server_name = location_3.server_name;
+                            location = _f;
+                            if (location.hasOwnProperty('server_name') && location.server_name !== '') {
+                                server_name = location.server_name;
                             }
                             port = upstream.port;
                             switch (upstream.packageName) {
@@ -400,8 +400,8 @@ var NginxConf = (function () {
                                     port = upstream.port;
                                     break;
                             }
-                            if (!upstream.isBackend && location_3.hasOwnProperty('path')) {
-                                locations_2.push((0, nginx_literals_1.setLocation)(location_3.path, "".concat(upstream.instance, ":").concat(port), location_3.proxy.path, location_3.host, location_3.size_in_mb || 50));
+                            if (!upstream.isBackend && location.hasOwnProperty('path')) {
+                                locations_2.push((0, nginx_literals_1.setLocation)(location.path, "".concat(upstream.instance, ":").concat(port), location.proxy.path, location.host, location.size_in_mb || 50));
                             }
                         }
                         finally {
@@ -483,10 +483,10 @@ var NginxConf = (function () {
                         _m = _w.value;
                         _u = false;
                         try {
-                            location_4 = _m;
+                            location = _m;
                             port = mainStream.packageName === '@gluestack/glue-plugin-web' ? 3000 : mainStream.port;
-                            if (location_4.hasOwnProperty('path')) {
-                                locations.push((0, nginx_literals_1.setLocation)(location_4.path, "".concat(mainStream.instance, ":").concat(port), location_4.proxy.path, location_4.host, location_4.size_in_mb || 50));
+                            if (location.hasOwnProperty('path')) {
+                                locations.push((0, nginx_literals_1.setLocation)(location.path, "".concat(mainStream.instance, ":").concat(port), location.proxy.path, location.host, location.size_in_mb || 50));
                             }
                         }
                         finally {

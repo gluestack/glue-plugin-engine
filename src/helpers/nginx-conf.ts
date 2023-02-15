@@ -1,11 +1,11 @@
 import { join } from 'path';
 import { writeFileSync } from 'fs';
-import { fileExists } from './file-exists';
+const { fileExists } = require('@gluestack/helpers');
 import {
   endsWith, startsWith, setServer, setLocation, includeBackend
 } from './nginx-literals';
-import { createFolder } from './create-folder';
-import { removeSpecialChars } from './remove-special-chars';
+const { createFolder } = require('@gluestack/helpers');
+const { removeSpecialChars } = require('@gluestack/helpers');
 
 /**
  * Nginx Conf
@@ -43,7 +43,7 @@ export default class NginxConf {
   public async generateProd(): Promise<void> {
     try {
       const conf: string = await this.toProdConf();
-      const filepath: string = join(process.cwd(), this.subdirectory,  this.prodDir, this.filename);
+      const filepath: string = join(process.cwd(), this.subdirectory, this.prodDir, this.filename);
 
       await createFolder(join(process.cwd(), this.subdirectory, this.prodDir));
       writeFileSync(filepath, conf);
@@ -56,7 +56,7 @@ export default class NginxConf {
 
   // Adds router.js data to the nginx conf data
   // if and only if the given path exists
-  public async addRouter(packageName:string, instance: string, port: number, string: string, isBackend: boolean = false): Promise<boolean> {
+  public async addRouter(packageName: string, instance: string, port: number, string: string, isBackend: boolean = false): Promise<boolean> {
     const upstreams: any[] = this.upstreams;
 
     const exist = await fileExists(string);
@@ -82,7 +82,7 @@ export default class NginxConf {
     // Add upstreams with server_name
     for await (const upstream of upstreams) {
       if (!await this.hasServerName(upstream.locations)) {
-        mainStreams.push({locations: [...upstream.locations], port: upstream.port});
+        mainStreams.push({ locations: [...upstream.locations], port: upstream.port });
         continue;
       }
 
