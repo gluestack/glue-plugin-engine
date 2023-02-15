@@ -150,7 +150,7 @@ export const createTree = async (userData: any, depthLevel: number = 0) => {
 
   async function main() {
     let rootNode = await createRootNode();
-    let max_depth = 100;
+    let max_depth = 1000;
 
     Object.keys(userData).forEach(_pluginName => {
       if (!userData[_pluginName].length) {
@@ -165,7 +165,7 @@ export const createTree = async (userData: any, depthLevel: number = 0) => {
       await reduceTreeResolveKnowsWithWeights(rootNode);
     }
 
-    if (max_depth <= 0) {
+    if (max_depth < 0) {
       console.log('unable to resolve plugin depth - giving up after 1000 depth');
       process.exit(-1);
     }

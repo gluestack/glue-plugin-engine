@@ -156,7 +156,7 @@ var createTree = function (userData, depthLevel) {
                         case 0: return [4, createRootNode()];
                         case 1:
                             rootNode = _a.sent();
-                            max_depth = 100;
+                            max_depth = 1000;
                             Object.keys(userData).forEach(function (_pluginName) {
                                 if (!userData[_pluginName].length) {
                                     userData[_pluginName].push('root');
@@ -174,7 +174,7 @@ var createTree = function (userData, depthLevel) {
                             _a.sent();
                             return [3, 2];
                         case 5:
-                            if (max_depth <= 0) {
+                            if (max_depth < 0) {
                                 console.log('unable to resolve plugin depth - giving up after 1000 depth');
                                 process.exit(-1);
                             }
