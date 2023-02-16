@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.runner = exports.developList = void 0;
-var ConsoleTable = require("@gluestack/helpers").ConsoleTable;
+var helpers_1 = require("@gluestack/helpers");
 function isGluePackage(packageName, gluePackageName) {
     if (packageName === gluePackageName) {
         return true;
@@ -104,7 +104,7 @@ function runner(glueStackPlugin, args) {
                     ]);
                 }
             });
-            ConsoleTable.print(head, rows);
+            helpers_1.ConsoleTable.print(head, rows);
             return [2];
         });
     });

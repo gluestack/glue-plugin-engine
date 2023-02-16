@@ -7,8 +7,7 @@ import { PluginInstance } from "./PluginInstance";
 import IApp from "@gluestack/framework/types/app/interface/IApp";
 import IContainerController from "@gluestack/framework/types/plugin/interface/IContainerController";
 
-const { ConsoleTable } = require('@gluestack/helpers');
-const { DockerodeHelper } = require("@gluestack/helpers");
+import { DockerodeHelper, ConsoleTable } from "@gluestack/helpers";
 
 export class PluginInstanceContainerController implements IContainerController {
   app: IApp;

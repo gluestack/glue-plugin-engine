@@ -5,11 +5,10 @@ import IHasContainerController from "@gluestack/framework/types/plugin/interface
 
 import { join } from "path";
 import NginxConf from "../helpers/nginx-conf";
+import { fileExists } from "@gluestack/helpers";
 import { getDomainMappings } from '../constants';
 import { createTree } from "../helpers/create-tree";
 import { IStatelessPlugin } from "../types/IStatelessPlugin";
-
-const { fileExists } = require('@gluestack/helpers');
 
 export const routeGenerate = async (program: any, glueStackPlugin: GlueStackPlugin) => {
   program

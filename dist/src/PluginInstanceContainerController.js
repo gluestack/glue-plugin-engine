@@ -74,8 +74,7 @@ var colors_1 = __importDefault(require("colors"));
 var path_1 = require("path");
 var dotenv = __importStar(require("dotenv"));
 var spawn_1 = require("./helpers/spawn");
-var ConsoleTable = require('@gluestack/helpers').ConsoleTable;
-var DockerodeHelper = require("@gluestack/helpers").DockerodeHelper;
+var helpers_1 = require("@gluestack/helpers");
 var PluginInstanceContainerController = (function () {
     function PluginInstanceContainerController(app, callerInstance) {
         this.status = "down";
@@ -161,7 +160,7 @@ var PluginInstanceContainerController = (function () {
                             .callerPlugin
                             .gluePluginStore
                             .get("ports") || [];
-                        DockerodeHelper.getPort(1337, ports)
+                        helpers_1.DockerodeHelper.getPort(1337, ports)
                             .then(function (port) {
                             _this.setPortNumber(port);
                             ports.push(port);
@@ -223,7 +222,7 @@ var PluginInstanceContainerController = (function () {
                                 return __generator(this, function (_c) {
                                     switch (_c.label) {
                                         case 0:
-                                            _b = (_a = DockerodeHelper).up;
+                                            _b = (_a = helpers_1.DockerodeHelper).up;
                                             return [4, this.getDockerJson()];
                                         case 1:
                                             _b.apply(_a, [_c.sent(), this.getEnv(),
@@ -260,7 +259,7 @@ var PluginInstanceContainerController = (function () {
                     case 0: return [4, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
                             var _this = this;
                             return __generator(this, function (_a) {
-                                DockerodeHelper.down(this.getContainerId(), this.callerInstance.getName())
+                                helpers_1.DockerodeHelper.down(this.getContainerId(), this.callerInstance.getName())
                                     .then(function () {
                                     _this.setStatus("down");
                                     _this.setContainerId(null);
@@ -385,7 +384,7 @@ var PluginInstanceContainerController = (function () {
                         return [7];
                     case 11: return [7];
                     case 12:
-                        ConsoleTable.print(head, rows);
+                        helpers_1.ConsoleTable.print(head, rows);
                         return [2];
                 }
             });

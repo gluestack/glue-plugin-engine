@@ -49,9 +49,9 @@ exports.__esModule = true;
 exports.runner = exports.metaPlugins = exports.routeGenerate = void 0;
 var path_1 = require("path");
 var nginx_conf_1 = __importDefault(require("../helpers/nginx-conf"));
+var helpers_1 = require("@gluestack/helpers");
 var constants_1 = require("../constants");
 var create_tree_1 = require("../helpers/create-tree");
-var fileExists = require('@gluestack/helpers').fileExists;
 var routeGenerate = function (program, glueStackPlugin) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         program
@@ -69,7 +69,7 @@ var metaPlugins = function () { return __awaiter(void 0, void 0, void 0, functio
         switch (_a.label) {
             case 0:
                 metaPluginsPath = (0, path_1.join)(process.cwd(), 'meta', 'plugins.json');
-                return [4, fileExists(metaPluginsPath)];
+                return [4, (0, helpers_1.fileExists)(metaPluginsPath)];
             case 1:
                 if (!(_a.sent())) {
                     return [2, []];
@@ -108,7 +108,7 @@ var runner = function (glueStackPlugin, options) { return __awaiter(void 0, void
                 instanceName = _c[_b];
                 instance = plugins[pluginName][instanceName];
                 packageJSON = (0, path_1.join)(instance.callerPlugin.getTemplateFolderPath(), '..', 'package.json');
-                return [4, fileExists(packageJSON)];
+                return [4, (0, helpers_1.fileExists)(packageJSON)];
             case 4:
                 if (!(_l.sent()))
                     return [3, 5];

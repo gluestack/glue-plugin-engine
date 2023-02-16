@@ -1,4 +1,4 @@
-const { ConsoleTable } = require("@gluestack/helpers");
+import { ConsoleTable } from "@gluestack/helpers";
 
 import { GlueStackPlugin } from "src";
 import IInstance from "@gluestack/framework/types/plugin/interface/IInstance";
