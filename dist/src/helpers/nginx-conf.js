@@ -470,6 +470,7 @@ var NginxConf = (function () {
                         _y.trys.push([32, , 45, 46]);
                         mainStream = _j;
                         if (mainStream.packageName === '@gluestack/glue-plugin-backend-engine') {
+                            locations.push((0, nginx_literals_1.includeBackend)());
                             return [3, 46];
                         }
                         _y.label = 33;

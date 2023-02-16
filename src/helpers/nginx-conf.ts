@@ -132,7 +132,7 @@ export default class NginxConf {
     const upstreams: any[] = this.upstreams;
     const mainStreams: any[] = [];
 
-    // Add upstreams with server_name
+    // If HAS SERVER_NAME : Add upstreams with server_name
     for await (const upstream of upstreams) {
       if (!await this.hasServerName(upstream.locations)) {
         mainStreams.push({
@@ -180,10 +180,11 @@ export default class NginxConf {
       content += await setServer(`${server_name}.local.gluestack.app`, locations);
     }
 
-    // Add upstreams without server_name into project name as server_name
+    // IF DOES NOT HAS SERVER_NAME : Add main-streams ie. streams without server_name into project name as server_name
     const locations: string[] = [];
     for await (const mainStream of mainStreams) {
       if (mainStream.packageName === '@gluestack/glue-plugin-backend-engine') {
+        locations.push(includeBackend());
         continue;
       }
 

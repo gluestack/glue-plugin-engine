@@ -1,6 +1,6 @@
 {
   "name": "@gluestack/glue-plugin-engine",
-  "version": "0.0.74",
+  "version": "0.0.75",
   "description": "Gluestack Plugins Process Manager Engine",
   "repository": {
     "type": "git",
@@ -13,8 +13,8 @@
   "license": "ISC",
   "main": "dist/src/index.js",
   "scripts": {
-    "plugin-dev": "tsc --watch",
-    "plugin-build": "tsc"
+    "dev": "tsc --declaration --watch",
+    "build": "tsc --declaration"
   },
   "dependencies": {
     "@gluestack/framework": "^0.0.x",
