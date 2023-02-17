@@ -38,7 +38,7 @@ export async function runner(glueStackPlugin: GlueStackPlugin, args: any) {
     'Plugin Type',
     'Instance Status',
     'Instance Port',
-    'Instance Container ID / PID'
+    // 'Instance Container ID / PID'
   ];
 
   const rows: any = [];
@@ -73,7 +73,7 @@ export async function runner(glueStackPlugin: GlueStackPlugin, args: any) {
           instance.getContainerController().getStatus() === "up"
             ? instance.getContainerController().portNumber || "-"
             : "-",
-          instance.getContainerController().getContainerId() || "-",
+          // instance.getContainerController().getContainerId() || "-",
         ]);
       }
     });

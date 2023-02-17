@@ -72,7 +72,6 @@ function runner(glueStackPlugin, args) {
                 'Plugin Type',
                 'Instance Status',
                 'Instance Port',
-                'Instance Container ID / PID'
             ];
             rows = [];
             glueStackPlugin.app.getContainerTypePluginInstances(false)
@@ -100,7 +99,6 @@ function runner(glueStackPlugin, args) {
                         instance.getContainerController().getStatus() === "up"
                             ? instance.getContainerController().portNumber || "-"
                             : "-",
-                        instance.getContainerController().getContainerId() || "-",
                     ]);
                 }
             });

@@ -1,6 +1,6 @@
 {
   "name": "@gluestack/glue-plugin-engine",
-  "version": "0.0.76",
+  "version": "0.0.77",
   "description": "Gluestack Plugins Process Manager Engine",
   "repository": {
     "type": "git",
