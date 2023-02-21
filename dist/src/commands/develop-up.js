@@ -35,44 +35,39 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
 exports.runner = exports.developUp = void 0;
-var route_list_1 = require("../helpers/route-list");
+var GluestackEngine_1 = __importDefault(require("../core/GluestackEngine"));
 function developUp(program, glueStackPlugin) {
     var command = program
         .command("develop:up")
-        .argument("[instance-name]", "Name of the container instance to up (optional)")
-        .description("Starts provided container instances or all the containers if no instance is provided")
-        .action(function (instanceName) { return runner(instanceName, glueStackPlugin); });
+        .description("Starts all the containers for the project.")
+        .action(function () { return runner(glueStackPlugin); });
 }
 exports.developUp = developUp;
-function runner(instanceName, glueStackPlugin) {
+function runner(glueStackPlugin) {
     return __awaiter(this, void 0, void 0, function () {
-        var instances, upInstances, found, _i, instances_1, instance;
+        var app, engine, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    instances = glueStackPlugin.app.getContainerTypePluginInstances(true);
-                    upInstances = instances;
-                    found = false;
-                    if (instanceName) {
-                        for (_i = 0, instances_1 = instances; _i < instances_1.length; _i++) {
-                            instance = instances_1[_i];
-                            if (instance.getName() === instanceName) {
-                                found = true;
-                                upInstances = [instance];
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            console.log("Error: could not up ".concat(instanceName, " instance not found"));
-                            return [2];
-                        }
-                    }
-                    return [4, (0, route_list_1.routesList)(upInstances, true)];
+                    app = glueStackPlugin.app;
+                    _a.label = 1;
                 case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    engine = new GluestackEngine_1["default"](app, 'backend');
+                    return [4, engine.start()];
+                case 2:
                     _a.sent();
-                    return [2];
+                    return [3, 4];
+                case 3:
+                    err_1 = _a.sent();
+                    console.log('>> err', err_1);
+                    return [3, 4];
+                case 4: return [2];
             }
         });
     });

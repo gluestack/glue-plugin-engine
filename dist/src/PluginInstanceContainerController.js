@@ -253,27 +253,8 @@ var PluginInstanceContainerController = (function () {
     };
     PluginInstanceContainerController.prototype.down = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-                            var _this = this;
-                            return __generator(this, function (_a) {
-                                helpers_1.DockerodeHelper.down(this.getContainerId(), this.callerInstance.getName())
-                                    .then(function () {
-                                    _this.setStatus("down");
-                                    _this.setContainerId(null);
-                                    return resolve(true);
-                                })["catch"](function (e) {
-                                    return reject(e);
-                                });
-                                return [2];
-                            });
-                        }); })];
-                    case 1:
-                        _a.sent();
-                        return [2];
-                }
+                return [2];
             });
         });
     };

@@ -1,43 +1,25 @@
 import { GlueStackPlugin } from "src";
-import IPlugin from "@gluestack/framework/types/plugin/interface/IPlugin";
-import IHasContainerController from "@gluestack/framework/types/plugin/interface/IHasContainerController";
-import { routesList } from "../helpers/route-list";
+import GluestackEngine from "../core/GluestackEngine";
+import { IGlueEngine } from "../core/types/IGlueEngine";
+import IApp from "@gluestack/framework/types/app/interface/IApp";
 
 export function developUp(program: any, glueStackPlugin: GlueStackPlugin) {
   const command = program
     .command("develop:up")
-    .argument(
-      "[instance-name]",
-      "Name of the container instance to up (optional)",
-    )
     .description(
-      "Starts provided container instances or all the containers if no instance is provided",
+      "Starts all the containers for the project.",
     )
-    .action((instanceName: string) => runner(instanceName, glueStackPlugin));
+    .action(() => runner(glueStackPlugin));
 }
 
 export async function runner(
-  instanceName: string,
   glueStackPlugin: GlueStackPlugin,
 ) {
-  const instances = glueStackPlugin.app.getContainerTypePluginInstances(true);
-
-  let upInstances: (IPlugin & IHasContainerController)[] = instances;
-  let found = false;
-
-  if (instanceName) {
-    for (const instance of instances) {
-      if (instance.getName() === instanceName) {
-        found = true;
-        upInstances = [instance];
-        break;
-      }
-    }
-    if (!found) {
-      console.log(`Error: could not up ${instanceName} instance not found`);
-      return;
-    }
+  const app: IApp = glueStackPlugin.app;
+  try {
+    const engine: IGlueEngine = new GluestackEngine(app, 'backend');
+    await engine.start();
+  } catch (err) {
+    console.log('>> err', err);
   }
-
-  await routesList(upInstances, true);
 }

@@ -185,17 +185,7 @@ export class PluginInstanceContainerController implements IContainerController {
   }
 
   async down() {
-    await new Promise(async (resolve, reject) => {
-      DockerodeHelper.down(this.getContainerId(), this.callerInstance.getName())
-        .then(() => {
-          this.setStatus("down");
-          this.setContainerId(null);
-          return resolve(true);
-        })
-        .catch((e: any) => {
-          return reject(e);
-        });
-    });
+    //
   }
 
   async watch(): Promise<string[]> {
