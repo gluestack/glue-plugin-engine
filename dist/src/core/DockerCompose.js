@@ -315,6 +315,40 @@ var DockerCompose = (function () {
             });
         });
     };
+    DockerCompose.prototype.addPGAdmin = function (plugin, postgres) {
+        return __awaiter(this, void 0, void 0, function () {
+            var instance, port_number, isPostgresExternal, pgadmin;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        instance = plugin.instance_object;
+                        return [4, instance.gluePluginStore.get('port_number')];
+                    case 1:
+                        port_number = _a.sent();
+                        isPostgresExternal = (0, GluestackConfig_1.getConfig)('isPostgresExternal');
+                        pgadmin = {
+                            container_name: plugin.instance,
+                            restart: 'always',
+                            image: 'dpage/pgadmin4',
+                            ports: [
+                                "".concat(port_number, ":80")
+                            ],
+                            env_file: [
+                                "".concat(plugin.path, "/.env")
+                            ]
+                        };
+                        if (postgres && postgres !== '' && isPostgresExternal === 0) {
+                            pgadmin.depends_on = {};
+                            pgadmin.depends_on["".concat(postgres)] = {
+                                condition: 'service_healthy'
+                            };
+                        }
+                        this.addService(plugin.instance, pgadmin);
+                        return [2];
+                }
+            });
+        });
+    };
     DockerCompose.prototype.addOthers = function (plugin) {
         return __awaiter(this, void 0, void 0, function () {
             var name, _a, service;

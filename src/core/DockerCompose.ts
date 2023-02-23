@@ -221,6 +221,34 @@ export default class DockerCompose implements IDockerCompose {
     this.addService(plugin.instance, minio);
   }
 
+  // Adds the pgadmin service to the docker-compose file
+  public async addPGAdmin(plugin: IStatelessPlugin, postgres: string): Promise<void> {
+    const instance: any = plugin.instance_object;
+    const port_number = await instance.gluePluginStore.get('port_number');
+    const isPostgresExternal = getConfig('isPostgresExternal');
+
+    const pgadmin: IService = {
+      container_name: plugin.instance,
+      restart: 'always',
+      image: 'dpage/pgadmin4',
+      ports: [
+        `${port_number}:80`
+      ],
+      env_file: [
+        `${plugin.path}/.env`
+      ]
+    };
+
+    if (postgres && postgres !== '' && isPostgresExternal === 0) {
+      pgadmin.depends_on = {};
+      pgadmin.depends_on[`${postgres}`] = {
+        condition: 'service_healthy'
+      }
+    }
+
+    this.addService(plugin.instance, pgadmin);
+  }
+
   // Adds the other services to the docker-compose file
   public async addOthers(plugin: IStatelessPlugin) {
     const name: string = plugin.instance;

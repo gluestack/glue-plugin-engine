@@ -9,7 +9,7 @@ interface IHealthCheck {
 interface IServiceBase {
     command?: string;
     container_name: string;
-    volumes: string[];
+    volumes?: string[];
     ports?: string[];
     env_file?: string[];
     environment?: any;
@@ -38,6 +38,7 @@ export interface IDockerCompose {
     addHasura(plugin: IStatelessPlugin, postgres: string): Promise<void>;
     addPostgres(plugin: IStatelessPlugin): Promise<void>;
     addMinio(plugin: IStatelessPlugin): Promise<void>;
+    addPGAdmin(plugin: IStatelessPlugin, postgres: string): Promise<void>;
     addOthers(plugin: IStatelessPlugin): Promise<void>;
 }
 export {};

@@ -326,82 +326,88 @@ var GluestackEngine = (function () {
                         postgresInstancePath = (0, GluestackConfig_1.getConfig)('postgresInstancePath');
                         _e.label = 1;
                     case 1:
-                        _e.trys.push([1, 19, 20, 25]);
+                        _e.trys.push([1, 21, 22, 27]);
                         _d = true, plugins_1 = __asyncValues(plugins);
                         _e.label = 2;
                     case 2: return [4, plugins_1.next()];
                     case 3:
-                        if (!(plugins_1_1 = _e.sent(), _a = plugins_1_1.done, !_a)) return [3, 18];
+                        if (!(plugins_1_1 = _e.sent(), _a = plugins_1_1.done, !_a)) return [3, 20];
                         _c = plugins_1_1.value;
                         _d = false;
                         _e.label = 4;
                     case 4:
-                        _e.trys.push([4, , 16, 17]);
+                        _e.trys.push([4, , 18, 19]);
                         plugin = _c;
                         if (!(plugin.name === '@gluestack/glue-plugin-postgres')) return [3, 6];
                         isPostgresExternal = (0, GluestackConfig_1.getConfig)('isPostgresExternal');
                         if (isPostgresExternal === 1) {
-                            return [3, 17];
+                            return [3, 19];
                         }
                         return [4, dockerCompose.addPostgres(plugin)];
                     case 5:
                         _e.sent();
-                        return [3, 17];
+                        return [3, 19];
                     case 6:
                         if (!(plugin.name === '@gluestack/glue-plugin-graphql')) return [3, 8];
                         return [4, dockerCompose.addHasura(plugin, postgresInstancePath)];
                     case 7:
                         _e.sent();
-                        return [3, 17];
+                        return [3, 19];
                     case 8:
                         if (!(plugin.name === '@gluestack/glue-plugin-router-nginx')) return [3, 10];
                         return [4, dockerCompose.addNginx(plugin, hasuraInstancePath)];
                     case 9:
                         _e.sent();
-                        return [3, 17];
+                        return [3, 19];
                     case 10:
                         if (!(plugin.name === '@gluestack/glue-plugin-web')) return [3, 12];
                         return [4, dockerCompose.addWeb(plugin)];
                     case 11:
                         _e.sent();
-                        return [3, 17];
+                        return [3, 19];
                     case 12:
                         if (!(plugin.name === '@gluestack/glue-plugin-minio')) return [3, 14];
                         isMinioExternal = (0, GluestackConfig_1.getConfig)('isMinioExternal');
                         if (isMinioExternal === 1) {
-                            return [3, 17];
+                            return [3, 19];
                         }
                         return [4, dockerCompose.addMinio(plugin)];
                     case 13:
                         _e.sent();
-                        return [3, 17];
-                    case 14: return [4, dockerCompose.addOthers(plugin)];
+                        return [3, 19];
+                    case 14:
+                        if (!(plugin.name === '@gluestack/glue-plugin-pg-admin')) return [3, 16];
+                        return [4, dockerCompose.addPGAdmin(plugin, postgresInstancePath)];
                     case 15:
                         _e.sent();
-                        return [3, 17];
-                    case 16:
+                        return [3, 19];
+                    case 16: return [4, dockerCompose.addOthers(plugin)];
+                    case 17:
+                        _e.sent();
+                        return [3, 19];
+                    case 18:
                         _d = true;
                         return [7];
-                    case 17: return [3, 2];
-                    case 18: return [3, 25];
-                    case 19:
+                    case 19: return [3, 2];
+                    case 20: return [3, 27];
+                    case 21:
                         e_2_1 = _e.sent();
                         e_2 = { error: e_2_1 };
-                        return [3, 25];
-                    case 20:
-                        _e.trys.push([20, , 23, 24]);
-                        if (!(!_d && !_a && (_b = plugins_1["return"]))) return [3, 22];
+                        return [3, 27];
+                    case 22:
+                        _e.trys.push([22, , 25, 26]);
+                        if (!(!_d && !_a && (_b = plugins_1["return"]))) return [3, 24];
                         return [4, _b.call(plugins_1)];
-                    case 21:
-                        _e.sent();
-                        _e.label = 22;
-                    case 22: return [3, 24];
                     case 23:
+                        _e.sent();
+                        _e.label = 24;
+                    case 24: return [3, 26];
+                    case 25:
                         if (e_2) throw e_2.error;
                         return [7];
-                    case 24: return [7];
-                    case 25: return [4, dockerCompose.generate()];
-                    case 26:
+                    case 26: return [7];
+                    case 27: return [4, dockerCompose.generate()];
+                    case 28:
                         _e.sent();
                         return [2];
                 }
