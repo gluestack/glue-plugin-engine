@@ -196,7 +196,7 @@ var HasuraEngine = (function () {
                         return [4, this.createActions()];
                     case 4:
                         _a.sent();
-                        console.log('> Registering actions plugins into hasura engine...');
+                        console.log('> Registering action permissions into hasura engine...');
                         return [4, this.createActionPermissions()];
                     case 5:
                         _a.sent();

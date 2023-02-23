@@ -135,7 +135,7 @@ export default class HasuraEngine implements IHasuraEngine {
     await this.createActions();
 
     // create all action permissions into hasura engine
-    console.log('> Registering actions plugins into hasura engine...');
+    console.log('> Registering action permissions into hasura engine...');
     await this.createActionPermissions();
   }
 
