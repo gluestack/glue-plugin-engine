@@ -11,7 +11,8 @@ exports.noDockerfiles = [
     '@gluestack/glue-plugin-graphql',
     '@gluestack/glue-plugin-postgres',
     '@gluestack/glue-plugin-minio',
-    '@gluestack/glue-plugin-engine'
+    '@gluestack/glue-plugin-engine',
+    '@gluestack/glue-plugin-pg-admin'
 ];
 exports.daprServices = [
     '@gluestack/glue-plugin-backend-engine',

@@ -89,7 +89,7 @@ var GluestackCron = (function () {
                         return [4, (0, helpers_1.fileExists)(filePath)];
                     case 1:
                         if (!(_a.sent())) {
-                            return [2];
+                            return [2, Promise.resolve(false)];
                         }
                         _a.label = 2;
                     case 2:
@@ -98,11 +98,11 @@ var GluestackCron = (function () {
                         return [4, this.validate(collection)];
                     case 3:
                         _a.sent();
-                        return [3, 5];
+                        return [2, Promise.resolve(true)];
                     case 4:
                         error_1 = _a.sent();
                         console.log('> Something went wrong during crons.json file reading. Please check your "crons/crons.json" config file again!');
-                        return [3, 5];
+                        return [2, Promise.resolve(false)];
                     case 5: return [2];
                 }
             });
@@ -189,7 +189,9 @@ var GluestackCron = (function () {
                 switch (_a.label) {
                     case 0: return [4, this.collect()];
                     case 1:
-                        _a.sent();
+                        if (!(_a.sent())) {
+                            return [2];
+                        }
                         return [4, (0, GluestackConfig_1.prepareConfigJSON)({ crons: this.collection })];
                     case 2:
                         _a.sent();

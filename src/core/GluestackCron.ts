@@ -18,19 +18,22 @@ export default class GluestackCron implements IGluestackCron {
   }
 
   // collects and validates all the cron object
-  public async collect(): Promise<void> {
+  public async collect(): Promise<boolean> {
     const backendInstance: string = getConfig('backendInstancePath');
 
     const filePath: string = join(process.cwd(), backendInstance, this.filePath);
-    if (! await fileExists(filePath)) {
-      return;
+    if (!await fileExists(filePath)) {
+      return Promise.resolve(false);
     }
 
     try {
       const collection: ICronObject[] = require(filePath);
       await this.validate(collection);
+
+      return Promise.resolve(true);
     } catch (error) {
       console.log('> Something went wrong during crons.json file reading. Please check your "crons/crons.json" config file again!');
+      return Promise.resolve(false);
     }
   }
 
@@ -80,7 +83,9 @@ export default class GluestackCron implements IGluestackCron {
   // prepares the cron jobs into engine's config.json file
   public async start(): Promise<void> {
     // collect and validate the schedules from crons/crons.json file
-    await this.collect();
+    if (!await this.collect()) {
+      return;
+    }
 
     // prepares the cron jobs
     await prepareConfigJSON({ crons: this.collection });

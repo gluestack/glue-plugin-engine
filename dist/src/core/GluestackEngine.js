@@ -410,11 +410,10 @@ var GluestackEngine = (function () {
     };
     GluestackEngine.prototype.startDockerCompose = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var backendInstancePath, filepath, folders, projectName, dockerCompose;
+            var filepath, folders, projectName, dockerCompose;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        backendInstancePath = (0, GluestackConfig_1.getConfig)('backendInstancePath');
                         filepath = (0, path_1.join)(process.cwd(), 'meta/router');
                         return [4, (0, helpers_1.getOSFolders)()];
                     case 1:
@@ -431,11 +430,10 @@ var GluestackEngine = (function () {
     };
     GluestackEngine.prototype.stopDockerCompose = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var backendInstancePath, filepath, folders, projectName, dockerCompose;
+            var filepath, folders, projectName, dockerCompose;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        backendInstancePath = (0, GluestackConfig_1.getConfig)('backendInstancePath');
                         filepath = (0, path_1.join)(process.cwd(), 'meta/router');
                         return [4, (0, helpers_1.getOSFolders)()];
                     case 1:
@@ -457,17 +455,23 @@ var GluestackEngine = (function () {
                 switch (_a.label) {
                     case 0:
                         dockerfile = (0, path_1.join)(process.cwd(), 'node_modules', instance.callerPlugin.getName(), 'src/assets/Dockerfile');
-                        return [4, (0, replace_keyword_1.replaceKeyword)(dockerfile, (0, helpers_1.removeSpecialChars)(instance.getName()), '{APP_ID}')];
+                        return [4, (0, helpers_1.fileExists)(dockerfile)];
                     case 1:
+                        if (!(_a.sent())) {
+                            console.log("> Could not find Dockerfile for plugin \"".concat(instance.callerPlugin.getName(), "\" instance \"").concat(instance.getName(), "\". Ingoring..."));
+                            return [2];
+                        }
+                        return [4, (0, replace_keyword_1.replaceKeyword)(dockerfile, (0, helpers_1.removeSpecialChars)(instance.getName()), '{APP_ID}')];
+                    case 2:
                         context = _a.sent();
                         return [4, (0, helpers_1.writeFile)((0, path_1.join)(details.path, 'Dockerfile'), context)];
-                    case 2:
+                    case 3:
                         _a.sent();
                         return [4, (0, replace_keyword_1.replaceKeyword)((0, path_1.join)(details.path, 'Dockerfile'), (0, helpers_1.removeSpecialChars)(instance.getName()), '{INSTANCE_NAME}')];
-                    case 3:
+                    case 4:
                         context = _a.sent();
                         return [4, (0, helpers_1.writeFile)((0, path_1.join)(details.path, 'Dockerfile'), context)];
-                    case 4:
+                    case 5:
                         _a.sent();
                         return [2];
                 }

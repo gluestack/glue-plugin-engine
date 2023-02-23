@@ -317,23 +317,38 @@ var DockerCompose = (function () {
     };
     DockerCompose.prototype.addOthers = function (plugin) {
         return __awaiter(this, void 0, void 0, function () {
-            var name, service;
-            return __generator(this, function (_a) {
-                name = plugin.instance;
-                service = {
-                    container_name: (0, helpers_1.removeSpecialChars)(plugin.instance),
-                    restart: 'always',
-                    build: plugin.path,
-                    volumes: [
-                        "".concat(plugin.path, ":/server"),
-                        "/server/node_modules"
-                    ],
-                    env_file: [
-                        "".concat(plugin.path, "/.env")
-                    ]
-                };
-                this.addService(name, service);
-                return [2];
+            var name, _a, service;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        name = plugin.instance;
+                        return [4, (0, helpers_1.fileExists)("".concat(plugin.path, "/.env"))];
+                    case 1:
+                        _a = !(_b.sent());
+                        if (_a) return [3, 3];
+                        return [4, (0, helpers_1.fileExists)("".concat(plugin.path, "/Dockerfile"))];
+                    case 2:
+                        _a = !(_b.sent());
+                        _b.label = 3;
+                    case 3:
+                        if (_a) {
+                            return [2];
+                        }
+                        service = {
+                            container_name: (0, helpers_1.removeSpecialChars)(plugin.instance),
+                            restart: 'always',
+                            build: plugin.path,
+                            volumes: [
+                                "".concat(plugin.path, ":/server"),
+                                "/server/node_modules"
+                            ],
+                            env_file: [
+                                "".concat(plugin.path, "/.env")
+                            ]
+                        };
+                        this.addService(name, service);
+                        return [2];
+                }
             });
         });
     };

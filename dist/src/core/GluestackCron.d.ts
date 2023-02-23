@@ -4,7 +4,7 @@ export default class GluestackCron implements IGluestackCron {
     daprServices: any;
     private filePath;
     constructor();
-    collect(): Promise<void>;
+    collect(): Promise<boolean>;
     validate(collection: ICronObject[]): Promise<void>;
     start(): Promise<void>;
 }

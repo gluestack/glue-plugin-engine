@@ -6,6 +6,6 @@ export interface ICronObject {
 export interface IGluestackCron {
     collection: ICronObject[];
     start(): Promise<void>;
-    collect(): Promise<void>;
+    collect(): Promise<boolean>;
     validate(collection: ICronObject[]): Promise<void>;
 }

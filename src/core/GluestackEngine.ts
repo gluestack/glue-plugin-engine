@@ -17,7 +17,7 @@ import { getConfig, setConfig } from "./GluestackConfig";
 import { join } from "path";
 import { includes } from "lodash";
 import { backendPlugins, noDockerfiles } from "../configs/constants";
-import { writeFile, removeSpecialChars, getOSFolders, waitInSeconds } from "@gluestack/helpers";
+import { writeFile, removeSpecialChars, getOSFolders, waitInSeconds, fileExists } from "@gluestack/helpers";
 
 import { replaceKeyword } from "../helpers/replace-keyword";
 import { isValidGluePlugin, isDaprService, isGlueService } from "../helpers/valid-glue-service";
@@ -315,8 +315,6 @@ export default class GluestackEngine implements IGlueEngine {
 
   // Starts the docker-compose
   async startDockerCompose(): Promise<void> {
-    const backendInstancePath: string = getConfig('backendInstancePath');
-
     // constructing the path to engine's router
     const filepath: string = join(process.cwd(), 'meta/router');
 
@@ -331,9 +329,6 @@ export default class GluestackEngine implements IGlueEngine {
 
   // Stops the docker-compose
   async stopDockerCompose(): Promise<void> {
-    const backendInstancePath: string = getConfig('backendInstancePath');
-
-    // constructing the path to engine's router
     const filepath: string = join(process.cwd(), 'meta/router');
 
     // constructing project name for docker compose command
@@ -357,6 +352,11 @@ export default class GluestackEngine implements IGlueEngine {
       instance.callerPlugin.getName(),
       'src/assets/Dockerfile'
     );
+
+    if (!await fileExists(dockerfile)) {
+      console.log(`> Could not find Dockerfile for plugin "${instance.callerPlugin.getName()}" instance "${instance.getName()}". Ingoring...`);
+      return;
+    }
 
     // @ts-ignore
     let context = await replaceKeyword(

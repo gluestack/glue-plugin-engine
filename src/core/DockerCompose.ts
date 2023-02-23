@@ -225,6 +225,13 @@ export default class DockerCompose implements IDockerCompose {
   public async addOthers(plugin: IStatelessPlugin) {
     const name: string = plugin.instance;
 
+    if (
+      !await fileExists(`${plugin.path}/.env`) ||
+      !await fileExists(`${plugin.path}/Dockerfile`)
+    ) {
+      return;
+    }
+
     const service: IService = {
       container_name: removeSpecialChars(plugin.instance),
       restart: 'always',

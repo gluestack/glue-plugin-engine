@@ -23,7 +23,8 @@ export const noDockerfiles: string[] = [
   '@gluestack/glue-plugin-graphql',
   '@gluestack/glue-plugin-postgres',
   '@gluestack/glue-plugin-minio',
-  '@gluestack/glue-plugin-engine'
+  '@gluestack/glue-plugin-engine',
+  '@gluestack/glue-plugin-pg-admin'
 ];
 
 export const daprServices: string[] = [
