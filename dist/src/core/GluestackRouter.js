@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -47,54 +36,46 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.prepareConfigJSON = exports.setConfig = exports.getConfig = exports.config = void 0;
-var path_1 = require("path");
-var promises_1 = require("fs/promises");
-var helpers_1 = require("@gluestack/helpers");
-exports.config = {
-    postgresConnectionString: '',
-    isPostgresExternal: 0,
-    isMinioExternal: 0,
-    authInstancePath: '',
-    postgresInstancePath: '',
-    backendInstancePath: '',
-    engineInstancePath: '',
-    hasuraInstancePath: '',
-    routerPluginName: '',
-    routerInstancePath: '',
-    hasuraInstanceStatus: 'down',
-    hasuraEnvs: {},
-    daprServices: []
-};
-var getConfig = function (key) { return exports.config[key]; };
-exports.getConfig = getConfig;
-var setConfig = function (key, value) { return exports.config[key] = value; };
-exports.setConfig = setConfig;
-var prepareConfigJSON = function (newContent) { return __awaiter(void 0, void 0, void 0, function () {
-    var content, engineInstance, backendInstance, filepath;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                content = {};
-                engineInstance = (0, exports.getConfig)('engineInstancePath');
-                backendInstance = (0, exports.getConfig)('backendInstancePath');
-                filepath = (0, path_1.join)(process.cwd(), backendInstance, engineInstance, 'config.json');
-                return [4, (0, helpers_1.fileExists)(filepath)];
-            case 1:
-                if (!_a.sent()) return [3, 3];
-                return [4, (0, promises_1.readFile)(filepath)];
-            case 2:
-                content = _a.sent();
-                content = JSON.parse(content.toString());
-                _a.label = 3;
-            case 3:
-                content = __assign(__assign({}, content), newContent);
-                return [4, (0, helpers_1.writeFile)(filepath, JSON.stringify(content, null, 2))];
-            case 4:
-                _a.sent();
-                return [2];
-        }
-    });
-}); };
-exports.prepareConfigJSON = prepareConfigJSON;
-//# sourceMappingURL=GluestackConfig.js.map
+var spawn_1 = require("../helpers/spawn");
+var GluestackConfig_1 = require("./GluestackConfig");
+var GluestackRouter = (function () {
+    function GluestackRouter() {
+        this.pluginName = '';
+        this.instancePath = '';
+        this.pluginName = (0, GluestackConfig_1.getConfig)('routerPluginName');
+        this.instancePath = (0, GluestackConfig_1.getConfig)('routerInstancePath');
+    }
+    GluestackRouter.prototype.listEndpoints = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(this.pluginName !== '' || this.instancePath !== '')) return [3, 2];
+                        return [4, (0, spawn_1.execute)('node', ['glue', 'route:endpoints'], { cwd: process.cwd(), stdio: 'inherit' })];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2: return [2];
+                }
+            });
+        });
+    };
+    GluestackRouter.prototype.listRoutes = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(this.pluginName !== '' || this.instancePath !== '')) return [3, 2];
+                        return [4, (0, spawn_1.execute)('node', ['glue', 'route:list'], { cwd: process.cwd(), stdio: 'inherit' })];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2: return [2];
+                }
+            });
+        });
+    };
+    return GluestackRouter;
+}());
+exports["default"] = GluestackRouter;
+//# sourceMappingURL=GluestackRouter.js.map

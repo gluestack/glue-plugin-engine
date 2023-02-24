@@ -4,24 +4,21 @@ import { readFile } from 'fs/promises';
 import { fileExists, writeFile } from "@gluestack/helpers";
 
 export const config: any = {
-  postgresInstancePath: '',
-
   postgresConnectionString: '',
 
   isPostgresExternal: 0,
-
   isMinioExternal: 0,
 
   authInstancePath: '',
-
+  postgresInstancePath: '',
   backendInstancePath: '',
-
   engineInstancePath: '',
-
   hasuraInstancePath: '',
 
-  hasuraInstanceStatus: 'down',
+  routerPluginName: '',
+  routerInstancePath: '',
 
+  hasuraInstanceStatus: 'down',
   hasuraEnvs: {},
 
   daprServices: []

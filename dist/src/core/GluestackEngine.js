@@ -59,6 +59,7 @@ var services = require("@gluestack/framework/constants/services");
 var HasuraEngine_1 = __importDefault(require("./HasuraEngine"));
 var GluestackCron_1 = __importDefault(require("./GluestackCron"));
 var DockerCompose_1 = __importDefault(require("./DockerCompose"));
+var GluestackRouter_1 = __importDefault(require("./GluestackRouter"));
 var GluestackConfig_1 = require("./GluestackConfig");
 var path_1 = require("path");
 var lodash_1 = require("lodash");
@@ -77,7 +78,7 @@ var GluestackEngine = (function () {
     }
     GluestackEngine.prototype.start = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var hasuraPluginName, hasuraEngine, cron;
+            var hasuraPluginName, hasuraEngine, cron, router;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4, this.collectPlugins('stateless', 'up')];
@@ -121,6 +122,10 @@ var GluestackEngine = (function () {
                         cron = new GluestackCron_1["default"]();
                         return [4, cron.start()];
                     case 13:
+                        _a.sent();
+                        router = new GluestackRouter_1["default"]();
+                        return [4, router.listEndpoints()];
+                    case 14:
                         _a.sent();
                         console.log('\n> Note: ');
                         console.log(">  1. In case a table does not exist in Hasura Engine, Gluestack Engine");
@@ -271,6 +276,8 @@ var GluestackEngine = (function () {
                             this.actionPlugins.push(details);
                         }
                         if (!(details.name === '@gluestack/glue-plugin-router-nginx')) return [3, 16];
+                        (0, GluestackConfig_1.setConfig)('routerInstancePath', details.instance);
+                        (0, GluestackConfig_1.setConfig)('routerPluginName', details.name);
                         return [4, instance.getContainerController().up()];
                     case 15:
                         _e.sent();

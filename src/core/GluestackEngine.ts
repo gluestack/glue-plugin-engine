@@ -12,12 +12,13 @@ import { IStatelessPlugin } from "./types/IStatelessPlugin";
 import HasuraEngine from "./HasuraEngine";
 import GluestackCron from "./GluestackCron";
 import DockerCompose from "./DockerCompose";
+import GluestackRouter from "./GluestackRouter";
 import { getConfig, setConfig } from "./GluestackConfig";
 
 import { join } from "path";
 import { includes } from "lodash";
 import { backendPlugins, noDockerfiles } from "../configs/constants";
-import { writeFile, removeSpecialChars, getOSFolders, waitInSeconds, fileExists } from "@gluestack/helpers";
+import { writeFile, removeSpecialChars, getOSFolders, fileExists } from "@gluestack/helpers";
 
 import { replaceKeyword } from "../helpers/replace-keyword";
 import { isValidGluePlugin, isDaprService, isGlueService } from "../helpers/valid-glue-service";
@@ -90,6 +91,11 @@ export default class GluestackEngine implements IGlueEngine {
     const cron: IGluestackCron = new GluestackCron();
     await cron.start();
 
+    // 13. print the router endpoints list
+    const router = new GluestackRouter();
+    await router.listEndpoints();
+
+    // 14. prints the final message
     console.log('\n> Note: ');
     console.log(`>  1. In case a table does not exist in Hasura Engine, Gluestack Engine`);
     console.log(`>     will skip the event trigger registration.`);
@@ -239,6 +245,8 @@ export default class GluestackEngine implements IGlueEngine {
 
         // store nginx plugin's instance details
         if (details.name === '@gluestack/glue-plugin-router-nginx') {
+          setConfig('routerInstancePath', details.instance);
+          setConfig('routerPluginName', details.name);
           await instance.getContainerController().up();
         }
 
