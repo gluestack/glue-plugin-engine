@@ -11,12 +11,11 @@ export const parameters = {
   },
   options: {
     storySort: {
-      method: '',
+      method: 'alphabetical',
       order: [
-        'Getting Started',
-        'HowToInstall',
-        'CLI Reference',
-      ],
+        'Engine Plugin Docs',
+        ['Getting Started', 'How to Install', 'CLI Reference'],
+      ]
     },
   },
 };
