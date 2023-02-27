@@ -9,4 +9,14 @@ export const parameters = {
   docs: {
     // inlineStories: false,
   },
+  options: {
+    storySort: {
+      method: '',
+      order: [
+        'Getting Started',
+        'HowToInstall',
+        'CLI Reference',
+      ],
+    },
+  },
 };
