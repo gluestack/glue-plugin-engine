@@ -307,6 +307,9 @@ export default class GluestackEngine implements IGlueEngine {
       if (plugin.name === '@gluestack/glue-plugin-minio') {
         const isMinioExternal: number = getConfig('isMinioExternal');
         if (isMinioExternal === 1) {
+          // create buckets only
+          const instance: any = plugin.instance_object;
+          await instance.getContainerController().up();
           continue;
         }
 
