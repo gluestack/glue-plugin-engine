@@ -323,7 +323,7 @@ var GluestackEngine = (function () {
     GluestackEngine.prototype.createDockerCompose = function () {
         var _a, e_2, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var dockerCompose, plugins, hasuraInstancePath, postgresInstancePath, _d, plugins_1, plugins_1_1, plugin, isPostgresExternal, isMinioExternal, e_2_1;
+            var dockerCompose, plugins, hasuraInstancePath, postgresInstancePath, _d, plugins_1, plugins_1_1, plugin, isPostgresExternal, isMinioExternal, instance, e_2_1;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
@@ -376,6 +376,8 @@ var GluestackEngine = (function () {
                         if (!(plugin.name === '@gluestack/glue-plugin-minio')) return [3, 14];
                         isMinioExternal = (0, GluestackConfig_1.getConfig)('isMinioExternal');
                         if (isMinioExternal === 1) {
+                            instance = plugin.instance_object;
+                            instance.getContainerController().up();
                             return [3, 19];
                         }
                         return [4, dockerCompose.addMinio(plugin)];
