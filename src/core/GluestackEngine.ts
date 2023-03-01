@@ -309,7 +309,7 @@ export default class GluestackEngine implements IGlueEngine {
         if (isMinioExternal === 1) {
           // create buckets only
           const instance: any = plugin.instance_object;
-          instance.getContainerController().up();
+          await instance.getContainerController().up();
           continue;
         }
 
