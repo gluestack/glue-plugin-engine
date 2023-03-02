@@ -285,7 +285,6 @@ var DockerCompose = (function () {
                 switch (_a.label) {
                     case 0:
                         instance = plugin.instance_object;
-                        instance.getContainerController().up();
                         return [4, instance.gluePluginStore.get('port_number')];
                     case 1:
                         port_number = _a.sent();
@@ -360,7 +359,7 @@ var DockerCompose = (function () {
                         return [4, instance.gluePluginStore.get('port_number')];
                     case 1:
                         port_number = _b.sent();
-                        bindingPath = (0, path_1.join)(plugin.path, '..', '..');
+                        bindingPath = (0, path_1.join)(plugin.path, '..');
                         return [4, (0, helpers_1.fileExists)("".concat(plugin.path, "/.env"))];
                     case 2:
                         _a = !(_b.sent());
@@ -382,7 +381,7 @@ var DockerCompose = (function () {
                             ],
                             volumes: [
                                 "".concat(bindingPath, ":/gluestack"),
-                                "/gluestack/shared/".concat(name, "/node_modules")
+                                "/gluestack/".concat(name, "/node_modules")
                             ],
                             env_file: [
                                 "".concat(plugin.path, "/.env")

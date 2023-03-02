@@ -196,8 +196,8 @@ export default class DockerCompose implements IDockerCompose {
   public async addMinio(plugin: IStatelessPlugin) {
     const instance: any = plugin.instance_object;
 
-    // Needs to run up to set different ports
-    instance.getContainerController().up();
+    // // Needs to run up to set different ports
+    // instance.getContainerController().up();
 
     const port_number = await instance.gluePluginStore.get('port_number');
     const console_port_number = await instance.gluePluginStore.get('console_port_number');
@@ -254,7 +254,7 @@ export default class DockerCompose implements IDockerCompose {
     const name: string = plugin.instance;
     const instance: any = plugin.instance_object;
     const port_number = await instance.gluePluginStore.get('port_number');
-    const bindingPath: string = join(plugin.path, '..', '..');
+    const bindingPath: string = join(plugin.path, '..');
 
     if (
       !await fileExists(`${plugin.path}/.env`) ||
@@ -272,7 +272,7 @@ export default class DockerCompose implements IDockerCompose {
       ],
       volumes: [
         `${bindingPath}:/gluestack`,
-        `/gluestack/shared/${name}/node_modules`
+        `/gluestack/${name}/node_modules`
       ],
       env_file: [
         `${plugin.path}/.env`
