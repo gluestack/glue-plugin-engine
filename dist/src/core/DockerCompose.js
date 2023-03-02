@@ -349,6 +349,51 @@ var DockerCompose = (function () {
             });
         });
     };
+    DockerCompose.prototype.addStorybook = function (plugin) {
+        return __awaiter(this, void 0, void 0, function () {
+            var name, instance, port_number, bindingPath, _a, service;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        name = plugin.instance;
+                        instance = plugin.instance_object;
+                        return [4, instance.gluePluginStore.get('port_number')];
+                    case 1:
+                        port_number = _b.sent();
+                        bindingPath = (0, path_1.join)(plugin.path, '..', '..');
+                        return [4, (0, helpers_1.fileExists)("".concat(plugin.path, "/.env"))];
+                    case 2:
+                        _a = !(_b.sent());
+                        if (_a) return [3, 4];
+                        return [4, (0, helpers_1.fileExists)("".concat(plugin.path, "/Dockerfile"))];
+                    case 3:
+                        _a = !(_b.sent());
+                        _b.label = 4;
+                    case 4:
+                        if (_a) {
+                            return [2];
+                        }
+                        service = {
+                            container_name: (0, helpers_1.removeSpecialChars)(plugin.instance),
+                            restart: 'always',
+                            build: plugin.path,
+                            ports: [
+                                "".concat(port_number, ":9000")
+                            ],
+                            volumes: [
+                                "".concat(bindingPath, ":/gluestack"),
+                                "/gluestack/shared/".concat(name, "/node_modules")
+                            ],
+                            env_file: [
+                                "".concat(plugin.path, "/.env")
+                            ]
+                        };
+                        this.addService(name, service);
+                        return [2];
+                }
+            });
+        });
+    };
     DockerCompose.prototype.addOthers = function (plugin) {
         return __awaiter(this, void 0, void 0, function () {
             var name, _a, service;

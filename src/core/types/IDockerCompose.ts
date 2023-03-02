@@ -46,5 +46,6 @@ export interface IDockerCompose {
   addPostgres(plugin: IStatelessPlugin): Promise<void>;
   addMinio(plugin: IStatelessPlugin): Promise<void>;
   addPGAdmin(plugin: IStatelessPlugin, postgres: string): Promise<void>;
+  addStorybook(plugin: IStatelessPlugin): Promise<void>;
   addOthers(plugin: IStatelessPlugin): Promise<void>;
 }

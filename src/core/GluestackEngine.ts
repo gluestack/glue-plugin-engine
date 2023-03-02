@@ -307,9 +307,6 @@ export default class GluestackEngine implements IGlueEngine {
       if (plugin.name === '@gluestack/glue-plugin-minio') {
         const isMinioExternal: number = getConfig('isMinioExternal');
         if (isMinioExternal === 1) {
-          // create buckets only
-          const instance: any = plugin.instance_object;
-          await instance.getContainerController().up();
           continue;
         }
 
@@ -320,6 +317,12 @@ export default class GluestackEngine implements IGlueEngine {
       // if and only if the instance is pgadmin plugin
       if (plugin.name === '@gluestack/glue-plugin-pg-admin') {
         await dockerCompose.addPGAdmin(plugin, postgresInstancePath);
+        continue;
+      }
+
+      // if and only if the instance is pgadmin plugin
+      if (plugin.name === '@gluestack/glue-plugin-storybook') {
+        await dockerCompose.addStorybook(plugin);
         continue;
       }
 
@@ -371,7 +374,7 @@ export default class GluestackEngine implements IGlueEngine {
     );
 
     if (!await fileExists(dockerfile)) {
-      console.log(`> Could not find Dockerfile for plugin "${instance.callerPlugin.getName()}" instance "${instance.getName()}". Ingoring...`);
+      console.log(`> Could not find Dockerfile for plugin "${instance.callerPlugin.getName()}" instance "${instance.getName()}". Skipping...`);
       return;
     }
 

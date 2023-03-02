@@ -249,6 +249,39 @@ export default class DockerCompose implements IDockerCompose {
     this.addService(plugin.instance, pgadmin);
   }
 
+  // Adds the storybook services to the docker-compose file
+  public async addStorybook(plugin: IStatelessPlugin) {
+    const name: string = plugin.instance;
+    const instance: any = plugin.instance_object;
+    const port_number = await instance.gluePluginStore.get('port_number');
+    const bindingPath: string = join(plugin.path, '..', '..');
+
+    if (
+      !await fileExists(`${plugin.path}/.env`) ||
+      !await fileExists(`${plugin.path}/Dockerfile`)
+    ) {
+      return;
+    }
+
+    const service: IService = {
+      container_name: removeSpecialChars(plugin.instance),
+      restart: 'always',
+      build: plugin.path,
+      ports: [
+        `${port_number}:9000`
+      ],
+      volumes: [
+        `${bindingPath}:/gluestack`,
+        `/gluestack/shared/${name}/node_modules`
+      ],
+      env_file: [
+        `${plugin.path}/.env`
+      ]
+    };
+
+    this.addService(name, service);
+  }
+
   // Adds the other services to the docker-compose file
   public async addOthers(plugin: IStatelessPlugin) {
     const name: string = plugin.instance;
@@ -276,7 +309,7 @@ export default class DockerCompose implements IDockerCompose {
     this.addService(name, service);
   }
 
-  // Executes the docker-compose cli
+  // Executes the docker-compose up cli
   public async start(projectName: string, filepath: string) {
     await execute('docker', [
       'compose',
@@ -292,6 +325,7 @@ export default class DockerCompose implements IDockerCompose {
     });
   }
 
+  // Executes the docker-compose down cli
   public async stop(projectName: string, filepath: string) {
     await execute('docker', [
       'compose',

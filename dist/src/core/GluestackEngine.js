@@ -323,7 +323,7 @@ var GluestackEngine = (function () {
     GluestackEngine.prototype.createDockerCompose = function () {
         var _a, e_2, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var dockerCompose, plugins, hasuraInstancePath, postgresInstancePath, _d, plugins_1, plugins_1_1, plugin, isPostgresExternal, isMinioExternal, instance, e_2_1;
+            var dockerCompose, plugins, hasuraInstancePath, postgresInstancePath, _d, plugins_1, plugins_1_1, plugin, isPostgresExternal, isMinioExternal, e_2_1;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
@@ -373,21 +373,24 @@ var GluestackEngine = (function () {
                         _e.sent();
                         return [3, 21];
                     case 12:
-                        if (!(plugin.name === '@gluestack/glue-plugin-minio')) return [3, 16];
+                        if (!(plugin.name === '@gluestack/glue-plugin-minio')) return [3, 14];
                         isMinioExternal = (0, GluestackConfig_1.getConfig)('isMinioExternal');
-                        if (!(isMinioExternal === 1)) return [3, 14];
-                        instance = plugin.instance_object;
-                        return [4, instance.getContainerController().up()];
+                        if (isMinioExternal === 1) {
+                            return [3, 21];
+                        }
+                        return [4, dockerCompose.addMinio(plugin)];
                     case 13:
                         _e.sent();
                         return [3, 21];
-                    case 14: return [4, dockerCompose.addMinio(plugin)];
+                    case 14:
+                        if (!(plugin.name === '@gluestack/glue-plugin-pg-admin')) return [3, 16];
+                        return [4, dockerCompose.addPGAdmin(plugin, postgresInstancePath)];
                     case 15:
                         _e.sent();
                         return [3, 21];
                     case 16:
-                        if (!(plugin.name === '@gluestack/glue-plugin-pg-admin')) return [3, 18];
-                        return [4, dockerCompose.addPGAdmin(plugin, postgresInstancePath)];
+                        if (!(plugin.name === '@gluestack/glue-plugin-storybook')) return [3, 18];
+                        return [4, dockerCompose.addStorybook(plugin)];
                     case 17:
                         _e.sent();
                         return [3, 21];
@@ -474,7 +477,7 @@ var GluestackEngine = (function () {
                         return [4, (0, helpers_1.fileExists)(dockerfile)];
                     case 1:
                         if (!(_a.sent())) {
-                            console.log("> Could not find Dockerfile for plugin \"".concat(instance.callerPlugin.getName(), "\" instance \"").concat(instance.getName(), "\". Ingoring..."));
+                            console.log("> Could not find Dockerfile for plugin \"".concat(instance.callerPlugin.getName(), "\" instance \"").concat(instance.getName(), "\". Skipping..."));
                             return [2];
                         }
                         return [4, (0, replace_keyword_1.replaceKeyword)(dockerfile, (0, helpers_1.removeSpecialChars)(instance.getName()), '{APP_ID}')];
