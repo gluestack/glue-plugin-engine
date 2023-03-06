@@ -401,11 +401,8 @@ var DockerCompose = (function () {
                     case 0:
                         name = plugin.instance;
                         instance = plugin.instance_object;
-                        return [4, instance.getContainerController().up()];
-                    case 1:
-                        _a.sent();
                         return [4, instance.gluePluginStore.get('port_number')];
-                    case 2:
+                    case 1:
                         port_number = _a.sent();
                         bindingPath = (0, path_1.join)(plugin.path, '..');
                         service = {
@@ -421,7 +418,7 @@ var DockerCompose = (function () {
                             ]
                         };
                         return [4, (0, helpers_1.fileExists)("".concat(plugin.path, "/.env"))];
-                    case 3:
+                    case 2:
                         if (_a.sent()) {
                             service.env_file = [
                                 "".concat(plugin.path, "/.env")

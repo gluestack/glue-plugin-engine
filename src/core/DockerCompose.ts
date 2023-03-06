@@ -283,9 +283,6 @@ export default class DockerCompose implements IDockerCompose {
   public async addMobileExpo(plugin: IStatelessPlugin) {
     const name: string = plugin.instance;
     const instance: any = plugin.instance_object;
-
-    await instance.getContainerController().up();
-
     const port_number = await instance.gluePluginStore.get('port_number');
     const bindingPath: string = join(plugin.path, '..');
 

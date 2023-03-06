@@ -187,17 +187,17 @@ var GluestackEngine = (function () {
                         validPlugins = [];
                         _e.label = 1;
                     case 1:
-                        _e.trys.push([1, 21, 22, 27]);
+                        _e.trys.push([1, 23, 24, 29]);
                         _d = true, instances_1 = __asyncValues(instances);
                         _e.label = 2;
                     case 2: return [4, instances_1.next()];
                     case 3:
-                        if (!(instances_1_1 = _e.sent(), _a = instances_1_1.done, !_a)) return [3, 20];
+                        if (!(instances_1_1 = _e.sent(), _a = instances_1_1.done, !_a)) return [3, 22];
                         _c = instances_1_1.value;
                         _d = false;
                         _e.label = 4;
                     case 4:
-                        _e.trys.push([4, , 18, 19]);
+                        _e.trys.push([4, , 20, 21]);
                         instance = _c;
                         type = instance === null || instance === void 0 ? void 0 : instance.callerPlugin.getType();
                         name = instance === null || instance === void 0 ? void 0 : instance.callerPlugin.getName();
@@ -205,7 +205,7 @@ var GluestackEngine = (function () {
                         if (!(instance &&
                             (instance === null || instance === void 0 ? void 0 : instance.containerController) &&
                             type && type === pluginType &&
-                            name && validPlugins.includes(name))) return [3, 17];
+                            name && validPlugins.includes(name))) return [3, 19];
                         _e.label = 5;
                     case 5:
                         _e.trys.push([5, 7, , 8]);
@@ -284,32 +284,38 @@ var GluestackEngine = (function () {
                         _e.sent();
                         _e.label = 16;
                     case 16:
+                        if (!(details.name === '@gluestack/glue-plugin-mobile-expo')) return [3, 18];
+                        return [4, instance.getContainerController().up()];
+                    case 17:
+                        _e.sent();
+                        _e.label = 18;
+                    case 18:
                         details.status = instance.getContainerController().setStatus(status);
                         arr.push(details);
-                        _e.label = 17;
-                    case 17: return [3, 19];
-                    case 18:
+                        _e.label = 19;
+                    case 19: return [3, 21];
+                    case 20:
                         _d = true;
                         return [7];
-                    case 19: return [3, 2];
-                    case 20: return [3, 27];
-                    case 21:
+                    case 21: return [3, 2];
+                    case 22: return [3, 29];
+                    case 23:
                         e_1_1 = _e.sent();
                         e_1 = { error: e_1_1 };
-                        return [3, 27];
-                    case 22:
-                        _e.trys.push([22, , 25, 26]);
-                        if (!(!_d && !_a && (_b = instances_1["return"]))) return [3, 24];
+                        return [3, 29];
+                    case 24:
+                        _e.trys.push([24, , 27, 28]);
+                        if (!(!_d && !_a && (_b = instances_1["return"]))) return [3, 26];
                         return [4, _b.call(instances_1)];
-                    case 23:
-                        _e.sent();
-                        _e.label = 24;
-                    case 24: return [3, 26];
                     case 25:
+                        _e.sent();
+                        _e.label = 26;
+                    case 26: return [3, 28];
+                    case 27:
                         if (e_1) throw e_1.error;
                         return [7];
-                    case 26: return [7];
-                    case 27:
+                    case 28: return [7];
+                    case 29:
                         if (pluginType === 'stateless') {
                             this.statelessPlugins = arr;
                         }

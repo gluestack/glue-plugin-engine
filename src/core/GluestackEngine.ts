@@ -167,8 +167,7 @@ export default class GluestackEngine implements IGlueEngine {
 
         try {
           await instance.getContainerController().getPortNumber();
-        } catch (err) {
-        }
+        } catch (err) {}
 
         // Collects the instance details into the array
         const details: IStatelessPlugin = {
@@ -248,6 +247,11 @@ export default class GluestackEngine implements IGlueEngine {
         if (details.name === '@gluestack/glue-plugin-router-nginx') {
           setConfig('routerInstancePath', details.instance);
           setConfig('routerPluginName', details.name);
+          await instance.getContainerController().up();
+        }
+
+        // update mobile plugin's instance details using up command
+        if (details.name === '@gluestack/glue-plugin-mobile-expo') {
           await instance.getContainerController().up();
         }
 
