@@ -282,6 +282,11 @@ export default class DockerCompose implements IDockerCompose {
   // Adds the mobile-expo services to the docker-compose file
   public async addMobileExpo(plugin: IStatelessPlugin) {
     const name: string = plugin.instance;
+    const instance: any = plugin.instance_object;
+
+    await instance.getContainerController().up();
+
+    const port_number = await instance.gluePluginStore.get('port_number');
     const bindingPath: string = join(plugin.path, '..');
 
     const service: IService = {
@@ -289,9 +294,7 @@ export default class DockerCompose implements IDockerCompose {
       restart: 'unless-stopped',
       build: plugin.path,
       ports: [
-        `19000:19000`,
-        `19001:19001`,
-        `19002:19002`
+        `${port_number}:19000`
       ],
       volumes: [
         `${bindingPath}:/gluestack`,

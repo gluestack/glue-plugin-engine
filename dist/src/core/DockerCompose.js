@@ -395,20 +395,25 @@ var DockerCompose = (function () {
     };
     DockerCompose.prototype.addMobileExpo = function (plugin) {
         return __awaiter(this, void 0, void 0, function () {
-            var name, bindingPath, service;
+            var name, instance, port_number, bindingPath, service;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         name = plugin.instance;
+                        instance = plugin.instance_object;
+                        return [4, instance.getContainerController().up()];
+                    case 1:
+                        _a.sent();
+                        return [4, instance.gluePluginStore.get('port_number')];
+                    case 2:
+                        port_number = _a.sent();
                         bindingPath = (0, path_1.join)(plugin.path, '..');
                         service = {
                             container_name: (0, helpers_1.removeSpecialChars)(plugin.instance),
                             restart: 'unless-stopped',
                             build: plugin.path,
                             ports: [
-                                "19000:19000",
-                                "19001:19001",
-                                "19002:19002"
+                                "".concat(port_number, ":19000")
                             ],
                             volumes: [
                                 "".concat(bindingPath, ":/gluestack"),
@@ -416,7 +421,7 @@ var DockerCompose = (function () {
                             ]
                         };
                         return [4, (0, helpers_1.fileExists)("".concat(plugin.path, "/.env"))];
-                    case 1:
+                    case 3:
                         if (_a.sent()) {
                             service.env_file = [
                                 "".concat(plugin.path, "/.env")
