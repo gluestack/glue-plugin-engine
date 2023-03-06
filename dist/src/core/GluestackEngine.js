@@ -66,6 +66,7 @@ var lodash_1 = require("lodash");
 var constants_1 = require("../configs/constants");
 var helpers_1 = require("@gluestack/helpers");
 var replace_keyword_1 = require("../helpers/replace-keyword");
+var replace_directory_name_1 = require("../helpers/replace-directory-name");
 var valid_glue_service_1 = require("../helpers/valid-glue-service");
 var GluestackEngine = (function () {
     function GluestackEngine(app, backendInstancePath) {
@@ -486,7 +487,7 @@ var GluestackEngine = (function () {
                         return [4, (0, helpers_1.writeFile)((0, path_1.join)(details.path, 'Dockerfile'), context)];
                     case 3:
                         _a.sent();
-                        return [4, (0, replace_keyword_1.replaceKeyword)((0, path_1.join)(details.path, 'Dockerfile'), (0, helpers_1.removeSpecialChars)(instance.getName()), '{INSTANCE_NAME}')];
+                        return [4, (0, replace_keyword_1.replaceKeyword)((0, path_1.join)(details.path, 'Dockerfile'), (0, replace_directory_name_1.replaceDirectoryName)(instance.getName()), '{INSTANCE_NAME}')];
                     case 4:
                         context = _a.sent();
                         return [4, (0, helpers_1.writeFile)((0, path_1.join)(details.path, 'Dockerfile'), context)];

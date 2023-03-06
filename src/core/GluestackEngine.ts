@@ -21,6 +21,7 @@ import { backendPlugins, noDockerfiles } from "../configs/constants";
 import { writeFile, removeSpecialChars, getOSFolders, fileExists } from "@gluestack/helpers";
 
 import { replaceKeyword } from "../helpers/replace-keyword";
+import { replaceDirectoryName } from "../helpers/replace-directory-name";
 import { isValidGluePlugin, isDaprService, isGlueService } from "../helpers/valid-glue-service";
 
 /**
@@ -389,7 +390,7 @@ export default class GluestackEngine implements IGlueEngine {
     // @ts-ignore
     context = await replaceKeyword(
       join(details.path, 'Dockerfile'),
-      removeSpecialChars(instance.getName()),
+      replaceDirectoryName(instance.getName()),
       '{INSTANCE_NAME}'
     );
 
