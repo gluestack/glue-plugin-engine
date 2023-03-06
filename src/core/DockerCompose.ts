@@ -196,9 +196,6 @@ export default class DockerCompose implements IDockerCompose {
   public async addMinio(plugin: IStatelessPlugin) {
     const instance: any = plugin.instance_object;
 
-    // // Needs to run up to set different ports
-    // instance.getContainerController().up();
-
     const port_number = await instance.gluePluginStore.get('port_number');
     const console_port_number = await instance.gluePluginStore.get('console_port_number');
     const minio_credentials = await instance.getContainerController().getEnv();
@@ -278,6 +275,35 @@ export default class DockerCompose implements IDockerCompose {
         `${plugin.path}/.env`
       ]
     };
+
+    this.addService(name, service);
+  }
+
+  // Adds the mobile-expo services to the docker-compose file
+  public async addMobileExpo(plugin: IStatelessPlugin) {
+    const name: string = plugin.instance;
+    const bindingPath: string = join(plugin.path, '..');
+
+    const service: IService = {
+      container_name: removeSpecialChars(plugin.instance),
+      restart: 'unless-stopped',
+      build: plugin.path,
+      ports: [
+        `19000:19000`,
+        `19001:19001`,
+        `19002:19002`
+      ],
+      volumes: [
+        `${bindingPath}:/gluestack`,
+        `/gluestack/${name}/node_modules/`
+      ]
+    };
+
+    if (await fileExists(`${plugin.path}/.env`)) {
+      service.env_file = [
+        `${plugin.path}/.env`
+      ]
+    }
 
     this.addService(name, service);
   }

@@ -327,6 +327,12 @@ export default class GluestackEngine implements IGlueEngine {
         continue;
       }
 
+      // if and only if the instance is pgadmin plugin
+      if (plugin.name === '@gluestack/glue-plugin-mobile-expo') {
+        await dockerCompose.addMobileExpo(plugin);
+        continue;
+      }
+
       // Add the rest of the plugins
       await dockerCompose.addOthers(plugin);
     }
