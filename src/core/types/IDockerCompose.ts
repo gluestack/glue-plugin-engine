@@ -18,6 +18,7 @@ interface IServiceBase {
   depends_on?: any;
   restart: string;
   healthcheck?: IHealthCheck;
+  entrypoint?: any;
 }
 
 interface IServiceWithBuild extends IServiceBase {

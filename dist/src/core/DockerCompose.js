@@ -141,7 +141,7 @@ var DockerCompose = (function () {
                         };
                         if (hasura && hasura !== '') {
                             nginx.depends_on = {};
-                            nginx.depends_on["".concat(hasura)] = {
+                            nginx.depends_on["".concat((0, helpers_1.removeSpecialChars)(hasura))] = {
                                 condition: 'service_healthy'
                             };
                         }
@@ -163,7 +163,7 @@ var DockerCompose = (function () {
                         port_number = _a.sent();
                         isPostgresExternal = (0, GluestackConfig_1.getConfig)('isPostgresExternal');
                         hasura = {
-                            container_name: plugin.instance,
+                            container_name: (0, helpers_1.removeSpecialChars)(plugin.instance),
                             restart: 'always',
                             image: 'hasura/graphql-engine:v2.16.1',
                             ports: [
@@ -187,7 +187,7 @@ var DockerCompose = (function () {
                         };
                         if (postgres && postgres !== '' && isPostgresExternal === 0) {
                             hasura.depends_on = {};
-                            hasura.depends_on["".concat(postgres)] = {
+                            hasura.depends_on["".concat((0, helpers_1.removeSpecialChars)(postgres))] = {
                                 condition: 'service_healthy'
                             };
                         }
@@ -209,7 +209,7 @@ var DockerCompose = (function () {
                         port_number = _a.sent();
                         db_config = instance.gluePluginStore.get('db_config');
                         postgres = {
-                            container_name: plugin.instance,
+                            container_name: (0, helpers_1.removeSpecialChars)(plugin.instance),
                             restart: 'always',
                             image: 'postgres:12',
                             ports: [
@@ -295,7 +295,7 @@ var DockerCompose = (function () {
                     case 3:
                         minio_credentials = _a.sent();
                         minio = {
-                            container_name: plugin.instance,
+                            container_name: (0, helpers_1.removeSpecialChars)(plugin.instance),
                             restart: 'always',
                             image: 'minio/minio',
                             command: 'server /data --console-address ":9001"',
@@ -306,9 +306,52 @@ var DockerCompose = (function () {
                             volumes: [
                                 "".concat(plugin.path, "/data:/data")
                             ],
-                            environment: __assign({}, minio_credentials)
+                            environment: __assign({}, minio_credentials),
+                            healthcheck: {
+                                test: [
+                                    "CMD",
+                                    "curl",
+                                    "-f",
+                                    "http://".concat((0, helpers_1.removeSpecialChars)(plugin.instance), ":9000/minio/health/live"),
+                                ],
+                                interval: '5s',
+                                timeout: '2s',
+                                retries: 20
+                            }
                         };
                         this.addService(plugin.instance, minio);
+                        return [4, this.addMinioCreatebuckets(plugin)];
+                    case 4:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    DockerCompose.prototype.addMinioCreatebuckets = function (plugin) {
+        return __awaiter(this, void 0, void 0, function () {
+            var instance, minio_credentials, createBuckets;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        instance = plugin.instance_object;
+                        return [4, instance.getContainerController().getEnv()];
+                    case 1:
+                        minio_credentials = _b.sent();
+                        createBuckets = {
+                            container_name: (0, helpers_1.removeSpecialChars)("createbuckets".concat(plugin.instance, "}")),
+                            restart: "always",
+                            image: "minio/mc",
+                            entrypoint: "sh",
+                            command: "-c \"mc config host add myminio http://".concat((0, helpers_1.removeSpecialChars)(plugin.instance), ":9000 ").concat(minio_credentials.MINIO_ACCESS_KEY, " ").concat(minio_credentials.MINIO_SECRET_KEY, " && if ! mc ls myminio/").concat(minio_credentials.MINIO_PUBLIC_BUCKET, " ; then mc mb myminio/").concat(minio_credentials.MINIO_PUBLIC_BUCKET, " && mc anonymous set public myminio/").concat(minio_credentials.MINIO_PUBLIC_BUCKET, "; fi && if ! mc ls myminio/").concat(minio_credentials.MINIO_PRIVATE_BUCKET, " ; then mc mb myminio/").concat(minio_credentials.MINIO_PRIVATE_BUCKET, "; fi\""),
+                            depends_on: (_a = {},
+                                _a[(0, helpers_1.removeSpecialChars)(plugin.instance)] = {
+                                    condition: "service_healthy"
+                                },
+                                _a)
+                        };
+                        this.addService(createBuckets.container_name, createBuckets);
                         return [2];
                 }
             });
@@ -326,7 +369,7 @@ var DockerCompose = (function () {
                         port_number = _a.sent();
                         isPostgresExternal = (0, GluestackConfig_1.getConfig)('isPostgresExternal');
                         pgadmin = {
-                            container_name: plugin.instance,
+                            container_name: (0, helpers_1.removeSpecialChars)(plugin.instance),
                             restart: 'always',
                             image: 'dpage/pgadmin4',
                             ports: [
@@ -338,7 +381,7 @@ var DockerCompose = (function () {
                         };
                         if (postgres && postgres !== '' && isPostgresExternal === 0) {
                             pgadmin.depends_on = {};
-                            pgadmin.depends_on["".concat(postgres)] = {
+                            pgadmin.depends_on["".concat((0, helpers_1.removeSpecialChars)(postgres))] = {
                                 condition: 'service_healthy'
                             };
                         }

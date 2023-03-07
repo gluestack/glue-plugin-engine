@@ -78,7 +78,7 @@ export default class DockerCompose implements IDockerCompose {
 
     if (hasura && hasura !== '') {
       nginx.depends_on = {};
-      nginx.depends_on[`${hasura}`] = {
+      nginx.depends_on[`${removeSpecialChars(hasura)}`] = {
         condition: 'service_healthy'
       }
     }
@@ -93,7 +93,7 @@ export default class DockerCompose implements IDockerCompose {
     const isPostgresExternal = getConfig('isPostgresExternal');
 
     const hasura: IService = {
-      container_name: plugin.instance,
+      container_name: removeSpecialChars(plugin.instance),
       restart: 'always',
       image: 'hasura/graphql-engine:v2.16.1',
       ports: [
@@ -118,7 +118,7 @@ export default class DockerCompose implements IDockerCompose {
 
     if (postgres && postgres !== '' && isPostgresExternal === 0) {
       hasura.depends_on = {};
-      hasura.depends_on[`${postgres}`] = {
+      hasura.depends_on[`${removeSpecialChars(postgres)}`] = {
         condition: 'service_healthy'
       }
     }
@@ -133,7 +133,7 @@ export default class DockerCompose implements IDockerCompose {
     const db_config = instance.gluePluginStore.get('db_config');
 
     const postgres: IService = {
-      container_name: plugin.instance,
+      container_name: removeSpecialChars(plugin.instance),
       restart: 'always',
       image: 'postgres:12',
       ports: [
@@ -201,7 +201,7 @@ export default class DockerCompose implements IDockerCompose {
     const minio_credentials = await instance.getContainerController().getEnv();
 
     const minio: IService = {
-      container_name: plugin.instance,
+      container_name: removeSpecialChars(plugin.instance),
       restart: 'always',
       image: 'minio/minio',
       command: 'server /data --console-address ":9001"',
@@ -212,10 +212,44 @@ export default class DockerCompose implements IDockerCompose {
       volumes: [
         `${plugin.path}/data:/data`
       ],
-      environment: { ...minio_credentials }
+      environment: { ...minio_credentials },
+      healthcheck: {
+        test: [
+          "CMD",
+          "curl",
+          "-f",
+          `http://${removeSpecialChars(plugin.instance)}:9000/minio/health/live`,
+        ],
+        interval: '5s',
+        timeout: '2s',
+        retries: 20
+      },
     };
 
     this.addService(plugin.instance, minio);
+    await this.addMinioCreatebuckets(plugin);
+  }
+
+  // Adds the minio service to the docker-compose file
+  private async addMinioCreatebuckets(plugin: IStatelessPlugin) {
+    const instance: any = plugin.instance_object;
+
+    const minio_credentials = await instance.getContainerController().getEnv();
+
+    const createBuckets: IService = {
+      container_name: removeSpecialChars(`createbuckets${plugin.instance}}`),
+      restart: "always",
+      image: "minio/mc",
+      entrypoint: "sh",
+      command: `-c "mc config host add myminio http://${removeSpecialChars(plugin.instance)}:9000 ${minio_credentials.MINIO_ACCESS_KEY} ${minio_credentials.MINIO_SECRET_KEY} && if ! mc ls myminio/${minio_credentials.MINIO_PUBLIC_BUCKET} ; then mc mb myminio/${minio_credentials.MINIO_PUBLIC_BUCKET} && mc anonymous set public myminio/${minio_credentials.MINIO_PUBLIC_BUCKET}; fi && if ! mc ls myminio/${minio_credentials.MINIO_PRIVATE_BUCKET} ; then mc mb myminio/${minio_credentials.MINIO_PRIVATE_BUCKET}; fi"`,
+      depends_on: {
+        [removeSpecialChars(plugin.instance)]: {
+          condition: "service_healthy",
+        },
+      },
+    };
+
+    this.addService(createBuckets.container_name, createBuckets);
   }
 
   // Adds the pgadmin service to the docker-compose file
@@ -225,7 +259,7 @@ export default class DockerCompose implements IDockerCompose {
     const isPostgresExternal = getConfig('isPostgresExternal');
 
     const pgadmin: IService = {
-      container_name: plugin.instance,
+      container_name: removeSpecialChars(plugin.instance),
       restart: 'always',
       image: 'dpage/pgadmin4',
       ports: [
@@ -238,7 +272,7 @@ export default class DockerCompose implements IDockerCompose {
 
     if (postgres && postgres !== '' && isPostgresExternal === 0) {
       pgadmin.depends_on = {};
-      pgadmin.depends_on[`${postgres}`] = {
+      pgadmin.depends_on[`${removeSpecialChars(postgres)}`] = {
         condition: 'service_healthy'
       }
     }

@@ -14,6 +14,7 @@ export default class DockerCompose implements IDockerCompose {
     addPostgres(plugin: IStatelessPlugin): Promise<void>;
     addWeb(plugin: IStatelessPlugin): Promise<void>;
     addMinio(plugin: IStatelessPlugin): Promise<void>;
+    private addMinioCreatebuckets;
     addPGAdmin(plugin: IStatelessPlugin, postgres: string): Promise<void>;
     addStorybook(plugin: IStatelessPlugin): Promise<void>;
     addMobileExpo(plugin: IStatelessPlugin): Promise<void>;
