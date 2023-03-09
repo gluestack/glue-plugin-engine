@@ -173,7 +173,7 @@ var DockerCompose = (function () {
                                 "".concat(plugin.path, ":/hasura"),
                             ],
                             env_file: [
-                                "".concat(plugin.path, "/.env")
+                                "".concat(plugin.path, "/.env.generated")
                             ],
                             healthcheck: {
                                 test: [
@@ -265,11 +265,11 @@ var DockerCompose = (function () {
                                 "/gluestack/".concat(name, "/.next/")
                             ]
                         };
-                        return [4, (0, helpers_1.fileExists)("".concat(plugin.path, "/.env"))];
+                        return [4, (0, helpers_1.fileExists)("".concat(plugin.path, "/.env.generated"))];
                     case 2:
                         if (_a.sent()) {
                             service.env_file = [
-                                "".concat(plugin.path, "/.env")
+                                "".concat(plugin.path, "/.env.generated")
                             ];
                         }
                         this.addService(name, service);
@@ -376,7 +376,7 @@ var DockerCompose = (function () {
                                 "".concat(port_number, ":80")
                             ],
                             env_file: [
-                                "".concat(plugin.path, "/.env")
+                                "".concat(plugin.path, "/.env.generated")
                             ]
                         };
                         if (postgres && postgres !== '' && isPostgresExternal === 0) {
@@ -403,7 +403,7 @@ var DockerCompose = (function () {
                     case 1:
                         port_number = _b.sent();
                         bindingPath = (0, path_1.join)(plugin.path, '..');
-                        return [4, (0, helpers_1.fileExists)("".concat(plugin.path, "/.env"))];
+                        return [4, (0, helpers_1.fileExists)("".concat(plugin.path, "/.env.generated"))];
                     case 2:
                         _a = !(_b.sent());
                         if (_a) return [3, 4];
@@ -427,7 +427,7 @@ var DockerCompose = (function () {
                                 "/gluestack/".concat(name, "/node_modules")
                             ],
                             env_file: [
-                                "".concat(plugin.path, "/.env")
+                                "".concat(plugin.path, "/.env.generated")
                             ]
                         };
                         this.addService(name, service);
@@ -460,11 +460,11 @@ var DockerCompose = (function () {
                                 "/gluestack/".concat(name, "/node_modules/")
                             ]
                         };
-                        return [4, (0, helpers_1.fileExists)("".concat(plugin.path, "/.env"))];
+                        return [4, (0, helpers_1.fileExists)("".concat(plugin.path, "/.env.generated"))];
                     case 2:
                         if (_a.sent()) {
                             service.env_file = [
-                                "".concat(plugin.path, "/.env")
+                                "".concat(plugin.path, "/.env.generated")
                             ];
                         }
                         this.addService(name, service);
@@ -480,7 +480,7 @@ var DockerCompose = (function () {
                 switch (_b.label) {
                     case 0:
                         name = plugin.instance;
-                        return [4, (0, helpers_1.fileExists)("".concat(plugin.path, "/.env"))];
+                        return [4, (0, helpers_1.fileExists)("".concat(plugin.path, "/.env.generated"))];
                     case 1:
                         _a = !(_b.sent());
                         if (_a) return [3, 3];
@@ -501,7 +501,7 @@ var DockerCompose = (function () {
                                 "/server/node_modules"
                             ],
                             env_file: [
-                                "".concat(plugin.path, "/.env")
+                                "".concat(plugin.path, "/.env.generated")
                             ]
                         };
                         this.addService(name, service);

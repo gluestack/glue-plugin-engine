@@ -28,5 +28,6 @@ export declare class PluginInstanceContainerController implements IContainerCont
     watch(): Promise<string[]>;
     build(): Promise<void>;
     private routeGenerate;
+    private envGenerate;
     private consoleTable;
 }

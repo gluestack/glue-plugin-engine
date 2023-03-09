@@ -68,6 +68,7 @@ var helpers_1 = require("@gluestack/helpers");
 var replace_keyword_1 = require("../helpers/replace-keyword");
 var replace_directory_name_1 = require("../helpers/replace-directory-name");
 var valid_glue_service_1 = require("../helpers/valid-glue-service");
+var spawn_1 = require("../helpers/spawn");
 var GluestackEngine = (function () {
     function GluestackEngine(app, backendInstancePath) {
         this.actionPlugins = [];
@@ -88,45 +89,51 @@ var GluestackEngine = (function () {
                         return [4, this.collectPlugins('devonly', 'up')];
                     case 2:
                         _a.sent();
-                        return [4, this.createDockerCompose()];
+                        return [4, this.generateRouterJson()];
                     case 3:
                         _a.sent();
-                        return [4, this.startDockerCompose()];
+                        return [4, this.generateEnv()];
                     case 4:
                         _a.sent();
-                        hasuraPluginName = (0, GluestackConfig_1.getConfig)('hasuraInstancePath');
-                        if (!(hasuraPluginName && hasuraPluginName !== '')) return [3, 12];
-                        hasuraEngine = new HasuraEngine_1["default"](this.actionPlugins);
-                        return [4, hasuraEngine.applyMigrate()];
+                        return [4, this.createDockerCompose()];
                     case 5:
                         _a.sent();
-                        return [4, hasuraEngine.applyMetadata()];
+                        return [4, this.startDockerCompose()];
                     case 6:
                         _a.sent();
-                        return [4, hasuraEngine.applyTracks()];
+                        hasuraPluginName = (0, GluestackConfig_1.getConfig)('hasuraInstancePath');
+                        if (!(hasuraPluginName && hasuraPluginName !== '')) return [3, 14];
+                        hasuraEngine = new HasuraEngine_1["default"](this.actionPlugins);
+                        return [4, hasuraEngine.applyMigrate()];
                     case 7:
                         _a.sent();
-                        return [4, hasuraEngine.applySeed()];
+                        return [4, hasuraEngine.applyMetadata()];
                     case 8:
                         _a.sent();
-                        return [4, hasuraEngine.exportMetadata()];
+                        return [4, hasuraEngine.applyTracks()];
                     case 9:
                         _a.sent();
-                        return [4, hasuraEngine.reapplyActions()];
+                        return [4, hasuraEngine.applySeed()];
                     case 10:
                         _a.sent();
-                        return [4, hasuraEngine.reapplyEvents()];
+                        return [4, hasuraEngine.exportMetadata()];
                     case 11:
                         _a.sent();
-                        _a.label = 12;
+                        return [4, hasuraEngine.reapplyActions()];
                     case 12:
+                        _a.sent();
+                        return [4, hasuraEngine.reapplyEvents()];
+                    case 13:
+                        _a.sent();
+                        _a.label = 14;
+                    case 14:
                         cron = new GluestackCron_1["default"]();
                         return [4, cron.start()];
-                    case 13:
+                    case 15:
                         _a.sent();
                         router = new GluestackRouter_1["default"]();
                         return [4, router.listEndpoints()];
-                    case 14:
+                    case 16:
                         _a.sent();
                         console.log('\n> Note: ');
                         console.log(">  1. In case a table does not exist in Hasura Engine, Gluestack Engine");
@@ -504,6 +511,45 @@ var GluestackEngine = (function () {
                         context = _a.sent();
                         return [4, (0, helpers_1.writeFile)((0, path_1.join)(details.path, 'Dockerfile'), context)];
                     case 5:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    GluestackEngine.prototype.generateEnv = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var args;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        args = ['glue', 'env:generate'];
+                        return [4, (0, spawn_1.execute)('node', args, {
+                                cwd: process.cwd(),
+                                shell: true
+                            })];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    GluestackEngine.prototype.generateRouterJson = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var args;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        args = [
+                            'glue',
+                            'route:generate'
+                        ];
+                        return [4, (0, spawn_1.execute)('node', args, {
+                                cwd: process.cwd(),
+                                shell: true
+                            })];
+                    case 1:
                         _a.sent();
                         return [2];
                 }

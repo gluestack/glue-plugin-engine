@@ -15,4 +15,6 @@ export default class GluestackEngine implements IGlueEngine {
     startDockerCompose(): Promise<void>;
     stopDockerCompose(): Promise<void>;
     private collectDockerContext;
+    generateEnv(): Promise<void>;
+    generateRouterJson(): Promise<void>;
 }

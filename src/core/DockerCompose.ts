@@ -103,7 +103,7 @@ export default class DockerCompose implements IDockerCompose {
         `${plugin.path}:/hasura`,
       ],
       env_file: [
-        `${plugin.path}/.env`
+        `${plugin.path}/.env.generated`
       ],
       healthcheck: {
         test: [
@@ -183,9 +183,9 @@ export default class DockerCompose implements IDockerCompose {
       ]
     };
 
-    if (await fileExists(`${plugin.path}/.env`)) {
+    if (await fileExists(`${plugin.path}/.env.generated`)) {
       service.env_file = [
-        `${plugin.path}/.env`
+        `${plugin.path}/.env.generated`
       ]
     }
 
@@ -266,7 +266,7 @@ export default class DockerCompose implements IDockerCompose {
         `${port_number}:80`
       ],
       env_file: [
-        `${plugin.path}/.env`
+        `${plugin.path}/.env.generated`
       ]
     };
 
@@ -288,7 +288,7 @@ export default class DockerCompose implements IDockerCompose {
     const bindingPath: string = join(plugin.path, '..');
 
     if (
-      !await fileExists(`${plugin.path}/.env`) ||
+      !await fileExists(`${plugin.path}/.env.generated`) ||
       !await fileExists(`${plugin.path}/Dockerfile`)
     ) {
       return;
@@ -306,7 +306,7 @@ export default class DockerCompose implements IDockerCompose {
         `/gluestack/${name}/node_modules`
       ],
       env_file: [
-        `${plugin.path}/.env`
+        `${plugin.path}/.env.generated`
       ]
     };
 
@@ -333,9 +333,9 @@ export default class DockerCompose implements IDockerCompose {
       ]
     };
 
-    if (await fileExists(`${plugin.path}/.env`)) {
+    if (await fileExists(`${plugin.path}/.env.generated`)) {
       service.env_file = [
-        `${plugin.path}/.env`
+        `${plugin.path}/.env.generated`
       ]
     }
 
@@ -347,7 +347,7 @@ export default class DockerCompose implements IDockerCompose {
     const name: string = plugin.instance;
 
     if (
-      !await fileExists(`${plugin.path}/.env`) ||
+      !await fileExists(`${plugin.path}/.env.generated`) ||
       !await fileExists(`${plugin.path}/Dockerfile`)
     ) {
       return;
@@ -362,7 +362,7 @@ export default class DockerCompose implements IDockerCompose {
         `/server/node_modules`
       ],
       env_file: [
-        `${plugin.path}/.env`
+        `${plugin.path}/.env.generated`
       ]
     };
 

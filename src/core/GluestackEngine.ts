@@ -23,6 +23,7 @@ import { writeFile, removeSpecialChars, getOSFolders, fileExists } from "@gluest
 import { replaceKeyword } from "../helpers/replace-keyword";
 import { replaceDirectoryName } from "../helpers/replace-directory-name";
 import { isValidGluePlugin, isDaprService, isGlueService } from "../helpers/valid-glue-service";
+import { execute } from "../helpers/spawn";
 
 /**
  * Gluestack Engine
@@ -55,6 +56,12 @@ export default class GluestackEngine implements IGlueEngine {
     // 2. Collects their dockerfiles from instances' assets directory
     await this.collectPlugins('stateless', 'up');
     await this.collectPlugins('devonly', 'up');
+
+    // generates env generated
+    await this.generateRouterJson();
+
+    // generates env generated
+    await this.generateEnv();
 
     // 3. generates docker-compose file
     await this.createDockerCompose();
@@ -405,5 +412,26 @@ export default class GluestackEngine implements IGlueEngine {
     );
 
     await writeFile(join(details.path, 'Dockerfile'), context);
+  }
+
+  async generateEnv() {
+    let args: string[] = ['glue', 'env:generate'];
+
+    await execute('node', args, {
+      cwd: process.cwd(),
+      shell: true,
+    });
+  }
+
+  async generateRouterJson() {
+    let args: string[] = [
+      'glue',
+      'route:generate'
+    ];
+
+    await execute('node', args, {
+      cwd: process.cwd(),
+      shell: true,
+    });
   }
 }

@@ -272,6 +272,9 @@ var PluginInstanceContainerController = (function () {
                     case 0: return [4, this.routeGenerate(true)];
                     case 1:
                         _a.sent();
+                        return [4, this.envGenerate(true)];
+                    case 2:
+                        _a.sent();
                         return [2];
                 }
             });
@@ -304,6 +307,32 @@ var PluginInstanceContainerController = (function () {
                         catch (err) {
                             return [2, []];
                         }
+                        return [2];
+                }
+            });
+        });
+    };
+    PluginInstanceContainerController.prototype.envGenerate = function (isProd) {
+        if (isProd === void 0) { isProd = false; }
+        return __awaiter(this, void 0, void 0, function () {
+            var args;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        args = [
+                            'glue',
+                            'env:generate'
+                        ];
+                        if (isProd) {
+                            args.push('--build');
+                            args.push('prod');
+                        }
+                        return [4, (0, spawn_1.execute)('node', args, {
+                                cwd: process.cwd(),
+                                shell: true
+                            })];
+                    case 1:
+                        _a.sent();
                         return [2];
                 }
             });

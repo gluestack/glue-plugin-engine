@@ -194,6 +194,7 @@ export class PluginInstanceContainerController implements IContainerController {
 
   async build() {
     await this.routeGenerate(true);
+    await this.envGenerate(true);
   }
 
   private async routeGenerate(isProd: boolean = false) {
@@ -218,6 +219,23 @@ export class PluginInstanceContainerController implements IContainerController {
     } catch (err) {
       return [];
     }
+  }
+
+  private async envGenerate(isProd: boolean = false) {
+    let args: string[] = [
+      'glue',
+      'env:generate'
+    ];
+
+    if (isProd) {
+      args.push('--build');
+      args.push('prod');
+    }
+
+    await execute('node', args, {
+      cwd: process.cwd(),
+      shell: true,
+    });
   }
 
   private async consoleTable(mappings: any) {

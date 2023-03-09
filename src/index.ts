@@ -13,6 +13,7 @@ import { developUp } from "./commands/develop-up";
 import { developDown } from "./commands/develop-down";
 import { developList } from "./commands/develop-list";
 import { developWatch } from "./commands/develop-watch";
+import { envGenerate } from "./commands/env-generate";
 
 
 //Do not edit the name of this class
@@ -34,6 +35,7 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
     this.app.addCommand((program: any) => developDown(program, this));
     this.app.addCommand((program: any) => developWatch(program, this));
     this.app.addCommand((program: any) => build(program, this));
+    this.app.addCommand((program: any) => envGenerate(program, this));
   }
 
   destroy() {
