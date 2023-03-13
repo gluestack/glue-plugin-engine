@@ -62,43 +62,43 @@ var envGenerate = function (program, glueStackPlugin) { return __awaiter(void 0,
 }); };
 exports.envGenerate = envGenerate;
 var runner = function (glueStackPlugin, options) { return __awaiter(void 0, void 0, void 0, function () {
-    var build, instances, app, plugins, _a, plugins_1, plugins_1_1, plugin_1, _b, _c, _d, instance_1, name_1, details, _e, e_1_1, e_2_1, routes, plugin, instance, name, routerFilepath, env, _f, instances_1, instances_1_1, instance_2, e_3_1;
-    var _g, e_2, _h, _j, _k, e_1, _l, _m, _o, e_3, _p, _q;
-    return __generator(this, function (_r) {
-        switch (_r.label) {
+    var build, instances, app, plugins, _a, plugins_1, plugins_1_1, plugin_1, _b, _c, _d, instance_1, name_1, details, _e, e_1_1, e_2_1, routes, plugin, instance, name, routerFilepath, env, _f, _g, instances_1, instances_1_1, instance_2, e_3_1;
+    var _h, e_2, _j, _k, _l, e_1, _m, _o, _p, e_3, _q, _r;
+    return __generator(this, function (_s) {
+        switch (_s.label) {
             case 0:
                 build = options.build;
                 instances = [];
                 app = glueStackPlugin.app;
                 plugins = app.plugins;
-                _r.label = 1;
+                _s.label = 1;
             case 1:
-                _r.trys.push([1, 24, 25, 30]);
+                _s.trys.push([1, 24, 25, 30]);
                 _a = true, plugins_1 = __asyncValues(plugins);
-                _r.label = 2;
+                _s.label = 2;
             case 2: return [4, plugins_1.next()];
             case 3:
-                if (!(plugins_1_1 = _r.sent(), _g = plugins_1_1.done, !_g)) return [3, 23];
-                _j = plugins_1_1.value;
+                if (!(plugins_1_1 = _s.sent(), _h = plugins_1_1.done, !_h)) return [3, 23];
+                _k = plugins_1_1.value;
                 _a = false;
-                _r.label = 4;
+                _s.label = 4;
             case 4:
-                _r.trys.push([4, , 21, 22]);
-                plugin_1 = _j;
-                _r.label = 5;
+                _s.trys.push([4, , 21, 22]);
+                plugin_1 = _k;
+                _s.label = 5;
             case 5:
-                _r.trys.push([5, 14, 15, 20]);
+                _s.trys.push([5, 14, 15, 20]);
                 _b = true, _c = (e_1 = void 0, __asyncValues(plugin_1.getInstances()));
-                _r.label = 6;
+                _s.label = 6;
             case 6: return [4, _c.next()];
             case 7:
-                if (!(_d = _r.sent(), _k = _d.done, !_k)) return [3, 13];
-                _m = _d.value;
+                if (!(_d = _s.sent(), _l = _d.done, !_l)) return [3, 13];
+                _o = _d.value;
                 _b = false;
-                _r.label = 8;
+                _s.label = 8;
             case 8:
-                _r.trys.push([8, , 11, 12]);
-                instance_1 = _m;
+                _s.trys.push([8, , 11, 12]);
+                instance_1 = _o;
                 name_1 = instance_1 === null || instance_1 === void 0 ? void 0 : instance_1.callerPlugin.getName();
                 if (!(instance_1 && name_1)) return [3, 10];
                 details = {
@@ -109,9 +109,9 @@ var runner = function (glueStackPlugin, options) { return __awaiter(void 0, void
                 _e = details;
                 return [4, (0, helpers_1.envToJson)((0, path_1.join)(details.path, ".env"))];
             case 9:
-                _e.env = _r.sent();
+                _e.env = _s.sent();
                 instances.push(details);
-                _r.label = 10;
+                _s.label = 10;
             case 10: return [3, 12];
             case 11:
                 _b = true;
@@ -119,16 +119,16 @@ var runner = function (glueStackPlugin, options) { return __awaiter(void 0, void
             case 12: return [3, 6];
             case 13: return [3, 20];
             case 14:
-                e_1_1 = _r.sent();
+                e_1_1 = _s.sent();
                 e_1 = { error: e_1_1 };
                 return [3, 20];
             case 15:
-                _r.trys.push([15, , 18, 19]);
-                if (!(!_b && !_k && (_l = _c["return"]))) return [3, 17];
-                return [4, _l.call(_c)];
+                _s.trys.push([15, , 18, 19]);
+                if (!(!_b && !_l && (_m = _c["return"]))) return [3, 17];
+                return [4, _m.call(_c)];
             case 16:
-                _r.sent();
-                _r.label = 17;
+                _s.sent();
+                _s.label = 17;
             case 17: return [3, 19];
             case 18:
                 if (e_1) throw e_1.error;
@@ -141,16 +141,16 @@ var runner = function (glueStackPlugin, options) { return __awaiter(void 0, void
             case 22: return [3, 2];
             case 23: return [3, 30];
             case 24:
-                e_2_1 = _r.sent();
+                e_2_1 = _s.sent();
                 e_2 = { error: e_2_1 };
                 return [3, 30];
             case 25:
-                _r.trys.push([25, , 28, 29]);
-                if (!(!_a && !_g && (_h = plugins_1["return"]))) return [3, 27];
-                return [4, _h.call(plugins_1)];
+                _s.trys.push([25, , 28, 29]);
+                if (!(!_a && !_h && (_j = plugins_1["return"]))) return [3, 27];
+                return [4, _j.call(plugins_1)];
             case 26:
-                _r.sent();
-                _r.label = 27;
+                _s.sent();
+                _s.label = 27;
             case 27: return [3, 29];
             case 28:
                 if (e_2) throw e_2.error;
@@ -164,52 +164,55 @@ var runner = function (glueStackPlugin, options) { return __awaiter(void 0, void
                 routerFilepath = (0, path_1.join)(process.cwd(), 'meta', 'router', name, 'routes.json');
                 return [4, (0, helpers_1.fileExists)(routerFilepath)];
             case 31:
-                if (_r.sent()) {
+                if (_s.sent()) {
                     routes = require(routerFilepath);
                 }
-                env = new env_1["default"](build, routes);
-                _r.label = 32;
+                _f = env_1["default"].bind;
+                return [4, (0, helpers_1.envToJson)((0, path_1.join)(process.cwd(), ".env"))];
             case 32:
-                _r.trys.push([32, 40, 41, 46]);
-                _f = true, instances_1 = __asyncValues(instances);
-                _r.label = 33;
-            case 33: return [4, instances_1.next()];
-            case 34:
-                if (!(instances_1_1 = _r.sent(), _o = instances_1_1.done, !_o)) return [3, 39];
-                _q = instances_1_1.value;
-                _f = false;
-                _r.label = 35;
+                env = new (_f.apply(env_1["default"], [void 0, _s.sent(), build, routes]))();
+                _s.label = 33;
+            case 33:
+                _s.trys.push([33, 41, 42, 47]);
+                _g = true, instances_1 = __asyncValues(instances);
+                _s.label = 34;
+            case 34: return [4, instances_1.next()];
             case 35:
-                _r.trys.push([35, , 37, 38]);
-                instance_2 = _q;
-                return [4, env.addEnv(instance_2.instance, instance_2.env, instance_2.path)];
+                if (!(instances_1_1 = _s.sent(), _p = instances_1_1.done, !_p)) return [3, 40];
+                _r = instances_1_1.value;
+                _g = false;
+                _s.label = 36;
             case 36:
-                _r.sent();
-                return [3, 38];
+                _s.trys.push([36, , 38, 39]);
+                instance_2 = _r;
+                return [4, env.addEnv(instance_2.instance, instance_2.env, instance_2.path)];
             case 37:
-                _f = true;
+                _s.sent();
+                return [3, 39];
+            case 38:
+                _g = true;
                 return [7];
-            case 38: return [3, 33];
-            case 39: return [3, 46];
-            case 40:
-                e_3_1 = _r.sent();
-                e_3 = { error: e_3_1 };
-                return [3, 46];
+            case 39: return [3, 34];
+            case 40: return [3, 47];
             case 41:
-                _r.trys.push([41, , 44, 45]);
-                if (!(!_f && !_o && (_p = instances_1["return"]))) return [3, 43];
-                return [4, _p.call(instances_1)];
+                e_3_1 = _s.sent();
+                e_3 = { error: e_3_1 };
+                return [3, 47];
             case 42:
-                _r.sent();
-                _r.label = 43;
-            case 43: return [3, 45];
-            case 44:
+                _s.trys.push([42, , 45, 46]);
+                if (!(!_g && !_p && (_q = instances_1["return"]))) return [3, 44];
+                return [4, _q.call(instances_1)];
+            case 43:
+                _s.sent();
+                _s.label = 44;
+            case 44: return [3, 46];
+            case 45:
                 if (e_3) throw e_3.error;
                 return [7];
-            case 45: return [7];
-            case 46: return [4, env.generate()];
-            case 47:
-                _r.sent();
+            case 46: return [7];
+            case 47: return [4, env.generate()];
+            case 48:
+                _s.sent();
                 return [2];
         }
     });

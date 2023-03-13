@@ -20,13 +20,17 @@ export default class Env {
   public envs: ChildEnv[];
   public filepath: string;
 
-  constructor(build: "prod" | "dev", routes: any = []) {
-    this.keys = {};
+  constructor(envContent: any, build: "prod" | "dev", routes: any = []) {
+    this.keys = envContent;
     routes.map((route: any) => {
       const server = route.domain.split(".")[0] || "";
-      this.keys[
+      if (!this.keys[
         `ENDPOINT_${server.toUpperCase()}`
-      ] = `http://localhost:${route.port}`;
+      ]) {
+        this.keys[
+          `ENDPOINT_${server.toUpperCase()}`
+        ] = `http://localhost:${route.port}`;
+      }
     });
     this.build = build;
     this.keyCharacter = "%";

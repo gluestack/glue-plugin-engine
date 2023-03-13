@@ -58,13 +58,15 @@ var path_1 = require("path");
 var helpers_1 = require("@gluestack/helpers");
 var lodash_1 = require("lodash");
 var Env = (function () {
-    function Env(build, routes) {
+    function Env(envContent, build, routes) {
         if (routes === void 0) { routes = []; }
         var _this = this;
-        this.keys = {};
+        this.keys = envContent;
         routes.map(function (route) {
             var server = route.domain.split(".")[0] || "";
-            _this.keys["ENDPOINT_".concat(server.toUpperCase())] = "http://localhost:".concat(route.port);
+            if (!_this.keys["ENDPOINT_".concat(server.toUpperCase())]) {
+                _this.keys["ENDPOINT_".concat(server.toUpperCase())] = "http://localhost:".concat(route.port);
+            }
         });
         this.build = build;
         this.keyCharacter = "%";

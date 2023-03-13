@@ -4,7 +4,7 @@ export default class Env {
     build: "prod" | "dev";
     envs: ChildEnv[];
     filepath: string;
-    constructor(build: "prod" | "dev", routes?: any);
+    constructor(envContent: any, build: "prod" | "dev", routes?: any);
     addEnv(instance: string, envContent: any, path: string): Promise<any>;
     generate(): Promise<void>;
     writeEnv(): Promise<void>;

@@ -60,7 +60,7 @@ export const runner = async (glueStackPlugin: GlueStackPlugin, options: any) => 
     routes = require(routerFilepath);
 	}
 
-  const env = new Env(build, routes);
+  const env = new Env(await envToJson(join(process.cwd(), ".env")), build, routes);
   for await (const instance of instances) {
     await env.addEnv(
       instance.instance,
