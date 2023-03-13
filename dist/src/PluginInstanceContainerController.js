@@ -272,9 +272,6 @@ var PluginInstanceContainerController = (function () {
                     case 0: return [4, this.routeGenerate(true)];
                     case 1:
                         _a.sent();
-                        return [4, this.envGenerate(true)];
-                    case 2:
-                        _a.sent();
                         return [2];
                 }
             });

@@ -194,7 +194,7 @@ export class PluginInstanceContainerController implements IContainerController {
 
   async build() {
     await this.routeGenerate(true);
-    await this.envGenerate(true);
+    // await this.envGenerate(true);
   }
 
   private async routeGenerate(isProd: boolean = false) {
