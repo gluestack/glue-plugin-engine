@@ -52,12 +52,12 @@ export default class HasuraMetadata implements IHasuraMetadata {
     const regex = /execution="(.*)"/g;
     const match = regex.exec(setting);
 
-    const kind = match[1] && match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+    const kind = match && match[1] && match[1] === 'sync' ? 'synchronous' : 'asynchronous';
 
     const forwardRegex = /forward_client_headers="(.*)"/g;
     const forwardMatch = forwardRegex.exec(setting);
 
-    const forward_client_headers = forwardMatch[1] && forwardMatch[1] === 'true' ? true : false;
+    const forward_client_headers = forwardMatch && forwardMatch[1] && forwardMatch[1] === 'true' ? true : false;
 
     // Reads the action.graphql file
     const schema = readFileSync(action.grapqhl_path, 'utf8');
@@ -124,7 +124,7 @@ export default class HasuraMetadata implements IHasuraMetadata {
       const regex = /execution="(.*)"/g;
       const match = regex.exec(setting);
 
-      const kind = match && match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+      const kind = match && match[1] && match[1] === 'sync' ? 'synchronous' : 'asynchronous';
 
       // Reads the action.graphql file
       const schema: string = readFileSync(action.grapqhl_path, 'utf8');

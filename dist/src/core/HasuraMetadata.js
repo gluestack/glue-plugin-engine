@@ -118,10 +118,10 @@ var HasuraMetadata = (function () {
                         setting = (0, node_fs_1.readFileSync)(action.setting_path, 'utf8');
                         regex = /execution="(.*)"/g;
                         match = regex.exec(setting);
-                        kind = match[1] && match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+                        kind = match && match[1] && match[1] === 'sync' ? 'synchronous' : 'asynchronous';
                         forwardRegex = /forward_client_headers="(.*)"/g;
                         forwardMatch = forwardRegex.exec(setting);
-                        forward_client_headers = forwardMatch[1] && forwardMatch[1] === 'true' ? true : false;
+                        forward_client_headers = forwardMatch && forwardMatch[1] && forwardMatch[1] === 'true' ? true : false;
                         schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, 'utf8');
                         actionData = {};
                         _a.label = 1;
@@ -210,7 +210,7 @@ var HasuraMetadata = (function () {
                         setting = (0, node_fs_1.readFileSync)(action.setting_path, 'utf8');
                         regex = /execution="(.*)"/g;
                         match = regex.exec(setting);
-                        kind = match && match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+                        kind = match && match[1] && match[1] === 'sync' ? 'synchronous' : 'asynchronous';
                         schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, 'utf8');
                         _e.label = 5;
                     case 5:
