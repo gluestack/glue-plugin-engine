@@ -111,20 +111,23 @@ var HasuraMetadata = (function () {
     };
     HasuraMetadata.prototype.createAction = function (action) {
         return __awaiter(this, void 0, void 0, function () {
-            var setting, regex, match, kind, schema, actionData, error_1;
+            var setting, regex, match, kind, forwardRegex, forwardMatch, forward_client_headers, schema, actionData, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         setting = (0, node_fs_1.readFileSync)(action.setting_path, 'utf8');
                         regex = /execution="(.*)"/g;
                         match = regex.exec(setting);
-                        kind = match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+                        kind = match[1] && match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+                        forwardRegex = /forward_client_headers="(.*)"/g;
+                        forwardMatch = forwardRegex.exec(setting);
+                        forward_client_headers = forwardMatch[1] && forwardMatch[1] === 'true' ? true : false;
                         schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, 'utf8');
                         actionData = {};
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4, (0, generate_action_custom_types_1.generate)(schema, kind, 'action', action)];
+                        return [4, (0, generate_action_custom_types_1.generate)(schema, kind, 'action', forward_client_headers, action)];
                     case 2:
                         actionData = _a.sent();
                         return [3, 4];
@@ -207,7 +210,7 @@ var HasuraMetadata = (function () {
                         setting = (0, node_fs_1.readFileSync)(action.setting_path, 'utf8');
                         regex = /execution="(.*)"/g;
                         match = regex.exec(setting);
-                        kind = match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+                        kind = match && match[1] === 'sync' ? 'synchronous' : 'asynchronous';
                         schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, 'utf8');
                         _e.label = 5;
                     case 5:

@@ -71,8 +71,9 @@ var createCustomTypes = function (definitions) {
     });
     return body;
 };
-var createAction = function (query, type, kind, action) {
+var createAction = function (query, type, kind, forward_client_headers, action) {
     if (kind === void 0) { kind = "synchronous"; }
+    if (forward_client_headers === void 0) { forward_client_headers = false; }
     if (action === void 0) { action = null; }
     var name = objectKeys(query.properties)[0];
     var property = query.properties[name];
@@ -94,6 +95,7 @@ var createAction = function (query, type, kind, action) {
                 arguments: argmnts,
                 handler: "{{ACTION_BASE_URL}}/".concat(action.handler),
                 kind: kind,
+                forward_client_headers: forward_client_headers,
                 output_type: output_type,
                 type: type
             }
@@ -119,8 +121,9 @@ var createActionPermission = function (query, roles) {
     }
     return body;
 };
-var generate = function (schema, kind, type, action) {
+var generate = function (schema, kind, type, forward_client_headers, action) {
     if (type === void 0) { type = "action"; }
+    if (forward_client_headers === void 0) { forward_client_headers = false; }
     if (action === void 0) { action = null; }
     var jsonSchema = graphqlToJsonSchema(schema);
     var definitions = jsonSchema.definitions;
@@ -133,7 +136,7 @@ var generate = function (schema, kind, type, action) {
     }
     if (type === "action") {
         var query = get(definitions, isMutation ? "Mutation" : "Query");
-        return createAction(query, isMutation ? "mutation" : "query", kind, action);
+        return createAction(query, isMutation ? "mutation" : "query", kind, forward_client_headers, action);
     }
     else {
         delete definitions[isMutation ? "Mutation" : "Query"];

@@ -52,7 +52,12 @@ export default class HasuraMetadata implements IHasuraMetadata {
     const regex = /execution="(.*)"/g;
     const match = regex.exec(setting);
 
-    const kind = match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+    const kind = match[1] && match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+
+    const forwardRegex = /forward_client_headers="(.*)"/g;
+    const forwardMatch = forwardRegex.exec(setting);
+
+    const forward_client_headers = forwardMatch[1] && forwardMatch[1] === 'true' ? true : false;
 
     // Reads the action.graphql file
     const schema = readFileSync(action.grapqhl_path, 'utf8');
@@ -61,7 +66,7 @@ export default class HasuraMetadata implements IHasuraMetadata {
 
     try {
       // Generates the custom types & action data
-      actionData = await generateActionOrCustomType(schema, kind, 'action', action);
+      actionData = await generateActionOrCustomType(schema, kind, 'action', forward_client_headers, action);
     } catch (error) {
       console.log(`> Action Instance ${action.name} has invalid graphql schema. Skipping...`);
       return Promise.resolve('failed');
@@ -119,7 +124,7 @@ export default class HasuraMetadata implements IHasuraMetadata {
       const regex = /execution="(.*)"/g;
       const match = regex.exec(setting);
 
-      const kind = match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+      const kind = match && match[1] === 'sync' ? 'synchronous' : 'asynchronous';
 
       // Reads the action.graphql file
       const schema: string = readFileSync(action.grapqhl_path, 'utf8');

@@ -92,6 +92,7 @@ const createAction = (
   query: any,
   type: string,
   kind: string = "synchronous",
+  forward_client_headers: boolean = false,
   action: IAction = null,
 ) => {
   const name: string = objectKeys(query.properties)[0];
@@ -120,6 +121,7 @@ const createAction = (
         arguments: argmnts,
         handler: `{{ACTION_BASE_URL}}/${action.handler}`,
         kind,
+        forward_client_headers,
         output_type: output_type,
         type,
       },
@@ -154,6 +156,7 @@ export const generate = (
   schema: string,
   kind: string,
   type: string = "action",
+  forward_client_headers: boolean = false,
   action: IAction = null,
 ): Promise<any> => {
   const jsonSchema: any = graphqlToJsonSchema(schema);
@@ -172,7 +175,7 @@ export const generate = (
 
   if (type === "action") {
     const query: string = get(definitions, isMutation ? "Mutation" : "Query");
-    return createAction(query, isMutation ? "mutation" : "query", kind, action);
+    return createAction(query, isMutation ? "mutation" : "query", kind, forward_client_headers, action);
   } else {
     delete definitions[isMutation ? "Mutation" : "Query"];
     return createCustomTypes(definitions);
