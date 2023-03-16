@@ -45,6 +45,8 @@ export default class HasuraEngine implements IHasuraEngine {
     await execute('hasura', [
       'metadata',
       'export',
+      '--envfile',
+      '.env.generated',
       '--skip-update-check'
     ], {
       cwd: filepath,
@@ -60,6 +62,8 @@ export default class HasuraEngine implements IHasuraEngine {
     await execute('hasura', [
       'metadata',
       'apply',
+      '--envfile',
+      '.env.generated',
       '--skip-update-check'
     ], {
       cwd: filepath,
@@ -80,6 +84,8 @@ export default class HasuraEngine implements IHasuraEngine {
       'apply',
       '--database-name',
       hasuraEnvs.HASURA_GRAPHQL_DB_NAME,
+      '--envfile',
+      '.env.generated',
       '--skip-update-check'
     ], {
       cwd: filepath,
@@ -108,6 +114,8 @@ export default class HasuraEngine implements IHasuraEngine {
       'apply',
       '--database-name',
       hasuraEnvs.HASURA_GRAPHQL_DB_NAME,
+      '--envfile',
+      '.env.generated',
       '--skip-update-check'
     ], {
       cwd: filepath,

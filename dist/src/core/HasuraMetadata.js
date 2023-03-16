@@ -349,7 +349,7 @@ var HasuraMetadata = (function () {
         });
     };
     HasuraMetadata.prototype.captureEnvVars = function () {
-        var envPath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)('backendInstancePath'), 'services', this.pluginName, '.env');
+        var envPath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)('backendInstancePath'), 'services', this.pluginName, '.env.generated');
         return dotenv.config({ path: envPath }).parsed;
     };
     return HasuraMetadata;

@@ -73,6 +73,8 @@ var HasuraEngine = (function () {
                         return [4, (0, spawn_1.execute)('hasura', [
                                 'metadata',
                                 'export',
+                                '--envfile',
+                                '.env.generated',
                                 '--skip-update-check'
                             ], {
                                 cwd: filepath,
@@ -96,6 +98,8 @@ var HasuraEngine = (function () {
                         return [4, (0, spawn_1.execute)('hasura', [
                                 'metadata',
                                 'apply',
+                                '--envfile',
+                                '.env.generated',
                                 '--skip-update-check'
                             ], {
                                 cwd: filepath,
@@ -124,6 +128,8 @@ var HasuraEngine = (function () {
                                 'apply',
                                 '--database-name',
                                 hasuraEnvs.HASURA_GRAPHQL_DB_NAME,
+                                '--envfile',
+                                '.env.generated',
                                 '--skip-update-check'
                             ], {
                                 cwd: filepath,
@@ -162,6 +168,8 @@ var HasuraEngine = (function () {
                                 'apply',
                                 '--database-name',
                                 hasuraEnvs.HASURA_GRAPHQL_DB_NAME,
+                                '--envfile',
+                                '.env.generated',
                                 '--skip-update-check'
                             ], {
                                 cwd: filepath,

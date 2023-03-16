@@ -212,7 +212,7 @@ export default class HasuraMetadata implements IHasuraMetadata {
   // Capture the hasura envs from the .env file
   private captureEnvVars(): any {
     const envPath = join(
-      process.cwd(), getConfig('backendInstancePath'), 'services', this.pluginName, '.env'
+      process.cwd(), getConfig('backendInstancePath'), 'services', this.pluginName, '.env.generated'
     );
 
     return dotenv.config({ path: envPath }).parsed;
