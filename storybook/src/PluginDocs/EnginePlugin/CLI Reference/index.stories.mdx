@@ -14,6 +14,12 @@ Glue Plugin Engine is the process manager for your gluestack projects and it man
 
 ## node glue develop:up
 
+
+> **Note:** 
+> 1. Please don't run `node glue develop:up` again if your gluestack project is already running. As our "**Engine**" will notice that the ports all instances were suppose to run are already in-use and will reassign all instances with newer ports.
+> 2. In case, you want to run your gluestack with frequent changes, we advice to use `node glue develop:watch` command. This command brings down the instances and brings them up again with the latest changes.
+
+
 This command runs all the installed **plugin instances** in **Docker**. You can use
 the below command to run your gluestack project:
 ```sh
