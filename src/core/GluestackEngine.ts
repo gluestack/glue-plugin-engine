@@ -257,11 +257,6 @@ export default class GluestackEngine implements IGlueEngine {
           await instance.getContainerController().up();
         }
 
-        // update mobile plugin's instance details using up command
-        if (details.name === '@gluestack/glue-plugin-mobile-expo') {
-          await instance.getContainerController().up();
-        }
-
         details.status = instance.getContainerController().setStatus(status);
         arr.push(details);
       }
@@ -335,12 +330,6 @@ export default class GluestackEngine implements IGlueEngine {
       // if and only if the instance is pgadmin plugin
       if (plugin.name === '@gluestack/glue-plugin-storybook') {
         await dockerCompose.addStorybook(plugin);
-        continue;
-      }
-
-      // if and only if the instance is pgadmin plugin
-      if (plugin.name === '@gluestack/glue-plugin-mobile-expo') {
-        await dockerCompose.addMobileExpo(plugin);
         continue;
       }
 

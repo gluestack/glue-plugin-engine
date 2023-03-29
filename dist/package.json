@@ -1,6 +1,6 @@
 {
     "name": "@gluestack/glue-plugin-engine",
-    "version": "0.0.94",
+    "version": "0.0.95",
     "description": "Gluestack Plugins Process Manager Engine",
     "repository": {
         "type": "git",
@@ -20,8 +20,6 @@
         "@gluestack/framework": "^0.0.x",
         "@gluestack/graphql-sdl-to-json": "^0.0.x",
         "@gluestack/helpers": "^0.0.x",
-        "@types/lodash": "^4.14.191",
-        "@types/node": "^18.11.16",
         "axios": "^1.3.3",
         "chokidar": "^3.5.3",
         "cli-table3": "^0.6.3",
@@ -35,7 +33,9 @@
     "devDependencies": {
         "@gluestack/framework": "^0.0.x",
         "@types/node-cron": "^3.0.7",
-        "typescript": "^4.9.4"
+        "typescript": "^4.9.4",
+        "@types/lodash": "^4.14.191",
+        "@types/node": "^18.11.16"
     },
     "peerDependencies": {
         "@gluestack/framework": "^0.0.x"
