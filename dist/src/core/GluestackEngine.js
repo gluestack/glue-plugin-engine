@@ -74,6 +74,8 @@ var GluestackEngine = (function () {
         this.actionPlugins = [];
         this.devonlyPlugins = [];
         this.statelessPlugins = [];
+        this.isUpdate = false;
+        this.shouldRestart = false;
         this.app = app;
         this.backendPlugins = constants_1.backendPlugins;
         (0, GluestackConfig_1.setConfig)('backendInstancePath', backendInstancePath);
@@ -146,6 +148,55 @@ var GluestackEngine = (function () {
                         console.log(">  4. Gluestack Engine will not skip/drop any database events, app events or crons");
                         console.log(">     which does not hold valid input against the keys.\n");
                         return [2];
+                }
+            });
+        });
+    };
+    GluestackEngine.prototype.update = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var hasuraPluginName, hasuraEngine;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.isUpdate = true;
+                        return [4, this.collectPlugins('stateless', 'up')];
+                    case 1:
+                        _a.sent();
+                        return [4, this.collectPlugins('devonly', 'up')];
+                    case 2:
+                        _a.sent();
+                        hasuraPluginName = (0, GluestackConfig_1.getConfig)('hasuraInstancePath');
+                        if (!(!this.shouldRestart && hasuraPluginName && hasuraPluginName !== '')) return [3, 5];
+                        hasuraEngine = new HasuraEngine_1.default(this.actionPlugins);
+                        return [4, hasuraEngine.reapplyActions()];
+                    case 3:
+                        _a.sent();
+                        return [4, hasuraEngine.reapplyEvents()];
+                    case 4:
+                        _a.sent();
+                        console.log('\n> Note: ');
+                        console.log(">  1. In case a table does not exist in Hasura Engine, Gluestack Engine");
+                        console.log(">     will skip the event trigger registration.");
+                        console.log(">  2. Gluestack Engine drops all existing event triggers, actions & ");
+                        console.log(">     custom-types and re-registers them again. (This is to prevent any");
+                        console.log(">     issues with the event trigger, custom types & actions)");
+                        console.log(">  3. Gluestack Engine will not drop any existing event triggers, actions");
+                        console.log(">     & custom-types that were not registered with or by Gluestack Engine.\n");
+                        console.log(">  4. Gluestack Engine will not skip/drop any database events, app events or crons");
+                        console.log(">     which does not hold valid input against the keys.\n");
+                        _a.label = 5;
+                    case 5:
+                        if (!this.shouldRestart) return [3, 8];
+                        this.isUpdate = false;
+                        this.shouldRestart = false;
+                        return [4, this.stop()];
+                    case 6:
+                        _a.sent();
+                        return [4, this.start()];
+                    case 7:
+                        _a.sent();
+                        _a.label = 8;
+                    case 8: return [2];
                 }
             });
         });
@@ -230,7 +281,8 @@ var GluestackEngine = (function () {
                             template_folder: instance.callerPlugin.getTemplateFolderPath(),
                             instance: instance.getName(),
                             path: (0, path_1.join)(process.cwd(), instance.getInstallationPath()),
-                            instance_object: instance
+                            instance_object: instance,
+                            status: instance.getContainerController().getStatus()
                         };
                         if (pluginType === 'stateless' && (0, valid_glue_service_1.isDaprService)(name)) {
                             daprServices = (0, GluestackConfig_1.getConfig)('daprServices');
@@ -291,6 +343,9 @@ var GluestackEngine = (function () {
                         _e.sent();
                         _e.label = 16;
                     case 16:
+                        if (this.isUpdate && status === 'up' && details.status !== status) {
+                            this.shouldRestart = true;
+                        }
                         details.status = instance.getContainerController().setStatus(status);
                         arr.push(details);
                         _e.label = 17;

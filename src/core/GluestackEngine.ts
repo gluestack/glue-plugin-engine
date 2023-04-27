@@ -32,6 +32,8 @@ import { execute } from "../helpers/spawn";
  * plugins and their instances.
  */
 export default class GluestackEngine implements IGlueEngine {
+  private isUpdate: boolean;
+  private shouldRestart: boolean;
   private backendPlugins: string[];
 
   app: IApp;
@@ -43,6 +45,9 @@ export default class GluestackEngine implements IGlueEngine {
     this.actionPlugins = [];
     this.devonlyPlugins = [];
     this.statelessPlugins = [];
+
+    this.isUpdate = false;
+    this.shouldRestart = false;
 
     this.app = app;
     this.backendPlugins = backendPlugins;
@@ -57,53 +62,53 @@ export default class GluestackEngine implements IGlueEngine {
     await this.collectPlugins('stateless', 'up');
     await this.collectPlugins('devonly', 'up');
 
-    // generates env generated
+    // 3. generates env
     await this.generateRouterJson();
 
-    // generates env generated
+    // 4. generates env
     await this.generateEnv();
 
-    // 3. generates docker-compose file
+    // 5. generates docker-compose file
     await this.createDockerCompose();
 
-    // 4. starts the docker-compose
+    // 6. starts the docker-compose
     await this.startDockerCompose();
 
     const hasuraPluginName = getConfig('hasuraInstancePath');
     if (hasuraPluginName && hasuraPluginName !== '') {
       const hasuraEngine: IHasuraEngine = new HasuraEngine(this.actionPlugins);
 
-      // 5. runs hasura metadata apply
+      // 7. runs hasura metadata apply
       await hasuraEngine.applyMigrate();
 
-      // 6. runs hasura metadata apply
+      // 8. runs hasura metadata apply
       await hasuraEngine.applyMetadata();
 
-      // 7. runs track files into hasura metadata
+      // 9. runs track files into hasura metadata
       await hasuraEngine.applyTracks();
 
-      // 8. runs seed files into hasura engine
+      // 10. runs seed files into hasura engine
       await hasuraEngine.applySeed();
 
-      // 9. runs hasura metadata export
+      // 11. runs hasura metadata export
       await hasuraEngine.exportMetadata();
 
-      // 10. clears & registers all actions
+      // 12. clears & registers all actions
       await hasuraEngine.reapplyActions();
 
-      // 11. clears & registers all events
+      // 13. clears & registers all events
       await hasuraEngine.reapplyEvents();
     }
 
-    // 12. collects, validates & register crons into gluestack cron
+    // 14. collects, validates & register crons into gluestack cron
     const cron: IGluestackCron = new GluestackCron();
     await cron.start();
 
-    // 13. print the router endpoints list
+    // 15. print the router endpoints list
     const router = new GluestackRouter();
     await router.listEndpoints();
 
-    // 14. prints the final message
+    // 16. prints the final message
     console.log('\n> Note: ');
     console.log(`>  1. In case a table does not exist in Hasura Engine, Gluestack Engine`);
     console.log(`>     will skip the event trigger registration.`);
@@ -114,6 +119,54 @@ export default class GluestackEngine implements IGlueEngine {
     console.log(`>     & custom-types that were not registered with or by Gluestack Engine.\n`);
     console.log(`>  4. Gluestack Engine will not skip/drop any database events, app events or crons`);
     console.log(`>     which does not hold valid input against the keys.\n`);
+  }
+
+  // Updates the engine for the backend instance
+  async update(): Promise<void> {
+    this.isUpdate = true;
+
+    // 1. Gets all the instances and sets some config variables
+    // 2. Collects their dockerfiles from instances' assets directory
+    await this.collectPlugins('stateless', 'up');
+    await this.collectPlugins('devonly', 'up');
+
+    // 3. update only hasura engine instance's with latest actions & events
+    const hasuraPluginName = getConfig('hasuraInstancePath');
+    if (!this.shouldRestart && hasuraPluginName && hasuraPluginName !== '') {
+      const hasuraEngine: IHasuraEngine = new HasuraEngine(this.actionPlugins);
+
+      // 3.1. clears & registers all actions
+      await hasuraEngine.reapplyActions();
+
+      // 3.2. clears & registers all events
+      await hasuraEngine.reapplyEvents();
+
+      // 3.3. prints the final message
+      console.log('\n> Note: ');
+      console.log(`>  1. In case a table does not exist in Hasura Engine, Gluestack Engine`);
+      console.log(`>     will skip the event trigger registration.`);
+      console.log(`>  2. Gluestack Engine drops all existing event triggers, actions & `);
+      console.log(`>     custom-types and re-registers them again. (This is to prevent any`);
+      console.log(`>     issues with the event trigger, custom types & actions)`);
+      console.log(`>  3. Gluestack Engine will not drop any existing event triggers, actions`);
+      console.log(`>     & custom-types that were not registered with or by Gluestack Engine.\n`);
+      console.log(`>  4. Gluestack Engine will not skip/drop any database events, app events or crons`);
+      console.log(`>     which does not hold valid input against the keys.\n`);
+    }
+
+    // 4. restarts everything since some new instance is added
+    if (this.shouldRestart) {
+      // 4.1. resetting back to default value
+      // since we are restarting the instances
+      this.isUpdate = false;
+      this.shouldRestart = false;
+
+      // 4.2. stops all the instances
+      await this.stop();
+
+      // 4.3. restarts all the instances
+      await this.start();
+    }
   }
 
   // Stops the engine for the backend instance
@@ -183,7 +236,8 @@ export default class GluestackEngine implements IGlueEngine {
           template_folder: instance.callerPlugin.getTemplateFolderPath(),
           instance: instance.getName(),
           path: join(process.cwd(), instance.getInstallationPath()),
-          instance_object: instance
+          instance_object: instance,
+          status: instance.getContainerController().getStatus()
         };
 
         if (pluginType === 'stateless' && isDaprService(name)) {
@@ -255,6 +309,10 @@ export default class GluestackEngine implements IGlueEngine {
           setConfig('routerInstancePath', details.instance);
           setConfig('routerPluginName', details.name);
           await instance.getContainerController().up();
+        }
+
+        if (this.isUpdate && status === 'up' && details.status !== status) {
+          this.shouldRestart = true;
         }
 
         details.status = instance.getContainerController().setStatus(status);
@@ -403,6 +461,7 @@ export default class GluestackEngine implements IGlueEngine {
     await writeFile(join(details.path, 'Dockerfile'), context);
   }
 
+  // runs env:generate command
   async generateEnv() {
     let args: string[] = ['glue', 'env:generate'];
 
@@ -412,6 +471,8 @@ export default class GluestackEngine implements IGlueEngine {
     });
   }
 
+
+  // runs route:generate command
   async generateRouterJson() {
     let args: string[] = [
       'glue',

@@ -6,6 +6,7 @@ export interface IGlueEngine {
   collectPlugins(): Promise<void>;
 
   start(): Promise<void>;
+  update(): Promise<void>;
   stop(): Promise<void>;
 
   startDockerCompose(): Promise<void>;
