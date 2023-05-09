@@ -97,45 +97,39 @@ var GluestackEngine = (function () {
                         return [4, this.generateEnv()];
                     case 4:
                         _a.sent();
-                        return [4, this.createDockerCompose()];
-                    case 5:
-                        _a.sent();
-                        return [4, this.startDockerCompose()];
-                    case 6:
-                        _a.sent();
                         hasuraPluginName = (0, GluestackConfig_1.getConfig)('hasuraInstancePath');
-                        if (!(hasuraPluginName && hasuraPluginName !== '')) return [3, 14];
+                        if (!(hasuraPluginName && hasuraPluginName !== '')) return [3, 12];
                         hasuraEngine = new HasuraEngine_1.default(this.actionPlugins);
                         return [4, hasuraEngine.applyMigrate()];
-                    case 7:
+                    case 5:
                         _a.sent();
                         return [4, hasuraEngine.applyMetadata()];
-                    case 8:
+                    case 6:
                         _a.sent();
                         return [4, hasuraEngine.applyTracks()];
-                    case 9:
+                    case 7:
                         _a.sent();
                         return [4, hasuraEngine.applySeed()];
-                    case 10:
+                    case 8:
                         _a.sent();
                         return [4, hasuraEngine.exportMetadata()];
-                    case 11:
+                    case 9:
                         _a.sent();
                         return [4, hasuraEngine.reapplyActions()];
-                    case 12:
+                    case 10:
                         _a.sent();
                         return [4, hasuraEngine.reapplyEvents()];
-                    case 13:
+                    case 11:
                         _a.sent();
-                        _a.label = 14;
-                    case 14:
+                        _a.label = 12;
+                    case 12:
                         cron = new GluestackCron_1.default();
                         return [4, cron.start()];
-                    case 15:
+                    case 13:
                         _a.sent();
                         router = new GluestackRouter_1.default();
                         return [4, router.listEndpoints()];
-                    case 16:
+                    case 14:
                         _a.sent();
                         console.log('\n> Note: ');
                         console.log(">  1. In case a table does not exist in Hasura Engine, Gluestack Engine");

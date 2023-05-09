@@ -4,9 +4,9 @@ export default class HasuraMetadata implements IHasuraMetadata {
     hasuraEnvs: any;
     private pluginName;
     constructor(pluginName: any);
-    dropAction(actionName: string): Promise<void>;
-    createAction(action: IAction): Promise<string>;
-    createActionPermission(action: IAction): Promise<string>;
+    dropAction(actionName: string): Promise<any>;
+    createAction(action: IAction): Promise<any>;
+    createActionPermission(action: IAction): Promise<any>;
     createCustomTypes(actions: IAction[]): Promise<void>;
     createEvent(tableName: string, events: string[]): Promise<void>;
     dropEvent(tableName: string, events: string[]): Promise<void>;

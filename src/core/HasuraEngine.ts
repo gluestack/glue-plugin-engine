@@ -244,9 +244,18 @@ export default class HasuraEngine implements IHasuraEngine {
       return Promise.resolve(false);
     }
 
+    const body: any = {
+      type: "bulk",
+      args: [],
+    };
+
     for await (const action of this.actions) {
-      await this.metadata.dropAction(action.name);
+      body.args.push(
+        await this.metadata.dropAction(action.name)
+      );
     }
+
+    await this.metadata.makeRequest(body);
   }
 
   // Create all actions into the hasura engine
@@ -255,9 +264,18 @@ export default class HasuraEngine implements IHasuraEngine {
       return Promise.resolve(false);
     }
 
+    const body: any = {
+      type: "bulk",
+      args: [],
+    };
+
     for await (const action of this.actions) {
-      await this.metadata.createAction(action);
+      body.args.push(
+        await this.metadata.createAction(action)
+      );
     }
+
+    await this.metadata.makeRequest(body, true);
   }
 
   // Create all actions into the hasura engine
@@ -266,9 +284,18 @@ export default class HasuraEngine implements IHasuraEngine {
       return Promise.resolve(false);
     }
 
+    const body: any = {
+      type: "bulk",
+      args: [],
+    };
+
     for await (const action of this.actions) {
-      await this.metadata.createActionPermission(action);
+      body.args.push(
+        await this.metadata.createActionPermission(action)
+      );
     }
+
+    await this.metadata.makeRequest(body, true);
   }
 
   // Create all custom types into the hasura engine

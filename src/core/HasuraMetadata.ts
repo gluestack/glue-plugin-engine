@@ -32,7 +32,7 @@ export default class HasuraMetadata implements IHasuraMetadata {
   }
 
   // Drops the given action from the hasura engine
-  public async dropAction(actionName: string): Promise<void> {
+  public async dropAction(actionName: string): Promise<any> {
     const data = {
       "type": "drop_action",
       "args": {
@@ -41,11 +41,11 @@ export default class HasuraMetadata implements IHasuraMetadata {
       }
     };
 
-    await this.makeRequest(data);
+    return data;
   }
 
   // Creates the given action in the hasura engine
-  public async createAction(action: IAction): Promise<string> {
+  public async createAction(action: IAction): Promise<any> {
     // Reads the action.setting file
     const setting = readFileSync(action.setting_path, 'utf8');
 
@@ -73,11 +73,11 @@ export default class HasuraMetadata implements IHasuraMetadata {
     }
 
     // creating action
-    await this.makeRequest(actionData, true);
+    return actionData;
   }
 
   // Creates the given action in the hasura engine
-  public async createActionPermission(action: IAction): Promise<string> {
+  public async createActionPermission(action: IAction): Promise<any> {
     // Reads the action.setting file
     const setting = readFileSync(action.setting_path, 'utf8');
 
@@ -100,7 +100,7 @@ export default class HasuraMetadata implements IHasuraMetadata {
       }
 
       // creating action
-      await this.makeRequest(actionData, true);
+      return actionData;
     }
   }
 

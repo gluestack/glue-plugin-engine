@@ -92,20 +92,14 @@ var HasuraMetadata = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var data;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        data = {
-                            "type": "drop_action",
-                            "args": {
-                                "name": actionName,
-                                "clear_data": true
-                            }
-                        };
-                        return [4, this.makeRequest(data)];
-                    case 1:
-                        _a.sent();
-                        return [2];
-                }
+                data = {
+                    "type": "drop_action",
+                    "args": {
+                        "name": actionName,
+                        "clear_data": true
+                    }
+                };
+                return [2, data];
             });
         });
     };
@@ -135,10 +129,7 @@ var HasuraMetadata = (function () {
                         error_1 = _a.sent();
                         console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
                         return [2, Promise.resolve('failed')];
-                    case 4: return [4, this.makeRequest(actionData, true)];
-                    case 5:
-                        _a.sent();
-                        return [2];
+                    case 4: return [2, actionData];
                 }
             });
         });
@@ -152,7 +143,7 @@ var HasuraMetadata = (function () {
                         setting = (0, node_fs_1.readFileSync)(action.setting_path, 'utf8');
                         regex = /roles="(.*)"/g;
                         match = regex.exec(setting);
-                        if (!(match === null || match === void 0 ? void 0 : match[1])) return [3, 6];
+                        if (!(match === null || match === void 0 ? void 0 : match[1])) return [3, 5];
                         roles = match[1].split(",");
                         schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, 'utf8');
                         actionData = {};
@@ -167,11 +158,8 @@ var HasuraMetadata = (function () {
                         error_2 = _a.sent();
                         console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
                         return [2, Promise.resolve('failed')];
-                    case 4: return [4, this.makeRequest(actionData, true)];
-                    case 5:
-                        _a.sent();
-                        _a.label = 6;
-                    case 6: return [2];
+                    case 4: return [2, actionData];
+                    case 5: return [2];
                 }
             });
         });
