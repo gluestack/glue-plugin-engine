@@ -68,11 +68,11 @@ export default class GluestackEngine implements IGlueEngine {
     // 4. generates env
     await this.generateEnv();
 
-    // // 5. generates docker-compose file
-    // await this.createDockerCompose();
+    // 5. generates docker-compose file
+    await this.createDockerCompose();
 
-    // // 6. starts the docker-compose
-    // await this.startDockerCompose();
+    // 6. starts the docker-compose
+    await this.startDockerCompose();
 
     const hasuraPluginName = getConfig('hasuraInstancePath');
     if (hasuraPluginName && hasuraPluginName !== '') {
