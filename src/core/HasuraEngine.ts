@@ -290,9 +290,10 @@ export default class HasuraEngine implements IHasuraEngine {
     };
 
     for await (const action of this.actions) {
-      body.args.push(
-        await this.metadata.createActionPermission(action)
-      );
+      const actionPermission = await this.metadata.createActionPermission(action);
+      if (actionPermission) {
+        body.args.push(actionPermission);
+      }
     }
 
     await this.metadata.makeRequest(body, true);

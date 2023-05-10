@@ -101,6 +101,8 @@ export default class HasuraMetadata implements IHasuraMetadata {
 
       // creating action
       return actionData;
+    } else {
+      return null;
     }
   }
 

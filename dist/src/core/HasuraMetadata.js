@@ -159,7 +159,7 @@ var HasuraMetadata = (function () {
                         console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
                         return [2, Promise.resolve('failed')];
                     case 4: return [2, actionData];
-                    case 5: return [2];
+                    case 5: return [2, null];
                 }
             });
         });
