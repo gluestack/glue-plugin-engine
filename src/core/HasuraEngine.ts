@@ -245,7 +245,7 @@ export default class HasuraEngine implements IHasuraEngine {
     }
 
     const body: any = {
-      type: "bulk",
+      type: "bulk_keep_going",
       args: [],
     };
 
@@ -265,7 +265,7 @@ export default class HasuraEngine implements IHasuraEngine {
     }
 
     const body: any = {
-      type: "bulk",
+      type: "bulk_keep_going",
       args: [],
     };
 
@@ -285,7 +285,7 @@ export default class HasuraEngine implements IHasuraEngine {
     }
 
     const body: any = {
-      type: "bulk",
+      type: "bulk_keep_going",
       args: [],
     };
 

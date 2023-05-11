@@ -95,7 +95,7 @@ export default class DockerCompose implements IDockerCompose {
     const hasura: IService = {
       container_name: removeSpecialChars(plugin.instance),
       restart: 'always',
-      image: 'hasura/graphql-engine:v2.16.1',
+      image: 'hasura/graphql-engine:v2.24.1',
       ports: [
         `${port_number}:8080`
       ],
