@@ -510,6 +510,26 @@ var GluestackEngine = (function () {
             });
         });
     };
+    GluestackEngine.prototype.startDockerComposeBuild = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var filepath, folders, projectName, dockerCompose;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        filepath = (0, path_1.join)(process.cwd(), 'meta/router');
+                        return [4, (0, helpers_1.getOSFolders)()];
+                    case 1:
+                        folders = _a.sent();
+                        projectName = folders[folders.length - 1];
+                        dockerCompose = new DockerCompose_1["default"]();
+                        return [4, dockerCompose.build(projectName, filepath)];
+                    case 2:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
     GluestackEngine.prototype.stopDockerCompose = function () {
         return __awaiter(this, void 0, void 0, function () {
             var filepath, folders, projectName, dockerCompose;

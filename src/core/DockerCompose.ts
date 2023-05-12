@@ -356,6 +356,21 @@ export default class DockerCompose implements IDockerCompose {
     });
   }
 
+  // Executes the docker-compose build cli
+  public async build(projectName: string, filepath: string) {
+    await execute('docker', [
+      'compose',
+      '-p',
+      projectName,
+      'build',
+      '--no-cache'
+    ], {
+      cwd: join(filepath),
+      stdio: 'inherit',
+      shell: true
+    });
+  }
+
   // Executes the docker-compose down cli
   public async stop(projectName: string, filepath: string) {
     await execute('docker', [

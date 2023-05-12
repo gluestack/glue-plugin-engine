@@ -412,6 +412,19 @@ export default class GluestackEngine implements IGlueEngine {
     await dockerCompose.start(projectName, filepath);
   }
 
+  async startDockerComposeBuild(): Promise<void> {
+    // constructing the path to engine's router
+    const filepath: string = join(process.cwd(), 'meta/router');
+
+    // constructing project name for docker compose command
+    const folders: string[] = await getOSFolders();
+    const projectName: string = folders[folders.length - 1];
+
+    // starting docker compose
+    const dockerCompose = new DockerCompose();
+    await dockerCompose.build(projectName, filepath);
+  }
+
   // Stops the docker-compose
   async stopDockerCompose(): Promise<void> {
     const filepath: string = join(process.cwd(), 'meta/router');

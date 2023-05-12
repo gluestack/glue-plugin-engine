@@ -16,6 +16,7 @@ export default class GluestackEngine implements IGlueEngine {
     collectPlugins(pluginType?: 'stateless' | 'devonly', status?: 'up' | 'down'): Promise<void>;
     createDockerCompose(): Promise<void>;
     startDockerCompose(): Promise<void>;
+    startDockerComposeBuild(): Promise<void>;
     stopDockerCompose(): Promise<void>;
     private collectDockerContext;
     generateEnv(): Promise<void>;

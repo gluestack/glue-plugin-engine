@@ -10,6 +10,7 @@ export interface IGlueEngine {
   stop(): Promise<void>;
 
   startDockerCompose(): Promise<void>;
+  startDockerComposeBuild(): Promise<void>;
   stopDockerCompose(): Promise<void>;
 
   createDockerCompose(): Promise<void>;
