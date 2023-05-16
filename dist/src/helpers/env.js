@@ -53,7 +53,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var path_1 = require("path");
 var helpers_1 = require("@gluestack/helpers");
 var lodash_1 = require("lodash");
@@ -104,7 +104,7 @@ var Env = (function () {
                         return [3, 11];
                     case 6:
                         _g.trys.push([6, , 9, 10]);
-                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 8];
+                        if (!(!_d && !_a && (_b = _e.return))) return [3, 8];
                         return [4, _b.call(_e)];
                     case 7:
                         _g.sent();
@@ -205,7 +205,7 @@ var Env = (function () {
     };
     return Env;
 }());
-exports["default"] = Env;
+exports.default = Env;
 var ChildEnv = (function () {
     function ChildEnv(prefix, instance, keys, path, build) {
         this.prefix = prefix;

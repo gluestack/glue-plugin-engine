@@ -245,7 +245,7 @@ export default class HasuraEngine implements IHasuraEngine {
     }
 
     const body: any = {
-      type: "bulk_keep_going",
+      type: "replace_metadata",
       args: [],
     };
 
@@ -264,6 +264,7 @@ export default class HasuraEngine implements IHasuraEngine {
       return Promise.resolve(false);
     }
 
+    // hasura replace_metadata does not work with create_action batches
     const body: any = {
       type: "bulk_keep_going",
       args: [],
@@ -285,7 +286,7 @@ export default class HasuraEngine implements IHasuraEngine {
     }
 
     const body: any = {
-      type: "bulk_keep_going",
+      type: "replace_metadata",
       args: [],
     };
 

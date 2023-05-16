@@ -45,7 +45,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var path_1 = require("path");
 var promises_1 = require("node:fs/promises");
 var spawn_1 = require("../helpers/spawn");
@@ -60,8 +60,8 @@ var HasuraEngine = (function () {
         this.actions = [];
         this.pluginName = (0, GluestackConfig_1.getConfig)('hasuraInstancePath');
         this.actionPlugins = actionPlugins;
-        this.metadata = new HasuraMetadata_1["default"](this.pluginName);
-        this.events = new GluestackEvent_1["default"](this.pluginName);
+        this.metadata = new HasuraMetadata_1.default(this.pluginName);
+        this.events = new GluestackEvent_1.default(this.pluginName);
     }
     HasuraEngine.prototype.exportMetadata = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -79,7 +79,7 @@ var HasuraEngine = (function () {
                             ], {
                                 cwd: filepath,
                                 stdio: 'inherit',
-                                shell: true
+                                shell: true,
                             })];
                     case 1:
                         _a.sent();
@@ -104,7 +104,7 @@ var HasuraEngine = (function () {
                             ], {
                                 cwd: filepath,
                                 stdio: 'inherit',
-                                shell: true
+                                shell: true,
                             })];
                     case 1:
                         _a.sent();
@@ -134,7 +134,7 @@ var HasuraEngine = (function () {
                             ], {
                                 cwd: filepath,
                                 stdio: 'inherit',
-                                shell: true
+                                shell: true,
                             })];
                     case 2:
                         _a.sent();
@@ -174,7 +174,7 @@ var HasuraEngine = (function () {
                             ], {
                                 cwd: filepath,
                                 stdio: 'inherit',
-                                shell: true
+                                shell: true,
                             })];
                     case 3:
                         _a.sent();
@@ -258,7 +258,7 @@ var HasuraEngine = (function () {
                         return [3, 18];
                     case 13:
                         _g.trys.push([13, , 16, 17]);
-                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 15];
+                        if (!(!_d && !_a && (_b = _e.return))) return [3, 15];
                         return [4, _b.call(_e)];
                     case 14:
                         _g.sent();
@@ -337,7 +337,7 @@ var HasuraEngine = (function () {
                         return [3, 20];
                     case 15:
                         _e.trys.push([15, , 18, 19]);
-                        if (!(!_d && !_a && (_b = dirents_1["return"]))) return [3, 17];
+                        if (!(!_d && !_a && (_b = dirents_1.return))) return [3, 17];
                         return [4, _b.call(dirents_1)];
                     case 16:
                         _e.sent();
@@ -433,7 +433,7 @@ var HasuraEngine = (function () {
                         return [3, 23];
                     case 18:
                         _o.trys.push([18, , 21, 22]);
-                        if (!(!_k && !_d && (_e = dirents_2["return"]))) return [3, 20];
+                        if (!(!_k && !_d && (_e = dirents_2.return))) return [3, 20];
                         return [4, _e.call(dirents_2)];
                     case 19:
                         _o.sent();
@@ -455,7 +455,7 @@ var HasuraEngine = (function () {
                         return [3, 33];
                     case 28:
                         _o.trys.push([28, , 31, 32]);
-                        if (!(!_g && !_a && (_b = _h["return"]))) return [3, 30];
+                        if (!(!_g && !_a && (_b = _h.return))) return [3, 30];
                         return [4, _b.call(_h)];
                     case 29:
                         _o.sent();
@@ -481,8 +481,8 @@ var HasuraEngine = (function () {
                             return [2, Promise.resolve(false)];
                         }
                         body = {
-                            type: "bulk_keep_going",
-                            args: []
+                            type: "replace_metadata",
+                            args: [],
                         };
                         _j.label = 1;
                     case 1:
@@ -514,7 +514,7 @@ var HasuraEngine = (function () {
                         return [3, 15];
                     case 10:
                         _j.trys.push([10, , 13, 14]);
-                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 12];
+                        if (!(!_d && !_a && (_b = _e.return))) return [3, 12];
                         return [4, _b.call(_e)];
                     case 11:
                         _j.sent();
@@ -544,7 +544,7 @@ var HasuraEngine = (function () {
                         }
                         body = {
                             type: "bulk_keep_going",
-                            args: []
+                            args: [],
                         };
                         _j.label = 1;
                     case 1:
@@ -576,7 +576,7 @@ var HasuraEngine = (function () {
                         return [3, 15];
                     case 10:
                         _j.trys.push([10, , 13, 14]);
-                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 12];
+                        if (!(!_d && !_a && (_b = _e.return))) return [3, 12];
                         return [4, _b.call(_e)];
                     case 11:
                         _j.sent();
@@ -605,8 +605,8 @@ var HasuraEngine = (function () {
                             return [2, Promise.resolve(false)];
                         }
                         body = {
-                            type: "bulk_keep_going",
-                            args: []
+                            type: "replace_metadata",
+                            args: [],
                         };
                         _g.label = 1;
                     case 1:
@@ -640,7 +640,7 @@ var HasuraEngine = (function () {
                         return [3, 15];
                     case 10:
                         _g.trys.push([10, , 13, 14]);
-                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 12];
+                        if (!(!_d && !_a && (_b = _e.return))) return [3, 12];
                         return [4, _b.call(_e)];
                     case 11:
                         _g.sent();
@@ -676,5 +676,5 @@ var HasuraEngine = (function () {
     };
     return HasuraEngine;
 }());
-exports["default"] = HasuraEngine;
+exports.default = HasuraEngine;
 //# sourceMappingURL=HasuraEngine.js.map

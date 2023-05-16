@@ -22,7 +22,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var chokidar = __importStar(require("chokidar"));
 var GluestackWatch = (function () {
     function GluestackWatch(paths) {
@@ -45,5 +45,5 @@ var GluestackWatch = (function () {
     };
     return GluestackWatch;
 }());
-exports["default"] = GluestackWatch;
+exports.default = GluestackWatch;
 //# sourceMappingURL=GlueStackWatch.js.map

@@ -45,7 +45,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.runner = exports.envGenerate = void 0;
 var path_1 = require("path");
 var env_1 = __importDefault(require("../helpers/env"));
@@ -124,7 +124,7 @@ var runner = function (glueStackPlugin, options) { return __awaiter(void 0, void
                 return [3, 20];
             case 15:
                 _s.trys.push([15, , 18, 19]);
-                if (!(!_b && !_l && (_m = _c["return"]))) return [3, 17];
+                if (!(!_b && !_l && (_m = _c.return))) return [3, 17];
                 return [4, _m.call(_c)];
             case 16:
                 _s.sent();
@@ -146,7 +146,7 @@ var runner = function (glueStackPlugin, options) { return __awaiter(void 0, void
                 return [3, 30];
             case 25:
                 _s.trys.push([25, , 28, 29]);
-                if (!(!_a && !_h && (_j = plugins_1["return"]))) return [3, 27];
+                if (!(!_a && !_h && (_j = plugins_1.return))) return [3, 27];
                 return [4, _j.call(plugins_1)];
             case 26:
                 _s.sent();
@@ -167,10 +167,10 @@ var runner = function (glueStackPlugin, options) { return __awaiter(void 0, void
                 if (_s.sent()) {
                     routes = require(routerFilepath);
                 }
-                _f = env_1["default"].bind;
+                _f = env_1.default.bind;
                 return [4, (0, helpers_1.envToJson)((0, path_1.join)(process.cwd(), ".env"))];
             case 32:
-                env = new (_f.apply(env_1["default"], [void 0, _s.sent(), build, routes]))();
+                env = new (_f.apply(env_1.default, [void 0, _s.sent(), build, routes]))();
                 _s.label = 33;
             case 33:
                 _s.trys.push([33, 41, 42, 47]);
@@ -200,7 +200,7 @@ var runner = function (glueStackPlugin, options) { return __awaiter(void 0, void
                 return [3, 47];
             case 42:
                 _s.trys.push([42, , 45, 46]);
-                if (!(!_g && !_p && (_q = instances_1["return"]))) return [3, 44];
+                if (!(!_g && !_p && (_q = instances_1.return))) return [3, 44];
                 return [4, _q.call(instances_1)];
             case 43:
                 _s.sent();

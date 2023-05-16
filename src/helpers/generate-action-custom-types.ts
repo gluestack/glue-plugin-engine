@@ -135,7 +135,7 @@ const createActionPermission = (query: any, roles: string[]) => {
   const action: string = objectKeys(query.properties)[0];
 
   const body: any = {
-    type: "bulk_keep_going",
+    type: "replace_metadata",
     args: [],
   };
 
