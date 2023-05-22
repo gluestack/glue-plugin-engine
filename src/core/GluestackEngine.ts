@@ -56,7 +56,7 @@ export default class GluestackEngine implements IGlueEngine {
   }
 
   // Starts the engine for the backend instance
-  async start(): Promise<void> {
+  async start(isRun: boolean=false): Promise<void> {
     // 1. Gets all the instances and sets some config variables
     // 2. Collects their dockerfiles from instances' assets directory
     await this.collectPlugins('stateless', 'up');
@@ -90,14 +90,16 @@ export default class GluestackEngine implements IGlueEngine {
       // 10. runs seed files into hasura engine
       await hasuraEngine.applySeed();
 
-      // 11. runs hasura metadata export
-      await hasuraEngine.exportMetadata();
-
-      // 12. clears & registers all actions
-      await hasuraEngine.reapplyActions();
-
-      // 13. clears & registers all events
-      await hasuraEngine.reapplyEvents();
+      if (!isRun) {
+        // 11. runs hasura metadata export
+        await hasuraEngine.exportMetadata();
+  
+        // 12. clears & registers all actions
+        await hasuraEngine.reapplyActions();
+  
+        // 13. clears & registers all events
+        await hasuraEngine.reapplyEvents();
+      }
     }
 
     // 14. collects, validates & register crons into gluestack cron
@@ -170,7 +172,7 @@ export default class GluestackEngine implements IGlueEngine {
   }
 
   // Stops the engine for the backend instance
-  async stop(): Promise<void> {
+  async stop(isRun: boolean=false): Promise<void> {
     process.stdout.write("\u001b[2J\u001b[0;0H");
 
     // Gather plugins
@@ -180,13 +182,15 @@ export default class GluestackEngine implements IGlueEngine {
     const hasuraPluginName = getConfig('hasuraInstancePath');
     const hasuraInstanceStatus = getConfig('hasuraInstanceStatus');
 
-    // Export if and only if -
-    //  - hasura was running and
-    //  - hasura plugin is available
-    if (hasuraInstanceStatus === 'up' && hasuraPluginName && hasuraPluginName !== '') {
-      // Export Hasura Metadata
-      const hasuraEngine: IHasuraEngine = new HasuraEngine(this.actionPlugins);
-      await hasuraEngine.exportMetadata();
+    if (!isRun) {
+      // Export if and only if -
+      //  - hasura was running and
+      //  - hasura plugin is available
+      if (hasuraInstanceStatus === 'up' && hasuraPluginName && hasuraPluginName !== '') {
+        // Export Hasura Metadata
+        const hasuraEngine: IHasuraEngine = new HasuraEngine(this.actionPlugins);
+        await hasuraEngine.exportMetadata();
+      }
     }
 
     // Stop docker-compose

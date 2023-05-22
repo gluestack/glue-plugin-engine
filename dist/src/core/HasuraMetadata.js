@@ -74,8 +74,8 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-var axios = require("axios").default;
+exports.__esModule = true;
+var axios = require("axios")["default"];
 var path_1 = require("path");
 var dotenv = __importStar(require("dotenv"));
 var node_fs_1 = require("node:fs");
@@ -228,7 +228,7 @@ var HasuraMetadata = (function () {
                         return [3, 18];
                     case 13:
                         _e.trys.push([13, , 16, 17]);
-                        if (!(!_a && !_b && (_c = actions_1.return))) return [3, 15];
+                        if (!(!_a && !_b && (_c = actions_1["return"]))) return [3, 15];
                         return [4, _c.call(actions_1)];
                     case 14:
                         _e.sent();
@@ -342,5 +342,5 @@ var HasuraMetadata = (function () {
     };
     return HasuraMetadata;
 }());
-exports.default = HasuraMetadata;
+exports["default"] = HasuraMetadata;
 //# sourceMappingURL=HasuraMetadata.js.map

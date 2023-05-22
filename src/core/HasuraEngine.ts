@@ -24,14 +24,12 @@ export default class HasuraEngine implements IHasuraEngine {
   private metadata: any;
   private events: any;
   private actions: IAction[];
-  private actionGQLFile: string = 'action.graphql';
-  private actionSettingFile: string = 'action.setting';
+  private actionGQLFile: string = "action.graphql";
+  private actionSettingFile: string = "action.setting";
 
-  constructor(
-    actionPlugins: IStatelessPlugin[]
-  ) {
+  constructor(actionPlugins: IStatelessPlugin[]) {
     this.actions = [];
-    this.pluginName = getConfig('hasuraInstancePath');
+    this.pluginName = getConfig("hasuraInstancePath");
     this.actionPlugins = actionPlugins;
 
     this.metadata = new HasuraMetadata(this.pluginName);
@@ -40,36 +38,54 @@ export default class HasuraEngine implements IHasuraEngine {
 
   // Sync hasura engine's metadata with the local hasura metadata
   public async exportMetadata(): Promise<void> {
-    const filepath: string = join(process.cwd(), getConfig('backendInstancePath'), 'services', this.pluginName);
+    const filepath: string = join(
+      process.cwd(),
+      getConfig("backendInstancePath"),
+      "services",
+      this.pluginName,
+    );
 
-    await execute('hasura', [
-      'metadata',
-      'export',
-      '--envfile',
-      '.env.generated',
-      '--skip-update-check'
-    ], {
-      cwd: filepath,
-      stdio: 'inherit',
-      shell: true,
-    });
+    await execute(
+      "hasura",
+      [
+        "metadata",
+        "export",
+        "--envfile",
+        ".env.generated",
+        "--skip-update-check",
+      ],
+      {
+        cwd: filepath,
+        stdio: "inherit",
+        shell: true,
+      },
+    );
   }
 
   // Apply local metadata to the hasura engine's metadata
   public async applyMetadata(): Promise<void> {
-    const filepath: string = join(process.cwd(), getConfig('backendInstancePath'), 'services', this.pluginName);
+    const filepath: string = join(
+      process.cwd(),
+      getConfig("backendInstancePath"),
+      "services",
+      this.pluginName,
+    );
 
-    await execute('hasura', [
-      'metadata',
-      'apply',
-      '--envfile',
-      '.env.generated',
-      '--skip-update-check'
-    ], {
-      cwd: filepath,
-      stdio: 'inherit',
-      shell: true,
-    });
+    await execute(
+      "hasura",
+      [
+        "metadata",
+        "apply",
+        "--envfile",
+        ".env.generated",
+        "--skip-update-check",
+      ],
+      {
+        cwd: filepath,
+        stdio: "inherit",
+        shell: true,
+      },
+    );
   }
 
   // Apply local migrations to the hasura engine's migrations
@@ -77,30 +93,48 @@ export default class HasuraEngine implements IHasuraEngine {
     await this.applyMetadata();
 
     const hasuraEnvs: any = this.metadata.hasuraEnvs;
-    const filepath: string = join(process.cwd(), getConfig('backendInstancePath'), 'services', this.pluginName);
+    const filepath: string = join(
+      process.cwd(),
+      getConfig("backendInstancePath"),
+      "services",
+      this.pluginName,
+    );
 
-    await execute('hasura', [
-      'migrate',
-      'apply',
-      '--database-name',
-      hasuraEnvs.HASURA_GRAPHQL_DB_NAME,
-      '--envfile',
-      '.env.generated',
-      '--skip-update-check'
-    ], {
-      cwd: filepath,
-      stdio: 'inherit',
-      shell: true,
-    });
+    await execute(
+      "hasura",
+      [
+        "migrate",
+        "apply",
+        "--database-name",
+        hasuraEnvs.HASURA_GRAPHQL_DB_NAME,
+        "--envfile",
+        ".env.generated",
+        "--skip-update-check",
+      ],
+      {
+        cwd: filepath,
+        stdio: "inherit",
+        shell: true,
+      },
+    );
   }
 
   // Apply local seeds to the hasura engine's seeds
   public async applySeed(): Promise<void> {
     const hasuraEnvs: any = this.metadata.hasuraEnvs;
-    const filepath: string = join(process.cwd(), getConfig('backendInstancePath'), 'services', this.pluginName);
+    const filepath: string = join(
+      process.cwd(),
+      getConfig("backendInstancePath"),
+      "services",
+      this.pluginName,
+    );
 
-    const sqlsPath: string = join(filepath, 'seeds', hasuraEnvs.HASURA_GRAPHQL_DB_NAME);
-    if (! await fileExists(sqlsPath)) {
+    const sqlsPath: string = join(
+      filepath,
+      "seeds",
+      hasuraEnvs.HASURA_GRAPHQL_DB_NAME,
+    );
+    if (!(await fileExists(sqlsPath))) {
       return;
     }
 
@@ -109,41 +143,47 @@ export default class HasuraEngine implements IHasuraEngine {
       return;
     }
 
-    await execute('hasura', [
-      'seed',
-      'apply',
-      '--database-name',
-      hasuraEnvs.HASURA_GRAPHQL_DB_NAME,
-      '--envfile',
-      '.env.generated',
-      '--skip-update-check'
-    ], {
-      cwd: filepath,
-      stdio: 'inherit',
-      shell: true,
-    });
+    await execute(
+      "hasura",
+      [
+        "seed",
+        "apply",
+        "--database-name",
+        hasuraEnvs.HASURA_GRAPHQL_DB_NAME,
+        "--envfile",
+        ".env.generated",
+        "--skip-update-check",
+      ],
+      {
+        cwd: filepath,
+        stdio: "inherit",
+        shell: true,
+      },
+    );
   }
 
   // Apply all the actions into the hasura engine
   public async reapplyActions(): Promise<void> {
     // scan for actions plugins
-    console.log('\n> Scanning for actions plugins...');
+    console.log("\n> Scanning for actions plugins...");
     await this.scanActions();
 
     // drop all actions from hasura engine
-    console.log('> Dropping all actions from hasura engine...');
+    console.log("> Dropping all actions from hasura engine...");
     await this.dropActions();
 
     // create all custom types for actions into hasura engine
-    console.log('> Creating all custom types for actions into hasura engine...');
+    console.log(
+      "> Creating all custom types for actions into hasura engine...",
+    );
     await this.createCustomTypes();
 
     // create all actions plugins into hasura engine
-    console.log('> Registering actions plugins into hasura engine...');
+    console.log("> Registering actions plugins into hasura engine...");
     await this.createActions();
 
     // create all action permissions into hasura engine
-    console.log('> Registering action permissions into hasura engine...');
+    console.log("> Registering action permissions into hasura engine...");
     await this.createActionPermissions();
   }
 
@@ -151,9 +191,9 @@ export default class HasuraEngine implements IHasuraEngine {
   public async reapplyEvents(): Promise<void> {
     await this.events.scanEvents();
 
-    console.log('> Dropping & Registering all events from hasura engine...');
+    console.log("> Dropping & Registering all events from hasura engine...");
 
-    const events: any = await this.events.getEventsByType('database');
+    const events: any = await this.events.getEventsByType("database");
     for await (const table of Object.keys(events)) {
       await this.metadata.dropEvent(table, events[table]);
       await this.metadata.createEvent(table, events[table]);
@@ -162,31 +202,35 @@ export default class HasuraEngine implements IHasuraEngine {
 
   // Applies all the track json files into the hasura engine
   public async applyTracks(): Promise<string> {
-    console.log('> Scanning tracks directory...');
+    console.log("> Scanning tracks directory...");
 
-    const backendInstancePath: string = getConfig('backendInstancePath');
+    const backendInstancePath: string = getConfig("backendInstancePath");
 
     // Check if the auth instance path exists
-    const authInstancePath: string = getConfig('authInstancePath');
-    if (!authInstancePath || authInstancePath === '') {
-      return Promise.resolve('No auth instance path found');
+    const authInstancePath: string = getConfig("authInstancePath");
+    if (!authInstancePath || authInstancePath === "") {
+      return Promise.resolve("No auth instance path found");
     }
 
     // Check if tracks directory exist in the auth instance
     const tracksPath = join(
-      process.cwd(), backendInstancePath, 'services', this.pluginName, 'tracks'
+      process.cwd(),
+      backendInstancePath,
+      "services",
+      this.pluginName,
+      "tracks",
     );
     if (!fileExists(tracksPath)) {
-      console.log('> Nothing to track into hasura engine...');
-      return Promise.resolve('No tracks folder found. Skipping...');
+      console.log("> Nothing to track into hasura engine...");
+      return Promise.resolve("No tracks folder found. Skipping...");
     }
 
-    console.log('> Applying all tracks into hasura engine...');
+    console.log("> Applying all tracks into hasura engine...");
 
     // Scan & read all the json files in the tracks folder
     const dirents = await readdir(tracksPath, { withFileTypes: true });
     for await (const dirent of dirents) {
-      if (dirent.isFile() && extname(dirent.name).toLowerCase() === '.json') {
+      if (dirent.isFile() && extname(dirent.name).toLowerCase() === ".json") {
         const trackPath: string = join(tracksPath, dirent.name);
 
         try {
@@ -204,26 +248,38 @@ export default class HasuraEngine implements IHasuraEngine {
   // Scan all the actions files and prepares the actions array
   private async scanActions(): Promise<void> {
     for await (const plugin of this.actionPlugins) {
-      const functionsDirectory: string = join(plugin.path, 'functions');
+      const functionsDirectory: string = join(plugin.path, "functions");
 
       let exist = await fileExists(functionsDirectory);
       // Check if the plugin path exists
       if (!exist) {
-        console.log(`> Action Instance ${plugin.instance} is missing. Skipping...`);
+        console.log(
+          `> Action Instance ${plugin.instance} is missing. Skipping...`,
+        );
         continue;
       }
 
       // Read all the directories in the actions folder
-      const dirents = await readdir(functionsDirectory, { withFileTypes: true });
+      const dirents = await readdir(functionsDirectory, {
+        withFileTypes: true,
+      });
       for await (const dirent of dirents) {
-        const actionGQLFile: string = join(functionsDirectory, dirent.name, this.actionGQLFile);
-        const actionSettingFile: string = join(functionsDirectory, dirent.name, this.actionSettingFile);
+        const actionGQLFile: string = join(
+          functionsDirectory,
+          dirent.name,
+          this.actionGQLFile,
+        );
+        const actionSettingFile: string = join(
+          functionsDirectory,
+          dirent.name,
+          this.actionSettingFile,
+        );
 
         // Check if the action.graphql & action.setting files exists
         if (
           dirent.isDirectory() &&
-          await fileExists(actionGQLFile) &&
-          await fileExists(actionSettingFile)
+          (await fileExists(actionGQLFile)) &&
+          (await fileExists(actionSettingFile))
         ) {
           // Push the action to the actions array
           this.actions.push({
@@ -231,7 +287,7 @@ export default class HasuraEngine implements IHasuraEngine {
             handler: removeSpecialChars(plugin.instance),
             path: join(functionsDirectory, dirent.name),
             grapqhl_path: actionGQLFile,
-            setting_path: actionSettingFile
+            setting_path: actionSettingFile,
           });
         }
       }
@@ -245,14 +301,12 @@ export default class HasuraEngine implements IHasuraEngine {
     }
 
     const body: any = {
-      type: "replace_metadata",
+      type: "bulk_keep_going",
       args: [],
     };
 
     for await (const action of this.actions) {
-      body.args.push(
-        await this.metadata.dropAction(action.name)
-      );
+      body.args.push(await this.metadata.dropAction(action.name));
     }
 
     await this.metadata.makeRequest(body);
@@ -264,16 +318,14 @@ export default class HasuraEngine implements IHasuraEngine {
       return Promise.resolve(false);
     }
 
-    // hasura replace_metadata does not work with create_action batches
+    // hasura bulk_keep_going does not work with create_action batches
     const body: any = {
       type: "bulk_keep_going",
       args: [],
     };
 
     for await (const action of this.actions) {
-      body.args.push(
-        await this.metadata.createAction(action)
-      );
+      body.args.push(await this.metadata.createAction(action));
     }
 
     await this.metadata.makeRequest(body, true);
@@ -286,12 +338,14 @@ export default class HasuraEngine implements IHasuraEngine {
     }
 
     const body: any = {
-      type: "replace_metadata",
+      type: "bulk_keep_going",
       args: [],
     };
 
     for await (const action of this.actions) {
-      const actionPermission = await this.metadata.createActionPermission(action);
+      const actionPermission = await this.metadata.createActionPermission(
+        action,
+      );
       if (actionPermission) {
         body.args.push(actionPermission);
       }

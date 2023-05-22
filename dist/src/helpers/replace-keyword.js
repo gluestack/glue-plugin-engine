@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.replaceKeyword = void 0;
 var node_fs_1 = require("node:fs");
 var replaceKeyword = function (filePath, value, key) {
@@ -51,5 +51,5 @@ var replaceKeyword = function (filePath, value, key) {
     });
 };
 exports.replaceKeyword = replaceKeyword;
-exports.default = exports.replaceKeyword;
+exports["default"] = exports.replaceKeyword;
 //# sourceMappingURL=replace-keyword.js.map

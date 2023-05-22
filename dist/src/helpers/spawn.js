@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.execute = void 0;
 var node_child_process_1 = require("node:child_process");
 var execute = function (command, args, options) {

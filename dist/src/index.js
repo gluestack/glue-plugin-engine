@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.GlueStackPlugin = void 0;
 var package_json_1 = __importDefault(require("../package.json"));
 var PluginInstance_1 = require("./PluginInstance");
@@ -48,6 +48,8 @@ var develop_down_1 = require("./commands/develop-down");
 var develop_list_1 = require("./commands/develop-list");
 var develop_watch_1 = require("./commands/develop-watch");
 var develop_update_1 = require("./commands/develop-update");
+var run_up_1 = require("./commands/run-up");
+var run_down_1 = require("./commands/run-down");
 var env_generate_1 = require("./commands/env-generate");
 var GlueStackPlugin = (function () {
     function GlueStackPlugin(app, gluePluginStore) {
@@ -63,16 +65,18 @@ var GlueStackPlugin = (function () {
         this.app.addCommand(function (program) { return (0, develop_down_1.developDown)(program, _this); });
         this.app.addCommand(function (program) { return (0, develop_update_1.developUpdate)(program, _this); });
         this.app.addCommand(function (program) { return (0, develop_watch_1.developWatch)(program, _this); });
+        this.app.addCommand(function (program) { return (0, run_up_1.runUp)(program, _this); });
+        this.app.addCommand(function (program) { return (0, run_down_1.runDown)(program, _this); });
         this.app.addCommand(function (program) { return (0, build_1.build)(program, _this); });
         this.app.addCommand(function (program) { return (0, env_generate_1.envGenerate)(program, _this); });
     };
     GlueStackPlugin.prototype.destroy = function () {
     };
     GlueStackPlugin.prototype.getName = function () {
-        return package_json_1.default.name;
+        return package_json_1["default"].name;
     };
     GlueStackPlugin.prototype.getVersion = function () {
-        return package_json_1.default.version;
+        return package_json_1["default"].version;
     };
     GlueStackPlugin.prototype.getType = function () {
         return this.type;

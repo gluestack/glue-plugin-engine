@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -46,55 +35,42 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
-exports.prepareConfigJSON = exports.setConfig = exports.getConfig = exports.config = void 0;
-var path_1 = require("path");
-var promises_1 = require("fs/promises");
-var helpers_1 = require("@gluestack/helpers");
-exports.config = {
-    postgresConnectionString: '',
-    isPostgresExternal: 0,
-    isMinioExternal: 0,
-    authInstancePath: '',
-    postgresInstancePath: '',
-    backendInstancePath: '',
-    engineInstancePath: '',
-    hasuraInstancePath: '',
-    routerPluginName: '',
-    routerInstancePath: '',
-    hasuraInstanceStatus: 'down',
-    hasuraEnvs: {},
-    daprServices: []
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var getConfig = function (key) { return exports.config[key]; };
-exports.getConfig = getConfig;
-var setConfig = function (key, value) { return exports.config[key] = value; };
-exports.setConfig = setConfig;
-var prepareConfigJSON = function (newContent) { return __awaiter(void 0, void 0, void 0, function () {
-    var content, engineInstance, backendInstance, filepath;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                content = {};
-                engineInstance = (0, exports.getConfig)('engineInstancePath');
-                backendInstance = (0, exports.getConfig)('backendInstancePath');
-                filepath = (0, path_1.join)(process.cwd(), backendInstance, engineInstance, 'config.json');
-                return [4, (0, helpers_1.fileExists)(filepath)];
-            case 1:
-                if (!_a.sent()) return [3, 3];
-                return [4, (0, promises_1.readFile)(filepath)];
-            case 2:
-                content = _a.sent();
-                content = JSON.parse(content.toString());
-                _a.label = 3;
-            case 3:
-                content = __assign(__assign({}, content), newContent);
-                return [4, (0, helpers_1.writeFile)(filepath, JSON.stringify(content, null, 2))];
-            case 4:
-                _a.sent();
-                return [2];
-        }
+exports.__esModule = true;
+exports.runner = exports.runDown = void 0;
+var GluestackEngine_1 = __importDefault(require("../core/GluestackEngine"));
+function runDown(program, glueStackPlugin) {
+    var command = program
+        .command("run:down")
+        .description("Stops all the project containers")
+        .action(function () { return runner(glueStackPlugin); });
+}
+exports.runDown = runDown;
+function runner(glueStackPlugin) {
+    return __awaiter(this, void 0, void 0, function () {
+        var app, engine, err_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    app = glueStackPlugin.app;
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    engine = new GluestackEngine_1["default"](app, "backend");
+                    return [4, engine.stop(true)];
+                case 2:
+                    _a.sent();
+                    return [3, 4];
+                case 3:
+                    err_1 = _a.sent();
+                    console.log(">> err", err_1);
+                    return [3, 4];
+                case 4: return [2];
+            }
+        });
     });
-}); };
-exports.prepareConfigJSON = prepareConfigJSON;
-//# sourceMappingURL=GluestackConfig.js.map
+}
+exports.runner = runner;
+//# sourceMappingURL=run-down.js.map
