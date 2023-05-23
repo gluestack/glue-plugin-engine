@@ -48,6 +48,8 @@ var develop_down_1 = require("./commands/develop-down");
 var develop_list_1 = require("./commands/develop-list");
 var develop_watch_1 = require("./commands/develop-watch");
 var develop_update_1 = require("./commands/develop-update");
+var run_up_1 = require("./commands/run-up");
+var run_down_1 = require("./commands/run-down");
 var env_generate_1 = require("./commands/env-generate");
 var GlueStackPlugin = (function () {
     function GlueStackPlugin(app, gluePluginStore) {
@@ -63,6 +65,8 @@ var GlueStackPlugin = (function () {
         this.app.addCommand(function (program) { return (0, develop_down_1.developDown)(program, _this); });
         this.app.addCommand(function (program) { return (0, develop_update_1.developUpdate)(program, _this); });
         this.app.addCommand(function (program) { return (0, develop_watch_1.developWatch)(program, _this); });
+        this.app.addCommand(function (program) { return (0, run_up_1.runUp)(program, _this); });
+        this.app.addCommand(function (program) { return (0, run_down_1.runDown)(program, _this); });
         this.app.addCommand(function (program) { return (0, build_1.build)(program, _this); });
         this.app.addCommand(function (program) { return (0, env_generate_1.envGenerate)(program, _this); });
     };

@@ -55,10 +55,10 @@ var HasuraMetadata_1 = __importDefault(require("./HasuraMetadata"));
 var GluestackEvent_1 = __importDefault(require("./GluestackEvent"));
 var HasuraEngine = (function () {
     function HasuraEngine(actionPlugins) {
-        this.actionGQLFile = 'action.graphql';
-        this.actionSettingFile = 'action.setting';
+        this.actionGQLFile = "action.graphql";
+        this.actionSettingFile = "action.setting";
         this.actions = [];
-        this.pluginName = (0, GluestackConfig_1.getConfig)('hasuraInstancePath');
+        this.pluginName = (0, GluestackConfig_1.getConfig)("hasuraInstancePath");
         this.actionPlugins = actionPlugins;
         this.metadata = new HasuraMetadata_1["default"](this.pluginName);
         this.events = new GluestackEvent_1["default"](this.pluginName);
@@ -69,16 +69,16 @@ var HasuraEngine = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        filepath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)('backendInstancePath'), 'services', this.pluginName);
-                        return [4, (0, spawn_1.execute)('hasura', [
-                                'metadata',
-                                'export',
-                                '--envfile',
-                                '.env.generated',
-                                '--skip-update-check'
+                        filepath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)("backendInstancePath"), "services", this.pluginName);
+                        return [4, (0, spawn_1.execute)("hasura", [
+                                "metadata",
+                                "export",
+                                "--envfile",
+                                ".env.generated",
+                                "--skip-update-check",
                             ], {
                                 cwd: filepath,
-                                stdio: 'inherit',
+                                stdio: "inherit",
                                 shell: true
                             })];
                     case 1:
@@ -94,16 +94,16 @@ var HasuraEngine = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        filepath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)('backendInstancePath'), 'services', this.pluginName);
-                        return [4, (0, spawn_1.execute)('hasura', [
-                                'metadata',
-                                'apply',
-                                '--envfile',
-                                '.env.generated',
-                                '--skip-update-check'
+                        filepath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)("backendInstancePath"), "services", this.pluginName);
+                        return [4, (0, spawn_1.execute)("hasura", [
+                                "metadata",
+                                "apply",
+                                "--envfile",
+                                ".env.generated",
+                                "--skip-update-check",
                             ], {
                                 cwd: filepath,
-                                stdio: 'inherit',
+                                stdio: "inherit",
                                 shell: true
                             })];
                     case 1:
@@ -122,18 +122,18 @@ var HasuraEngine = (function () {
                     case 1:
                         _a.sent();
                         hasuraEnvs = this.metadata.hasuraEnvs;
-                        filepath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)('backendInstancePath'), 'services', this.pluginName);
-                        return [4, (0, spawn_1.execute)('hasura', [
-                                'migrate',
-                                'apply',
-                                '--database-name',
+                        filepath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)("backendInstancePath"), "services", this.pluginName);
+                        return [4, (0, spawn_1.execute)("hasura", [
+                                "migrate",
+                                "apply",
+                                "--database-name",
                                 hasuraEnvs.HASURA_GRAPHQL_DB_NAME,
-                                '--envfile',
-                                '.env.generated',
-                                '--skip-update-check'
+                                "--envfile",
+                                ".env.generated",
+                                "--skip-update-check",
                             ], {
                                 cwd: filepath,
-                                stdio: 'inherit',
+                                stdio: "inherit",
                                 shell: true
                             })];
                     case 2:
@@ -150,8 +150,8 @@ var HasuraEngine = (function () {
                 switch (_a.label) {
                     case 0:
                         hasuraEnvs = this.metadata.hasuraEnvs;
-                        filepath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)('backendInstancePath'), 'services', this.pluginName);
-                        sqlsPath = (0, path_1.join)(filepath, 'seeds', hasuraEnvs.HASURA_GRAPHQL_DB_NAME);
+                        filepath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)("backendInstancePath"), "services", this.pluginName);
+                        sqlsPath = (0, path_1.join)(filepath, "seeds", hasuraEnvs.HASURA_GRAPHQL_DB_NAME);
                         return [4, (0, helpers_1.fileExists)(sqlsPath)];
                     case 1:
                         if (!(_a.sent())) {
@@ -163,17 +163,17 @@ var HasuraEngine = (function () {
                         if (!files || files.length === 0) {
                             return [2];
                         }
-                        return [4, (0, spawn_1.execute)('hasura', [
-                                'seed',
-                                'apply',
-                                '--database-name',
+                        return [4, (0, spawn_1.execute)("hasura", [
+                                "seed",
+                                "apply",
+                                "--database-name",
                                 hasuraEnvs.HASURA_GRAPHQL_DB_NAME,
-                                '--envfile',
-                                '.env.generated',
-                                '--skip-update-check'
+                                "--envfile",
+                                ".env.generated",
+                                "--skip-update-check",
                             ], {
                                 cwd: filepath,
-                                stdio: 'inherit',
+                                stdio: "inherit",
                                 shell: true
                             })];
                     case 3:
@@ -188,23 +188,23 @@ var HasuraEngine = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log('\n> Scanning for actions plugins...');
+                        console.log("\n> Scanning for actions plugins...");
                         return [4, this.scanActions()];
                     case 1:
                         _a.sent();
-                        console.log('> Dropping all actions from hasura engine...');
+                        console.log("> Dropping all actions from hasura engine...");
                         return [4, this.dropActions()];
                     case 2:
                         _a.sent();
-                        console.log('> Creating all custom types for actions into hasura engine...');
+                        console.log("> Creating all custom types for actions into hasura engine...");
                         return [4, this.createCustomTypes()];
                     case 3:
                         _a.sent();
-                        console.log('> Registering actions plugins into hasura engine...');
+                        console.log("> Registering actions plugins into hasura engine...");
                         return [4, this.createActions()];
                     case 4:
                         _a.sent();
-                        console.log('> Registering action permissions into hasura engine...');
+                        console.log("> Registering action permissions into hasura engine...");
                         return [4, this.createActionPermissions()];
                     case 5:
                         _a.sent();
@@ -222,8 +222,8 @@ var HasuraEngine = (function () {
                     case 0: return [4, this.events.scanEvents()];
                     case 1:
                         _g.sent();
-                        console.log('> Dropping & Registering all events from hasura engine...');
-                        return [4, this.events.getEventsByType('database')];
+                        console.log("> Dropping & Registering all events from hasura engine...");
+                        return [4, this.events.getEventsByType("database")];
                     case 2:
                         events = _g.sent();
                         _g.label = 3;
@@ -280,18 +280,18 @@ var HasuraEngine = (function () {
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
-                        console.log('> Scanning tracks directory...');
-                        backendInstancePath = (0, GluestackConfig_1.getConfig)('backendInstancePath');
-                        authInstancePath = (0, GluestackConfig_1.getConfig)('authInstancePath');
-                        if (!authInstancePath || authInstancePath === '') {
-                            return [2, Promise.resolve('No auth instance path found')];
+                        console.log("> Scanning tracks directory...");
+                        backendInstancePath = (0, GluestackConfig_1.getConfig)("backendInstancePath");
+                        authInstancePath = (0, GluestackConfig_1.getConfig)("authInstancePath");
+                        if (!authInstancePath || authInstancePath === "") {
+                            return [2, Promise.resolve("No auth instance path found")];
                         }
-                        tracksPath = (0, path_1.join)(process.cwd(), backendInstancePath, 'services', this.pluginName, 'tracks');
+                        tracksPath = (0, path_1.join)(process.cwd(), backendInstancePath, "services", this.pluginName, "tracks");
                         if (!(0, helpers_1.fileExists)(tracksPath)) {
-                            console.log('> Nothing to track into hasura engine...');
-                            return [2, Promise.resolve('No tracks folder found. Skipping...')];
+                            console.log("> Nothing to track into hasura engine...");
+                            return [2, Promise.resolve("No tracks folder found. Skipping...")];
                         }
-                        console.log('> Applying all tracks into hasura engine...');
+                        console.log("> Applying all tracks into hasura engine...");
                         return [4, (0, promises_1.readdir)(tracksPath, { withFileTypes: true })];
                     case 1:
                         dirents = _e.sent();
@@ -309,7 +309,7 @@ var HasuraEngine = (function () {
                     case 5:
                         _e.trys.push([5, , 11, 12]);
                         dirent = _c;
-                        if (!(dirent.isFile() && (0, path_1.extname)(dirent.name).toLowerCase() === '.json')) return [3, 10];
+                        if (!(dirent.isFile() && (0, path_1.extname)(dirent.name).toLowerCase() === ".json")) return [3, 10];
                         trackPath = (0, path_1.join)(tracksPath, dirent.name);
                         _e.label = 6;
                     case 6:
@@ -371,7 +371,7 @@ var HasuraEngine = (function () {
                     case 3:
                         _o.trys.push([3, , 24, 25]);
                         plugin = _c;
-                        functionsDirectory = (0, path_1.join)(plugin.path, 'functions');
+                        functionsDirectory = (0, path_1.join)(plugin.path, "functions");
                         return [4, (0, helpers_1.fileExists)(functionsDirectory)];
                     case 4:
                         exist = _o.sent();
@@ -379,7 +379,9 @@ var HasuraEngine = (function () {
                             console.log("> Action Instance ".concat(plugin.instance, " is missing. Skipping..."));
                             return [3, 25];
                         }
-                        return [4, (0, promises_1.readdir)(functionsDirectory, { withFileTypes: true })];
+                        return [4, (0, promises_1.readdir)(functionsDirectory, {
+                                withFileTypes: true
+                            })];
                     case 5:
                         dirents = _o.sent();
                         _o.label = 6;

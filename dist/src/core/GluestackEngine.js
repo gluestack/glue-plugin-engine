@@ -80,7 +80,8 @@ var GluestackEngine = (function () {
         this.backendPlugins = constants_1.backendPlugins;
         (0, GluestackConfig_1.setConfig)('backendInstancePath', backendInstancePath);
     }
-    GluestackEngine.prototype.start = function () {
+    GluestackEngine.prototype.start = function (isRun) {
+        if (isRun === void 0) { isRun = false; }
         return __awaiter(this, void 0, void 0, function () {
             var hasuraPluginName, hasuraEngine, cron, router;
             return __generator(this, function (_a) {
@@ -118,6 +119,7 @@ var GluestackEngine = (function () {
                         return [4, hasuraEngine.applySeed()];
                     case 10:
                         _a.sent();
+                        if (!!isRun) return [3, 14];
                         return [4, hasuraEngine.exportMetadata()];
                     case 11:
                         _a.sent();
@@ -201,7 +203,8 @@ var GluestackEngine = (function () {
             });
         });
     };
-    GluestackEngine.prototype.stop = function () {
+    GluestackEngine.prototype.stop = function (isRun) {
+        if (isRun === void 0) { isRun = false; }
         return __awaiter(this, void 0, void 0, function () {
             var hasuraPluginName, hasuraInstanceStatus, hasuraEngine;
             return __generator(this, function (_a) {
@@ -216,6 +219,7 @@ var GluestackEngine = (function () {
                         _a.sent();
                         hasuraPluginName = (0, GluestackConfig_1.getConfig)('hasuraInstancePath');
                         hasuraInstanceStatus = (0, GluestackConfig_1.getConfig)('hasuraInstanceStatus');
+                        if (!!isRun) return [3, 4];
                         if (!(hasuraInstanceStatus === 'up' && hasuraPluginName && hasuraPluginName !== '')) return [3, 4];
                         hasuraEngine = new HasuraEngine_1["default"](this.actionPlugins);
                         return [4, hasuraEngine.exportMetadata()];

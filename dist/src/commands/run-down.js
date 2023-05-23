@@ -39,15 +39,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.runner = exports.developDown = void 0;
+exports.runner = exports.runDown = void 0;
 var GluestackEngine_1 = __importDefault(require("../core/GluestackEngine"));
-function developDown(program, glueStackPlugin) {
+function runDown(program, glueStackPlugin) {
     var command = program
-        .command("develop:down")
+        .command("run:down")
         .description("Stops all the project containers")
         .action(function () { return runner(glueStackPlugin); });
 }
-exports.developDown = developDown;
+exports.runDown = runDown;
 function runner(glueStackPlugin) {
     return __awaiter(this, void 0, void 0, function () {
         var app, engine, err_1;
@@ -59,7 +59,7 @@ function runner(glueStackPlugin) {
                 case 1:
                     _a.trys.push([1, 3, , 4]);
                     engine = new GluestackEngine_1["default"](app, "backend");
-                    return [4, engine.stop()];
+                    return [4, engine.stop(true)];
                 case 2:
                     _a.sent();
                     return [3, 4];
@@ -73,4 +73,4 @@ function runner(glueStackPlugin) {
     });
 }
 exports.runner = runner;
-//# sourceMappingURL=develop-down.js.map
+//# sourceMappingURL=run-down.js.map
