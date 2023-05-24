@@ -58,23 +58,18 @@ function runner(glueStackPlugin, args) {
                     app = glueStackPlugin.app;
                     _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 5, , 6]);
+                    _a.trys.push([1, 3, , 4]);
                     noCache = args.cache === false ? true : false;
-                    engine = new GluestackEngine_1["default"](app, 'backend');
-                    if (!noCache) return [3, 3];
-                    return [4, engine.startDockerComposeBuild()];
+                    engine = new GluestackEngine_1["default"](app, "backend");
+                    return [4, engine.start(false, noCache)];
                 case 2:
                     _a.sent();
-                    _a.label = 3;
-                case 3: return [4, engine.start()];
-                case 4:
-                    _a.sent();
-                    return [3, 6];
-                case 5:
+                    return [3, 4];
+                case 3:
                     err_1 = _a.sent();
-                    console.log('>> err', err_1);
-                    return [3, 6];
-                case 6: return [2];
+                    console.log(">> err", err_1);
+                    return [3, 4];
+                case 4: return [2];
             }
         });
     });

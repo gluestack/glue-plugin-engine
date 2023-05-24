@@ -10,10 +10,10 @@ export default class GluestackEngine implements IGlueEngine {
     statelessPlugins: IStatelessPlugin[];
     devonlyPlugins: IStatelessPlugin[];
     constructor(app: IApp, backendInstancePath: string);
-    start(isRun?: boolean): Promise<void>;
+    start(isRun?: boolean, noCache?: boolean): Promise<void>;
     update(): Promise<void>;
     stop(isRun?: boolean): Promise<void>;
-    collectPlugins(pluginType?: 'stateless' | 'devonly', status?: 'up' | 'down'): Promise<void>;
+    collectPlugins(pluginType?: "stateless" | "devonly", status?: "up" | "down"): Promise<void>;
     createDockerCompose(): Promise<void>;
     startDockerCompose(): Promise<void>;
     startDockerComposeBuild(): Promise<void>;

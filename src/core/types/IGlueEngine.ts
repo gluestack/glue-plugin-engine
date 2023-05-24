@@ -5,7 +5,7 @@ export interface IGlueEngine {
 
   collectPlugins(): Promise<void>;
 
-  start(isRun?: boolean): Promise<void>;
+  start(isRun?: boolean, noCache?: boolean): Promise<void>;
   update(): Promise<void>;
   stop(isRun?: boolean): Promise<void>;
 

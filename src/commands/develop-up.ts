@@ -7,27 +7,17 @@ export function developUp(program: any, glueStackPlugin: GlueStackPlugin) {
   const command = program
     .command("develop:up")
     .option("--no-cache", "build docker with --no-cache")
-    .description(
-      "Starts all the containers for the project.",
-    )
+    .description("Starts all the containers for the project.")
     .action((args: any) => runner(glueStackPlugin, args));
 }
 
-export async function runner(
-  glueStackPlugin: GlueStackPlugin,
-  args: any
-) {
+export async function runner(glueStackPlugin: GlueStackPlugin, args: any) {
   const app: IApp = glueStackPlugin.app;
   try {
     const noCache = args.cache === false ? true : false;
-    const engine: IGlueEngine = new GluestackEngine(app, 'backend');
-
-    if (noCache) {
-      await engine.startDockerComposeBuild();
-    }
-
-    await engine.start();
+    const engine: IGlueEngine = new GluestackEngine(app, "backend");
+    await engine.start(false, noCache);
   } catch (err) {
-    console.log('>> err', err);
+    console.log(">> err", err);
   }
 }
