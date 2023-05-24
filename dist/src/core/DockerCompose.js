@@ -496,6 +496,28 @@ var DockerCompose = (function () {
             });
         });
     };
+    DockerCompose.prototype.build = function (projectName, filepath) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, (0, spawn_1.execute)('docker', [
+                            'compose',
+                            '-p',
+                            projectName,
+                            'build',
+                            '--no-cache'
+                        ], {
+                            cwd: (0, path_1.join)(filepath),
+                            stdio: 'inherit',
+                            shell: true
+                        })];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
     DockerCompose.prototype.stop = function (projectName, filepath) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {

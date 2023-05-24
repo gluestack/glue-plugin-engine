@@ -44,13 +44,14 @@ var GluestackEngine_1 = __importDefault(require("../core/GluestackEngine"));
 function runUp(program, glueStackPlugin) {
     var command = program
         .command("run:up")
+        .option("--no-cache", "build docker with --no-cache")
         .description("Starts all the containers for the project.")
-        .action(function () { return runner(glueStackPlugin); });
+        .action(function (args) { return runner(glueStackPlugin, args); });
 }
 exports.runUp = runUp;
-function runner(glueStackPlugin) {
+function runner(glueStackPlugin, args) {
     return __awaiter(this, void 0, void 0, function () {
-        var app, engine, err_1;
+        var app, noCache, engine, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -58,8 +59,9 @@ function runner(glueStackPlugin) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
+                    noCache = args.cache === false ? true : false;
                     engine = new GluestackEngine_1["default"](app, 'backend');
-                    return [4, engine.start(true)];
+                    return [4, engine.start(true, noCache)];
                 case 2:
                     _a.sent();
                     return [3, 4];

@@ -19,5 +19,6 @@ export default class DockerCompose implements IDockerCompose {
     addStorybook(plugin: IStatelessPlugin): Promise<void>;
     addOthers(plugin: IStatelessPlugin): Promise<void>;
     start(projectName: string, filepath: string): Promise<void>;
+    build(projectName: string, filepath: string): Promise<void>;
     stop(projectName: string, filepath: string): Promise<void>;
 }
