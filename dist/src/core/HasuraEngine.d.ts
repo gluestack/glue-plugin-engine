@@ -8,17 +8,18 @@ export default class HasuraEngine implements IHasuraEngine {
     private actions;
     private actionGQLFile;
     private actionSettingFile;
+    private payload;
     constructor(actionPlugins: IStatelessPlugin[]);
     exportMetadata(): Promise<void>;
     applyMetadata(): Promise<void>;
     applyMigrate(): Promise<void>;
     applySeed(): Promise<void>;
     reapplyActions(): Promise<void>;
+    private getMetadata;
+    private replaceMetadata;
     reapplyEvents(): Promise<void>;
     applyTracks(): Promise<string>;
     private scanActions;
-    private dropActions;
     private createActions;
-    private createActionPermissions;
     private createCustomTypes;
 }

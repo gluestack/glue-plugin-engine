@@ -26,9 +26,21 @@ export default class HasuraEngine implements IHasuraEngine {
   private actions: IAction[];
   private actionGQLFile: string = "action.graphql";
   private actionSettingFile: string = "action.setting";
+  private payload: any;
 
   constructor(actionPlugins: IStatelessPlugin[]) {
     this.actions = [];
+
+    this.payload = {
+      resource_version: 509,
+      metadata: {
+        version: 2,
+        sources: [],
+        actions: [],
+        custom_types: {}
+      }
+    };
+
     this.pluginName = getConfig("hasuraInstancePath");
     this.actionPlugins = actionPlugins;
 
@@ -168,23 +180,48 @@ export default class HasuraEngine implements IHasuraEngine {
     console.log("\n> Scanning for actions plugins...");
     await this.scanActions();
 
-    // drop all actions from hasura engine
-    console.log("> Dropping all actions from hasura engine...");
-    await this.dropActions();
+    // export metadata
+    await this.getMetadata();
 
-    // create all custom types for actions into hasura engine
-    console.log(
-      "> Creating all custom types for actions into hasura engine...",
-    );
+    // create all custom types for actions
+    console.log("> Creating all custom types for actions...");
     await this.createCustomTypes();
 
-    // create all actions plugins into hasura engine
-    console.log("> Registering actions plugins into hasura engine...");
+    // create all actions & their permissions
+    console.log("> Preparing actions & their permissions...");
     await this.createActions();
 
-    // create all action permissions into hasura engine
-    console.log("> Registering action permissions into hasura engine...");
-    await this.createActionPermissions();
+    // replace metadata into hasura engine
+    console.log("> Registering actions & their permissions...");
+    await this.replaceMetadata();
+  }
+
+  // get hdb_catalog hasura metadata
+  private async getMetadata(): Promise<void> {
+    const metadata = await this.metadata.makeRequest({
+      type: 'export_metadata',
+      version: 2,
+      args: {}
+    });
+
+    this.payload.resource_version = metadata.data.resource_version;
+    this.payload.metadata.version = metadata.data.metadata.version;
+    this.payload.metadata.sources = metadata.data.metadata.sources;
+    this.payload.metadata.actions = [];
+    this.payload.metadata.custom_types = {};
+  }
+
+  // get hdb_catalog hasura metadata
+  private async replaceMetadata(): Promise<void> {
+    await this.metadata.makeRequest({
+      type: 'replace_metadata',
+      version: 2,
+      args: {
+        allow_inconsistent_metadata: false,
+        allow_warnings: false,
+        metadata: this.payload.metadata
+      }
+    }, true);
   }
 
   // Re-apply all the events into the hasura engine
@@ -220,7 +257,7 @@ export default class HasuraEngine implements IHasuraEngine {
       this.pluginName,
       "tracks",
     );
-    if (!fileExists(tracksPath)) {
+    if (!await fileExists(tracksPath)) {
       console.log("> Nothing to track into hasura engine...");
       return Promise.resolve("No tracks folder found. Skipping...");
     }
@@ -263,6 +300,7 @@ export default class HasuraEngine implements IHasuraEngine {
       const dirents = await readdir(functionsDirectory, {
         withFileTypes: true,
       });
+
       for await (const dirent of dirents) {
         const actionGQLFile: string = join(
           functionsDirectory,
@@ -294,64 +332,29 @@ export default class HasuraEngine implements IHasuraEngine {
     }
   }
 
-  // Drops all actions from the hasura engine
-  private async dropActions(): Promise<void | boolean> {
-    if (this.actions.length <= 0) {
-      return Promise.resolve(false);
-    }
-
-    const body: any = {
-      type: "bulk_keep_going",
-      args: [],
-    };
-
-    for await (const action of this.actions) {
-      body.args.push(await this.metadata.dropAction(action.name));
-    }
-
-    await this.metadata.makeRequest(body);
-  }
-
   // Create all actions into the hasura engine
   private async createActions(): Promise<void | boolean> {
     if (this.actions.length <= 0) {
       return Promise.resolve(false);
     }
 
-    // hasura bulk_keep_going does not work with create_action batches
-    const body: any = {
-      type: "bulk_keep_going",
-      args: [],
-    };
-
     for await (const action of this.actions) {
-      body.args.push(await this.metadata.createAction(action));
-    }
+      const permissions = [];
 
-    await this.metadata.makeRequest(body, true);
-  }
+      const _action = await this.metadata.createAction(action);
+      const _permissions = await this.metadata.createActionPermission(action);
 
-  // Create all actions into the hasura engine
-  private async createActionPermissions(): Promise<void | boolean> {
-    if (this.actions.length <= 0) {
-      return Promise.resolve(false);
-    }
-
-    const body: any = {
-      type: "bulk_keep_going",
-      args: [],
-    };
-
-    for await (const action of this.actions) {
-      const actionPermission = await this.metadata.createActionPermission(
-        action,
-      );
-      if (actionPermission) {
-        body.args.push(actionPermission);
+      if (_permissions) {
+        for (const _permission of _permissions) {
+          permissions.push({ role: _permission.args.role });
+        }
       }
-    }
 
-    await this.metadata.makeRequest(body, true);
+      this.payload.metadata.actions.push({
+        ..._action.args,
+        permissions
+      });
+    }
   }
 
   // Create all custom types into the hasura engine
@@ -360,6 +363,6 @@ export default class HasuraEngine implements IHasuraEngine {
       return Promise.resolve(false);
     }
 
-    await this.metadata.createCustomTypes(this.actions);
+    this.payload.metadata.custom_types = await this.metadata.createCustomTypes(this.actions);
   }
 }

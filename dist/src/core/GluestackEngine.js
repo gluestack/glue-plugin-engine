@@ -54,7 +54,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var services = require("@gluestack/framework/constants/services");
 var HasuraEngine_1 = __importDefault(require("./HasuraEngine"));
 var GluestackCron_1 = __importDefault(require("./GluestackCron"));
@@ -112,7 +112,7 @@ var GluestackEngine = (function () {
                         _a.sent();
                         hasuraPluginName = (0, GluestackConfig_1.getConfig)("hasuraInstancePath");
                         if (!(hasuraPluginName && hasuraPluginName !== "")) return [3, 16];
-                        hasuraEngine = new HasuraEngine_1["default"](this.actionPlugins);
+                        hasuraEngine = new HasuraEngine_1.default(this.actionPlugins);
                         return [4, hasuraEngine.applyMigrate()];
                     case 9:
                         _a.sent();
@@ -137,11 +137,11 @@ var GluestackEngine = (function () {
                         _a.sent();
                         _a.label = 16;
                     case 16:
-                        cron = new GluestackCron_1["default"]();
+                        cron = new GluestackCron_1.default();
                         return [4, cron.start()];
                     case 17:
                         _a.sent();
-                        router = new GluestackRouter_1["default"]();
+                        router = new GluestackRouter_1.default();
                         return [4, router.listEndpoints()];
                     case 18:
                         _a.sent();
@@ -175,7 +175,7 @@ var GluestackEngine = (function () {
                         _a.sent();
                         hasuraPluginName = (0, GluestackConfig_1.getConfig)("hasuraInstancePath");
                         if (!(!this.shouldRestart && hasuraPluginName && hasuraPluginName !== "")) return [3, 5];
-                        hasuraEngine = new HasuraEngine_1["default"](this.actionPlugins);
+                        hasuraEngine = new HasuraEngine_1.default(this.actionPlugins);
                         return [4, hasuraEngine.reapplyActions()];
                     case 3:
                         _a.sent();
@@ -229,7 +229,7 @@ var GluestackEngine = (function () {
                         if (!(hasuraInstanceStatus === "up" &&
                             hasuraPluginName &&
                             hasuraPluginName !== "")) return [3, 4];
-                        hasuraEngine = new HasuraEngine_1["default"](this.actionPlugins);
+                        hasuraEngine = new HasuraEngine_1.default(this.actionPlugins);
                         return [4, hasuraEngine.exportMetadata()];
                     case 3:
                         _a.sent();
@@ -296,7 +296,7 @@ var GluestackEngine = (function () {
                             instance: instance.getName(),
                             path: (0, path_1.join)(process.cwd(), instance.getInstallationPath()),
                             instance_object: instance,
-                            status: instance.getContainerController().getStatus()
+                            status: instance.getContainerController().getStatus(),
                         };
                         if (pluginType === "stateless" && (0, valid_glue_service_1.isDaprService)(name)) {
                             daprServices = (0, GluestackConfig_1.getConfig)("daprServices");
@@ -304,7 +304,7 @@ var GluestackEngine = (function () {
                                 name: details.name,
                                 path: details.path,
                                 instance: details.instance,
-                                isService: (0, valid_glue_service_1.isGlueService)(details.name)
+                                isService: (0, valid_glue_service_1.isGlueService)(details.name),
                             };
                             (0, GluestackConfig_1.setConfig)("daprServices", daprServices);
                         }
@@ -375,7 +375,7 @@ var GluestackEngine = (function () {
                         return [3, 27];
                     case 22:
                         _e.trys.push([22, , 25, 26]);
-                        if (!(!_d && !_a && (_b = instances_1["return"]))) return [3, 24];
+                        if (!(!_d && !_a && (_b = instances_1.return))) return [3, 24];
                         return [4, _b.call(instances_1)];
                     case 23:
                         _e.sent();
@@ -404,7 +404,7 @@ var GluestackEngine = (function () {
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
-                        dockerCompose = new DockerCompose_1["default"]();
+                        dockerCompose = new DockerCompose_1.default();
                         plugins = __spreadArray(__spreadArray([], this.statelessPlugins, true), this.devonlyPlugins, true);
                         hasuraInstancePath = (0, GluestackConfig_1.getConfig)("hasuraInstancePath");
                         postgresInstancePath = (0, GluestackConfig_1.getConfig)("postgresInstancePath");
@@ -486,7 +486,7 @@ var GluestackEngine = (function () {
                         return [3, 29];
                     case 24:
                         _e.trys.push([24, , 27, 28]);
-                        if (!(!_d && !_a && (_b = plugins_1["return"]))) return [3, 26];
+                        if (!(!_d && !_a && (_b = plugins_1.return))) return [3, 26];
                         return [4, _b.call(plugins_1)];
                     case 25:
                         _e.sent();
@@ -515,7 +515,7 @@ var GluestackEngine = (function () {
                     case 1:
                         folders = _a.sent();
                         projectName = folders[folders.length - 1];
-                        dockerCompose = new DockerCompose_1["default"]();
+                        dockerCompose = new DockerCompose_1.default();
                         return [4, dockerCompose.start(projectName, filepath)];
                     case 2:
                         _a.sent();
@@ -535,7 +535,7 @@ var GluestackEngine = (function () {
                     case 1:
                         folders = _a.sent();
                         projectName = folders[folders.length - 1];
-                        dockerCompose = new DockerCompose_1["default"]();
+                        dockerCompose = new DockerCompose_1.default();
                         return [4, dockerCompose.build(projectName, filepath)];
                     case 2:
                         _a.sent();
@@ -555,7 +555,7 @@ var GluestackEngine = (function () {
                     case 1:
                         folders = _a.sent();
                         projectName = folders[folders.length - 1];
-                        dockerCompose = new DockerCompose_1["default"]();
+                        dockerCompose = new DockerCompose_1.default();
                         return [4, dockerCompose.stop(projectName, filepath)];
                     case 2:
                         _a.sent();
@@ -603,7 +603,7 @@ var GluestackEngine = (function () {
                         args = ["glue", "env:generate"];
                         return [4, (0, spawn_1.execute)("node", args, {
                                 cwd: process.cwd(),
-                                shell: true
+                                shell: true,
                             })];
                     case 1:
                         _a.sent();
@@ -621,7 +621,7 @@ var GluestackEngine = (function () {
                         args = ["glue", "route:generate"];
                         return [4, (0, spawn_1.execute)("node", args, {
                                 cwd: process.cwd(),
-                                shell: true
+                                shell: true,
                             })];
                     case 1:
                         _a.sent();
@@ -632,5 +632,5 @@ var GluestackEngine = (function () {
     };
     return GluestackEngine;
 }());
-exports["default"] = GluestackEngine;
+exports.default = GluestackEngine;
 //# sourceMappingURL=GluestackEngine.js.map

@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.isGlueService = exports.isDaprService = exports.isValidGluePlugin = void 0;
 var constants_1 = require("../configs/constants");
 var isValidGluePlugin = function (backendPlugins, name) {

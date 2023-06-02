@@ -74,8 +74,8 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-exports.__esModule = true;
-var axios = require("axios")["default"];
+Object.defineProperty(exports, "__esModule", { value: true });
+var axios = require("axios").default;
 var path_1 = require("path");
 var dotenv = __importStar(require("dotenv"));
 var node_fs_1 = require("node:fs");
@@ -228,7 +228,7 @@ var HasuraMetadata = (function () {
                         return [3, 18];
                     case 13:
                         _e.trys.push([13, , 16, 17]);
-                        if (!(!_a && !_b && (_c = actions_1["return"]))) return [3, 15];
+                        if (!(!_a && !_b && (_c = actions_1.return))) return [3, 15];
                         return [4, _c.call(actions_1)];
                     case 14:
                         _e.sent();
@@ -238,10 +238,7 @@ var HasuraMetadata = (function () {
                         if (e_1) throw e_1.error;
                         return [7];
                     case 17: return [7];
-                    case 18: return [4, this.makeRequest(customTypes, true)];
-                    case 19:
-                        _e.sent();
-                        return [2];
+                    case 18: return [2, customTypes.args];
                 }
             });
         });
@@ -303,7 +300,7 @@ var HasuraMetadata = (function () {
     HasuraMetadata.prototype.makeRequest = function (data, showError) {
         if (showError === void 0) { showError = false; }
         return __awaiter(this, void 0, void 0, function () {
-            var hasuraEnvs, options, error_4;
+            var hasuraEnvs, options, response, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -323,8 +320,8 @@ var HasuraMetadata = (function () {
                         _a.trys.push([1, 3, , 4]);
                         return [4, axios.request(options)];
                     case 2:
-                        _a.sent();
-                        return [3, 4];
+                        response = _a.sent();
+                        return [2, response];
                     case 3:
                         error_4 = _a.sent();
                         if (showError && error_4.response && error_4.response.data.error) {
@@ -342,5 +339,5 @@ var HasuraMetadata = (function () {
     };
     return HasuraMetadata;
 }());
-exports["default"] = HasuraMetadata;
+exports.default = HasuraMetadata;
 //# sourceMappingURL=HasuraMetadata.js.map

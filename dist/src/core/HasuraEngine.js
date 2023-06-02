@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -45,7 +56,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var path_1 = require("path");
 var promises_1 = require("node:fs/promises");
 var spawn_1 = require("../helpers/spawn");
@@ -58,10 +69,19 @@ var HasuraEngine = (function () {
         this.actionGQLFile = "action.graphql";
         this.actionSettingFile = "action.setting";
         this.actions = [];
+        this.payload = {
+            resource_version: 509,
+            metadata: {
+                version: 2,
+                sources: [],
+                actions: [],
+                custom_types: {}
+            }
+        };
         this.pluginName = (0, GluestackConfig_1.getConfig)("hasuraInstancePath");
         this.actionPlugins = actionPlugins;
-        this.metadata = new HasuraMetadata_1["default"](this.pluginName);
-        this.events = new GluestackEvent_1["default"](this.pluginName);
+        this.metadata = new HasuraMetadata_1.default(this.pluginName);
+        this.events = new GluestackEvent_1.default(this.pluginName);
     }
     HasuraEngine.prototype.exportMetadata = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -79,7 +99,7 @@ var HasuraEngine = (function () {
                             ], {
                                 cwd: filepath,
                                 stdio: "inherit",
-                                shell: true
+                                shell: true,
                             })];
                     case 1:
                         _a.sent();
@@ -104,7 +124,7 @@ var HasuraEngine = (function () {
                             ], {
                                 cwd: filepath,
                                 stdio: "inherit",
-                                shell: true
+                                shell: true,
                             })];
                     case 1:
                         _a.sent();
@@ -134,7 +154,7 @@ var HasuraEngine = (function () {
                             ], {
                                 cwd: filepath,
                                 stdio: "inherit",
-                                shell: true
+                                shell: true,
                             })];
                     case 2:
                         _a.sent();
@@ -174,7 +194,7 @@ var HasuraEngine = (function () {
                             ], {
                                 cwd: filepath,
                                 stdio: "inherit",
-                                shell: true
+                                shell: true,
                             })];
                     case 3:
                         _a.sent();
@@ -192,21 +212,62 @@ var HasuraEngine = (function () {
                         return [4, this.scanActions()];
                     case 1:
                         _a.sent();
-                        console.log("> Dropping all actions from hasura engine...");
-                        return [4, this.dropActions()];
+                        return [4, this.getMetadata()];
                     case 2:
                         _a.sent();
-                        console.log("> Creating all custom types for actions into hasura engine...");
+                        console.log("> Creating all custom types for actions...");
                         return [4, this.createCustomTypes()];
                     case 3:
                         _a.sent();
-                        console.log("> Registering actions plugins into hasura engine...");
+                        console.log("> Preparing actions & their permissions...");
                         return [4, this.createActions()];
                     case 4:
                         _a.sent();
-                        console.log("> Registering action permissions into hasura engine...");
-                        return [4, this.createActionPermissions()];
+                        console.log("> Registering actions & their permissions...");
+                        return [4, this.replaceMetadata()];
                     case 5:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    HasuraEngine.prototype.getMetadata = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var metadata;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.metadata.makeRequest({
+                            type: 'export_metadata',
+                            version: 2,
+                            args: {}
+                        })];
+                    case 1:
+                        metadata = _a.sent();
+                        this.payload.resource_version = metadata.data.resource_version;
+                        this.payload.metadata.version = metadata.data.metadata.version;
+                        this.payload.metadata.sources = metadata.data.metadata.sources;
+                        this.payload.metadata.actions = [];
+                        this.payload.metadata.custom_types = {};
+                        return [2];
+                }
+            });
+        });
+    };
+    HasuraEngine.prototype.replaceMetadata = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.metadata.makeRequest({
+                            type: 'replace_metadata',
+                            version: 2,
+                            args: {
+                                allow_inconsistent_metadata: false,
+                                allow_warnings: false,
+                                metadata: this.payload.metadata
+                            }
+                        }, true)];
+                    case 1:
                         _a.sent();
                         return [2];
                 }
@@ -258,7 +319,7 @@ var HasuraEngine = (function () {
                         return [3, 18];
                     case 13:
                         _g.trys.push([13, , 16, 17]);
-                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 15];
+                        if (!(!_d && !_a && (_b = _e.return))) return [3, 15];
                         return [4, _b.call(_e)];
                     case 14:
                         _g.sent();
@@ -287,67 +348,69 @@ var HasuraEngine = (function () {
                             return [2, Promise.resolve("No auth instance path found")];
                         }
                         tracksPath = (0, path_1.join)(process.cwd(), backendInstancePath, "services", this.pluginName, "tracks");
-                        if (!(0, helpers_1.fileExists)(tracksPath)) {
+                        return [4, (0, helpers_1.fileExists)(tracksPath)];
+                    case 1:
+                        if (!(_e.sent())) {
                             console.log("> Nothing to track into hasura engine...");
                             return [2, Promise.resolve("No tracks folder found. Skipping...")];
                         }
                         console.log("> Applying all tracks into hasura engine...");
                         return [4, (0, promises_1.readdir)(tracksPath, { withFileTypes: true })];
-                    case 1:
-                        dirents = _e.sent();
-                        _e.label = 2;
                     case 2:
-                        _e.trys.push([2, 14, 15, 20]);
-                        _d = true, dirents_1 = __asyncValues(dirents);
+                        dirents = _e.sent();
                         _e.label = 3;
-                    case 3: return [4, dirents_1.next()];
-                    case 4:
-                        if (!(dirents_1_1 = _e.sent(), _a = dirents_1_1.done, !_a)) return [3, 13];
+                    case 3:
+                        _e.trys.push([3, 15, 16, 21]);
+                        _d = true, dirents_1 = __asyncValues(dirents);
+                        _e.label = 4;
+                    case 4: return [4, dirents_1.next()];
+                    case 5:
+                        if (!(dirents_1_1 = _e.sent(), _a = dirents_1_1.done, !_a)) return [3, 14];
                         _c = dirents_1_1.value;
                         _d = false;
-                        _e.label = 5;
-                    case 5:
-                        _e.trys.push([5, , 11, 12]);
-                        dirent = _c;
-                        if (!(dirent.isFile() && (0, path_1.extname)(dirent.name).toLowerCase() === ".json")) return [3, 10];
-                        trackPath = (0, path_1.join)(tracksPath, dirent.name);
                         _e.label = 6;
                     case 6:
-                        _e.trys.push([6, 9, , 10]);
-                        return [4, (0, promises_1.readFile)(trackPath)];
+                        _e.trys.push([6, , 12, 13]);
+                        dirent = _c;
+                        if (!(dirent.isFile() && (0, path_1.extname)(dirent.name).toLowerCase() === ".json")) return [3, 11];
+                        trackPath = (0, path_1.join)(tracksPath, dirent.name);
+                        _e.label = 7;
                     case 7:
+                        _e.trys.push([7, 10, , 11]);
+                        return [4, (0, promises_1.readFile)(trackPath)];
+                    case 8:
                         track = _e.sent();
                         trackJSON = JSON.parse(track.toString());
                         return [4, this.metadata.tracks(trackJSON)];
-                    case 8:
-                        _e.sent();
-                        return [3, 10];
                     case 9:
+                        _e.sent();
+                        return [3, 11];
+                    case 10:
                         error_1 = _e.sent();
-                        return [3, 12];
-                    case 10: return [3, 12];
-                    case 11:
+                        return [3, 13];
+                    case 11: return [3, 13];
+                    case 12:
                         _d = true;
                         return [7];
-                    case 12: return [3, 3];
-                    case 13: return [3, 20];
-                    case 14:
+                    case 13: return [3, 4];
+                    case 14: return [3, 21];
+                    case 15:
                         e_2_1 = _e.sent();
                         e_2 = { error: e_2_1 };
-                        return [3, 20];
-                    case 15:
-                        _e.trys.push([15, , 18, 19]);
-                        if (!(!_d && !_a && (_b = dirents_1["return"]))) return [3, 17];
-                        return [4, _b.call(dirents_1)];
+                        return [3, 21];
                     case 16:
+                        _e.trys.push([16, , 19, 20]);
+                        if (!(!_d && !_a && (_b = dirents_1.return))) return [3, 18];
+                        return [4, _b.call(dirents_1)];
+                    case 17:
                         _e.sent();
-                        _e.label = 17;
-                    case 17: return [3, 19];
-                    case 18:
+                        _e.label = 18;
+                    case 18: return [3, 20];
+                    case 19:
                         if (e_2) throw e_2.error;
                         return [7];
-                    case 19: return [7];
-                    case 20: return [2];
+                    case 20: return [7];
+                    case 21: return [2];
                 }
             });
         });
@@ -380,7 +443,7 @@ var HasuraEngine = (function () {
                             return [3, 25];
                         }
                         return [4, (0, promises_1.readdir)(functionsDirectory, {
-                                withFileTypes: true
+                                withFileTypes: true,
                             })];
                     case 5:
                         dirents = _o.sent();
@@ -420,7 +483,7 @@ var HasuraEngine = (function () {
                                 handler: (0, helpers_1.removeSpecialChars)(plugin.instance),
                                 path: (0, path_1.join)(functionsDirectory, dirent.name),
                                 grapqhl_path: actionGQLFile,
-                                setting_path: actionSettingFile
+                                setting_path: actionSettingFile,
                             });
                         }
                         return [3, 15];
@@ -435,7 +498,7 @@ var HasuraEngine = (function () {
                         return [3, 23];
                     case 18:
                         _o.trys.push([18, , 21, 22]);
-                        if (!(!_k && !_d && (_e = dirents_2["return"]))) return [3, 20];
+                        if (!(!_k && !_d && (_e = dirents_2.return))) return [3, 20];
                         return [4, _e.call(dirents_2)];
                     case 19:
                         _o.sent();
@@ -457,7 +520,7 @@ var HasuraEngine = (function () {
                         return [3, 33];
                     case 28:
                         _o.trys.push([28, , 31, 32]);
-                        if (!(!_g && !_a && (_b = _h["return"]))) return [3, 30];
+                        if (!(!_g && !_a && (_b = _h.return))) return [3, 30];
                         return [4, _b.call(_h)];
                     case 29:
                         _o.sent();
@@ -472,205 +535,84 @@ var HasuraEngine = (function () {
             });
         });
     };
-    HasuraEngine.prototype.dropActions = function () {
+    HasuraEngine.prototype.createActions = function () {
         var _a, e_5, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var body, _d, _e, _f, action, _g, _h, e_5_1;
-            return __generator(this, function (_j) {
-                switch (_j.label) {
-                    case 0:
-                        if (this.actions.length <= 0) {
-                            return [2, Promise.resolve(false)];
-                        }
-                        body = {
-                            type: "bulk_keep_going",
-                            args: []
-                        };
-                        _j.label = 1;
-                    case 1:
-                        _j.trys.push([1, 9, 10, 15]);
-                        _d = true, _e = __asyncValues(this.actions);
-                        _j.label = 2;
-                    case 2: return [4, _e.next()];
-                    case 3:
-                        if (!(_f = _j.sent(), _a = _f.done, !_a)) return [3, 8];
-                        _c = _f.value;
-                        _d = false;
-                        _j.label = 4;
-                    case 4:
-                        _j.trys.push([4, , 6, 7]);
-                        action = _c;
-                        _h = (_g = body.args).push;
-                        return [4, this.metadata.dropAction(action.name)];
-                    case 5:
-                        _h.apply(_g, [_j.sent()]);
-                        return [3, 7];
-                    case 6:
-                        _d = true;
-                        return [7];
-                    case 7: return [3, 2];
-                    case 8: return [3, 15];
-                    case 9:
-                        e_5_1 = _j.sent();
-                        e_5 = { error: e_5_1 };
-                        return [3, 15];
-                    case 10:
-                        _j.trys.push([10, , 13, 14]);
-                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 12];
-                        return [4, _b.call(_e)];
-                    case 11:
-                        _j.sent();
-                        _j.label = 12;
-                    case 12: return [3, 14];
-                    case 13:
-                        if (e_5) throw e_5.error;
-                        return [7];
-                    case 14: return [7];
-                    case 15: return [4, this.metadata.makeRequest(body)];
-                    case 16:
-                        _j.sent();
-                        return [2];
-                }
-            });
-        });
-    };
-    HasuraEngine.prototype.createActions = function () {
-        var _a, e_6, _b, _c;
-        return __awaiter(this, void 0, void 0, function () {
-            var body, _d, _e, _f, action, _g, _h, e_6_1;
-            return __generator(this, function (_j) {
-                switch (_j.label) {
-                    case 0:
-                        if (this.actions.length <= 0) {
-                            return [2, Promise.resolve(false)];
-                        }
-                        body = {
-                            type: "bulk_keep_going",
-                            args: []
-                        };
-                        _j.label = 1;
-                    case 1:
-                        _j.trys.push([1, 9, 10, 15]);
-                        _d = true, _e = __asyncValues(this.actions);
-                        _j.label = 2;
-                    case 2: return [4, _e.next()];
-                    case 3:
-                        if (!(_f = _j.sent(), _a = _f.done, !_a)) return [3, 8];
-                        _c = _f.value;
-                        _d = false;
-                        _j.label = 4;
-                    case 4:
-                        _j.trys.push([4, , 6, 7]);
-                        action = _c;
-                        _h = (_g = body.args).push;
-                        return [4, this.metadata.createAction(action)];
-                    case 5:
-                        _h.apply(_g, [_j.sent()]);
-                        return [3, 7];
-                    case 6:
-                        _d = true;
-                        return [7];
-                    case 7: return [3, 2];
-                    case 8: return [3, 15];
-                    case 9:
-                        e_6_1 = _j.sent();
-                        e_6 = { error: e_6_1 };
-                        return [3, 15];
-                    case 10:
-                        _j.trys.push([10, , 13, 14]);
-                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 12];
-                        return [4, _b.call(_e)];
-                    case 11:
-                        _j.sent();
-                        _j.label = 12;
-                    case 12: return [3, 14];
-                    case 13:
-                        if (e_6) throw e_6.error;
-                        return [7];
-                    case 14: return [7];
-                    case 15: return [4, this.metadata.makeRequest(body, true)];
-                    case 16:
-                        _j.sent();
-                        return [2];
-                }
-            });
-        });
-    };
-    HasuraEngine.prototype.createActionPermissions = function () {
-        var _a, e_7, _b, _c;
-        return __awaiter(this, void 0, void 0, function () {
-            var body, _d, _e, _f, action, actionPermission, e_7_1;
+            var _d, _e, _f, action, permissions, _action, _permissions, _i, _permissions_1, _permission, e_5_1;
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
                         if (this.actions.length <= 0) {
                             return [2, Promise.resolve(false)];
                         }
-                        body = {
-                            type: "bulk_keep_going",
-                            args: []
-                        };
                         _g.label = 1;
                     case 1:
-                        _g.trys.push([1, 9, 10, 15]);
+                        _g.trys.push([1, 10, 11, 16]);
                         _d = true, _e = __asyncValues(this.actions);
                         _g.label = 2;
                     case 2: return [4, _e.next()];
                     case 3:
-                        if (!(_f = _g.sent(), _a = _f.done, !_a)) return [3, 8];
+                        if (!(_f = _g.sent(), _a = _f.done, !_a)) return [3, 9];
                         _c = _f.value;
                         _d = false;
                         _g.label = 4;
                     case 4:
-                        _g.trys.push([4, , 6, 7]);
+                        _g.trys.push([4, , 7, 8]);
                         action = _c;
-                        return [4, this.metadata.createActionPermission(action)];
+                        permissions = [];
+                        return [4, this.metadata.createAction(action)];
                     case 5:
-                        actionPermission = _g.sent();
-                        if (actionPermission) {
-                            body.args.push(actionPermission);
-                        }
-                        return [3, 7];
+                        _action = _g.sent();
+                        return [4, this.metadata.createActionPermission(action)];
                     case 6:
+                        _permissions = _g.sent();
+                        if (_permissions) {
+                            for (_i = 0, _permissions_1 = _permissions; _i < _permissions_1.length; _i++) {
+                                _permission = _permissions_1[_i];
+                                permissions.push({ role: _permission.args.role });
+                            }
+                        }
+                        this.payload.metadata.actions.push(__assign(__assign({}, _action.args), { permissions: permissions }));
+                        return [3, 8];
+                    case 7:
                         _d = true;
                         return [7];
-                    case 7: return [3, 2];
-                    case 8: return [3, 15];
-                    case 9:
-                        e_7_1 = _g.sent();
-                        e_7 = { error: e_7_1 };
-                        return [3, 15];
+                    case 8: return [3, 2];
+                    case 9: return [3, 16];
                     case 10:
-                        _g.trys.push([10, , 13, 14]);
-                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 12];
-                        return [4, _b.call(_e)];
+                        e_5_1 = _g.sent();
+                        e_5 = { error: e_5_1 };
+                        return [3, 16];
                     case 11:
+                        _g.trys.push([11, , 14, 15]);
+                        if (!(!_d && !_a && (_b = _e.return))) return [3, 13];
+                        return [4, _b.call(_e)];
+                    case 12:
                         _g.sent();
-                        _g.label = 12;
-                    case 12: return [3, 14];
-                    case 13:
-                        if (e_7) throw e_7.error;
+                        _g.label = 13;
+                    case 13: return [3, 15];
+                    case 14:
+                        if (e_5) throw e_5.error;
                         return [7];
-                    case 14: return [7];
-                    case 15: return [4, this.metadata.makeRequest(body, true)];
-                    case 16:
-                        _g.sent();
-                        return [2];
+                    case 15: return [7];
+                    case 16: return [2];
                 }
             });
         });
     };
     HasuraEngine.prototype.createCustomTypes = function () {
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         if (this.actions.length <= 0) {
                             return [2, Promise.resolve(false)];
                         }
+                        _a = this.payload.metadata;
                         return [4, this.metadata.createCustomTypes(this.actions)];
                     case 1:
-                        _a.sent();
+                        _a.custom_types = _b.sent();
                         return [2];
                 }
             });
@@ -678,5 +620,5 @@ var HasuraEngine = (function () {
     };
     return HasuraEngine;
 }());
-exports["default"] = HasuraEngine;
+exports.default = HasuraEngine;
 //# sourceMappingURL=HasuraEngine.js.map

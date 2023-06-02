@@ -131,16 +131,12 @@ const createAction = (
   return body;
 };
 
-const createActionPermission = (query: any, roles: string[]) => {
+const createActionPermission = (query: any, roles: string[]): any => {
   const action: string = objectKeys(query.properties)[0];
 
-  const body: any = {
-    type: "bulk_keep_going",
-    args: [],
-  };
-
+  const body = [];
   for (const role of roles) {
-    body.args.push({
+    body.push({
       type: "create_action_permission",
       args: {
         action,

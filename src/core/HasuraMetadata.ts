@@ -107,7 +107,7 @@ export default class HasuraMetadata implements IHasuraMetadata {
   }
 
   // Creates the given custom-types against all the actions in the hasura engine
-  public async createCustomTypes(actions: IAction[]): Promise<void> {
+  public async createCustomTypes(actions: IAction[]): Promise<any> {
     const customTypes: any = {
       type: 'set_custom_types',
       args: {
@@ -149,7 +149,8 @@ export default class HasuraMetadata implements IHasuraMetadata {
     }
 
     // creating action
-    await this.makeRequest(customTypes, true);
+    // await this.makeRequest(customTypes, true);
+    return customTypes.args;
   }
 
   // Creates the given event in the hasura engine
@@ -188,7 +189,7 @@ export default class HasuraMetadata implements IHasuraMetadata {
   // Make a request to the hasura engine with the available env vars
   private async makeRequest(
     data: any, showError: boolean = false
-  ): Promise<void> {
+  ): Promise<any> {
     const hasuraEnvs: any = this.hasuraEnvs;
 
     const options = {
@@ -203,7 +204,8 @@ export default class HasuraMetadata implements IHasuraMetadata {
     };
 
     try {
-      await axios.request(options);
+      const response = await axios.request(options);
+      return response;
     } catch (error) {
       if (showError && error.response && error.response.data.error) {
         console.log('> Error:', error.response.data.error);
