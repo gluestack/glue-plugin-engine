@@ -255,29 +255,82 @@ var HasuraEngine = (function () {
         });
     };
     HasuraEngine.prototype.replaceMetadata = function () {
+        var _a, e_1, _b, _c;
+        var _d;
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var response, inconsistentObjects, head, rows, _e, inconsistentObjects_1, inconsistentObjects_1_1, inconsistentObject, e_1_1;
+            return __generator(this, function (_f) {
+                switch (_f.label) {
                     case 0: return [4, this.metadata.makeRequest({
                             type: 'replace_metadata',
                             version: 2,
                             args: {
-                                allow_inconsistent_metadata: false,
-                                allow_warnings: false,
+                                allow_inconsistent_metadata: true,
+                                allow_warnings: true,
                                 metadata: this.payload.metadata
                             }
                         }, true)];
                     case 1:
-                        _a.sent();
-                        return [2];
+                        response = _f.sent();
+                        inconsistentObjects = ((_d = response === null || response === void 0 ? void 0 : response.data) === null || _d === void 0 ? void 0 : _d.inconsistent_objects) || [];
+                        if (!(inconsistentObjects.length > 0)) return [3, 15];
+                        console.log('> Some inconsistent objects found in the hasura engine...');
+                        head = ['Type', 'Name', 'Reason'];
+                        rows = [];
+                        _f.label = 2;
+                    case 2:
+                        _f.trys.push([2, 7, 8, 13]);
+                        _e = true, inconsistentObjects_1 = __asyncValues(inconsistentObjects);
+                        _f.label = 3;
+                    case 3: return [4, inconsistentObjects_1.next()];
+                    case 4:
+                        if (!(inconsistentObjects_1_1 = _f.sent(), _a = inconsistentObjects_1_1.done, !_a)) return [3, 6];
+                        _c = inconsistentObjects_1_1.value;
+                        _e = false;
+                        try {
+                            inconsistentObject = _c;
+                            rows.push([
+                                inconsistentObject.type || 'NA',
+                                inconsistentObject.name || 'NA',
+                                inconsistentObject.reason || 'NA',
+                            ]);
+                        }
+                        finally {
+                            _e = true;
+                        }
+                        _f.label = 5;
+                    case 5: return [3, 3];
+                    case 6: return [3, 13];
+                    case 7:
+                        e_1_1 = _f.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3, 13];
+                    case 8:
+                        _f.trys.push([8, , 11, 12]);
+                        if (!(!_e && !_a && (_b = inconsistentObjects_1.return))) return [3, 10];
+                        return [4, _b.call(inconsistentObjects_1)];
+                    case 9:
+                        _f.sent();
+                        _f.label = 10;
+                    case 10: return [3, 12];
+                    case 11:
+                        if (e_1) throw e_1.error;
+                        return [7];
+                    case 12: return [7];
+                    case 13: return [4, helpers_1.ConsoleTable.print(head, rows)];
+                    case 14:
+                        _f.sent();
+                        process.exit(1);
+                        _f.label = 15;
+                    case 15: return [2];
                 }
             });
         });
     };
     HasuraEngine.prototype.reapplyEvents = function () {
-        var _a, e_1, _b, _c;
+        var _a, e_2, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var events, _d, _e, _f, table, e_1_1;
+            var events, _d, _e, _f, table, e_2_1;
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0: return [4, this.events.scanEvents()];
@@ -314,8 +367,8 @@ var HasuraEngine = (function () {
                     case 10: return [3, 4];
                     case 11: return [3, 18];
                     case 12:
-                        e_1_1 = _g.sent();
-                        e_1 = { error: e_1_1 };
+                        e_2_1 = _g.sent();
+                        e_2 = { error: e_2_1 };
                         return [3, 18];
                     case 13:
                         _g.trys.push([13, , 16, 17]);
@@ -326,7 +379,7 @@ var HasuraEngine = (function () {
                         _g.label = 15;
                     case 15: return [3, 17];
                     case 16:
-                        if (e_1) throw e_1.error;
+                        if (e_2) throw e_2.error;
                         return [7];
                     case 17: return [7];
                     case 18: return [2];
@@ -335,9 +388,9 @@ var HasuraEngine = (function () {
         });
     };
     HasuraEngine.prototype.applyTracks = function () {
-        var _a, e_2, _b, _c;
+        var _a, e_3, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var backendInstancePath, authInstancePath, tracksPath, dirents, _d, dirents_1, dirents_1_1, dirent, trackPath, track, trackJSON, error_1, e_2_1;
+            var backendInstancePath, authInstancePath, tracksPath, dirents, _d, dirents_1, dirents_1_1, dirent, trackPath, track, trackJSON, error_1, e_3_1;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
@@ -395,8 +448,8 @@ var HasuraEngine = (function () {
                     case 13: return [3, 4];
                     case 14: return [3, 21];
                     case 15:
-                        e_2_1 = _e.sent();
-                        e_2 = { error: e_2_1 };
+                        e_3_1 = _e.sent();
+                        e_3 = { error: e_3_1 };
                         return [3, 21];
                     case 16:
                         _e.trys.push([16, , 19, 20]);
@@ -407,7 +460,7 @@ var HasuraEngine = (function () {
                         _e.label = 18;
                     case 18: return [3, 20];
                     case 19:
-                        if (e_2) throw e_2.error;
+                        if (e_3) throw e_3.error;
                         return [7];
                     case 20: return [7];
                     case 21: return [2];
@@ -416,9 +469,9 @@ var HasuraEngine = (function () {
         });
     };
     HasuraEngine.prototype.scanActions = function () {
-        var _a, e_3, _b, _c, _d, e_4, _e, _f;
+        var _a, e_4, _b, _c, _d, e_5, _e, _f;
         return __awaiter(this, void 0, void 0, function () {
-            var _g, _h, _j, plugin, functionsDirectory, exist, dirents, _k, dirents_2, dirents_2_1, dirent, actionGQLFile, actionSettingFile, _l, _m, e_4_1, e_3_1;
+            var _g, _h, _j, plugin, functionsDirectory, exist, dirents, _k, dirents_2, dirents_2_1, dirent, actionGQLFile, actionSettingFile, _l, _m, e_5_1, e_4_1;
             return __generator(this, function (_o) {
                 switch (_o.label) {
                     case 0:
@@ -450,7 +503,7 @@ var HasuraEngine = (function () {
                         _o.label = 6;
                     case 6:
                         _o.trys.push([6, 17, 18, 23]);
-                        _k = true, dirents_2 = (e_4 = void 0, __asyncValues(dirents));
+                        _k = true, dirents_2 = (e_5 = void 0, __asyncValues(dirents));
                         _o.label = 7;
                     case 7: return [4, dirents_2.next()];
                     case 8:
@@ -493,8 +546,8 @@ var HasuraEngine = (function () {
                     case 15: return [3, 7];
                     case 16: return [3, 23];
                     case 17:
-                        e_4_1 = _o.sent();
-                        e_4 = { error: e_4_1 };
+                        e_5_1 = _o.sent();
+                        e_5 = { error: e_5_1 };
                         return [3, 23];
                     case 18:
                         _o.trys.push([18, , 21, 22]);
@@ -505,7 +558,7 @@ var HasuraEngine = (function () {
                         _o.label = 20;
                     case 20: return [3, 22];
                     case 21:
-                        if (e_4) throw e_4.error;
+                        if (e_5) throw e_5.error;
                         return [7];
                     case 22: return [7];
                     case 23: return [3, 25];
@@ -515,8 +568,8 @@ var HasuraEngine = (function () {
                     case 25: return [3, 1];
                     case 26: return [3, 33];
                     case 27:
-                        e_3_1 = _o.sent();
-                        e_3 = { error: e_3_1 };
+                        e_4_1 = _o.sent();
+                        e_4 = { error: e_4_1 };
                         return [3, 33];
                     case 28:
                         _o.trys.push([28, , 31, 32]);
@@ -527,7 +580,7 @@ var HasuraEngine = (function () {
                         _o.label = 30;
                     case 30: return [3, 32];
                     case 31:
-                        if (e_3) throw e_3.error;
+                        if (e_4) throw e_4.error;
                         return [7];
                     case 32: return [7];
                     case 33: return [2];
@@ -536,9 +589,9 @@ var HasuraEngine = (function () {
         });
     };
     HasuraEngine.prototype.createActions = function () {
-        var _a, e_5, _b, _c;
+        var _a, e_6, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var _d, _e, _f, action, permissions, _action, _permissions, _i, _permissions_1, _permission, e_5_1;
+            var _d, _e, _f, action, permissions, _action, _permissions, _i, _permissions_1, _permission, e_6_1;
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
@@ -580,8 +633,8 @@ var HasuraEngine = (function () {
                     case 8: return [3, 2];
                     case 9: return [3, 16];
                     case 10:
-                        e_5_1 = _g.sent();
-                        e_5 = { error: e_5_1 };
+                        e_6_1 = _g.sent();
+                        e_6 = { error: e_6_1 };
                         return [3, 16];
                     case 11:
                         _g.trys.push([11, , 14, 15]);
@@ -592,7 +645,7 @@ var HasuraEngine = (function () {
                         _g.label = 13;
                     case 13: return [3, 15];
                     case 14:
-                        if (e_5) throw e_5.error;
+                        if (e_6) throw e_6.error;
                         return [7];
                     case 15: return [7];
                     case 16: return [2];

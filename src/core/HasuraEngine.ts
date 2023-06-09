@@ -2,7 +2,7 @@ import { extname, join } from "path";
 import { readFile, readdir } from "node:fs/promises";
 
 import { execute } from "../helpers/spawn";
-import { getFiles, fileExists, removeSpecialChars } from "@gluestack/helpers";
+import { ConsoleTable, getFiles, fileExists, removeSpecialChars } from "@gluestack/helpers";
 
 import { IStatelessPlugin } from "./types/IStatelessPlugin";
 import { IAction, IHasuraEngine } from "./types/IHasuraEngine";
@@ -213,15 +213,33 @@ export default class HasuraEngine implements IHasuraEngine {
 
   // get hdb_catalog hasura metadata
   private async replaceMetadata(): Promise<void> {
-    await this.metadata.makeRequest({
+    const response = await this.metadata.makeRequest({
       type: 'replace_metadata',
       version: 2,
       args: {
-        allow_inconsistent_metadata: false,
-        allow_warnings: false,
+        allow_inconsistent_metadata: true,
+        allow_warnings: true,
         metadata: this.payload.metadata
       }
     }, true);
+
+    const inconsistentObjects = response?.data?.inconsistent_objects || [];
+    if (inconsistentObjects.length > 0) {
+      console.log('> Some inconsistent objects found in the hasura engine...');
+      const head: string[] = ['Type', 'Name', 'Reason'];
+      const rows: any = [];
+
+      for await (const inconsistentObject of inconsistentObjects) {
+        rows.push([
+          inconsistentObject.type || 'NA',
+          inconsistentObject.name || 'NA',
+          inconsistentObject.reason || 'NA',
+        ]);
+      }
+
+      await ConsoleTable.print(head, rows);
+      process.exit(1);
+    }
   }
 
   // Re-apply all the events into the hasura engine
