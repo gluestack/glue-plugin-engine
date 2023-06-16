@@ -45,7 +45,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.runner = exports.developWatch = void 0;
 var path_1 = require("path");
 var GlueStackWatch_1 = __importDefault(require("../core/GlueStackWatch"));
@@ -73,7 +73,7 @@ function runner(gluestackPlugin) {
                         process.exit(-1);
                     }
                     console.log("> Watching ".concat(paths.length, " directories/files for changes..."));
-                    watcher = new GlueStackWatch_1.default(paths);
+                    watcher = new GlueStackWatch_1["default"](paths);
                     watcher.on('add', function (path) { return __awaiter(_this, void 0, void 0, function () {
                         return __generator(this, function (_a) {
                             switch (_a.label) {
@@ -173,7 +173,7 @@ var restartsWatchedContainers = function (app, down) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 4, , 5]);
-                    engine = new GluestackEngine_1.default(app, 'backend');
+                    engine = new GluestackEngine_1["default"](app, 'backend');
                     return [4, engine.stop()];
                 case 1:
                     _a.sent();
@@ -248,7 +248,7 @@ var scanForWatchables = function (instances) { var _a, instances_1, instances_1_
                 return [3, 18];
             case 13:
                 _j.trys.push([13, , 16, 17]);
-                if (!(!_b && !_f && (_g = files_1.return))) return [3, 15];
+                if (!(!_b && !_f && (_g = files_1["return"]))) return [3, 15];
                 return [4, _g.call(files_1)];
             case 14:
                 _j.sent();
@@ -279,7 +279,7 @@ var scanForWatchables = function (instances) { var _a, instances_1, instances_1_
                 return [3, 31];
             case 26:
                 _j.trys.push([26, , 29, 30]);
-                if (!(!_a && !_c && (_d = instances_1.return))) return [3, 28];
+                if (!(!_a && !_c && (_d = instances_1["return"]))) return [3, 28];
                 return [4, _d.call(instances_1)];
             case 27:
                 _j.sent();

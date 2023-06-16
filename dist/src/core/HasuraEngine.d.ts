@@ -8,6 +8,7 @@ export default class HasuraEngine implements IHasuraEngine {
     private actions;
     private actionGQLFile;
     private actionSettingFile;
+    private actionYamlFile;
     private payload;
     constructor(actionPlugins: IStatelessPlugin[]);
     exportMetadata(): Promise<void>;

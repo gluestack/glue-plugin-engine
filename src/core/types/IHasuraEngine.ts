@@ -6,6 +6,7 @@ export interface IAction {
   handler: string;
   grapqhl_path: string;
   setting_path: string;
+  yaml_path?: string;
 }
 
 export interface IHasuraEngine {

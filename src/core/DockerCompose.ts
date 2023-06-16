@@ -33,6 +33,9 @@ export default class DockerCompose implements IDockerCompose {
 
   // Adds a service to the docker-compose file
   public addService(name: string, service: IService) {
+    service.extra_hosts = [
+      "host.docker.internal:host-gateway"
+    ]
     this.services[removeSpecialChars(name)] = service;
   }
 

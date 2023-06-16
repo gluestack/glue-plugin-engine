@@ -1,17 +1,19 @@
 const axios = require("axios").default;
 
-import { join } from 'path';
-import * as dotenv from 'dotenv';
-import { readFileSync } from 'node:fs';
+import { join } from "path";
+import * as dotenv from "dotenv";
+import * as yaml from "yaml";
+import { readFileSync } from "node:fs";
 
-import { IAction } from '../core/types/IHasuraEngine';
-import { IHasuraMetadata } from './types/IHasuraMetadata';
+import { IAction } from "../core/types/IHasuraEngine";
+import { IHasuraMetadata } from "./types/IHasuraMetadata";
 
-import { getConfig, setConfig } from './GluestackConfig';
-import { generate as generateEvent } from '../helpers/generate-events';
+import { getConfig, setConfig } from "./GluestackConfig";
+import { generate as generateEvent } from "../helpers/generate-events";
 import {
-  generate as generateActionOrCustomType, generateActionPermission
- } from '../helpers/generate-action-custom-types';
+  generate as generateActionOrCustomType,
+  generateActionPermission,
+} from "../helpers/generate-action-custom-types";
 
 /**
  * HasuraMetadata
@@ -28,17 +30,17 @@ export default class HasuraMetadata implements IHasuraMetadata {
     this.pluginName = pluginName;
     this.hasuraEnvs = this.captureEnvVars();
 
-    setConfig('hasuraEnvs', this.hasuraEnvs);
+    setConfig("hasuraEnvs", this.hasuraEnvs);
   }
 
   // Drops the given action from the hasura engine
   public async dropAction(actionName: string): Promise<any> {
     const data = {
-      "type": "drop_action",
-      "args": {
-        "name": actionName,
-        "clear_data": true
-      }
+      type: "drop_action",
+      args: {
+        name: actionName,
+        clear_data: true,
+      },
     };
 
     return data;
@@ -47,29 +49,41 @@ export default class HasuraMetadata implements IHasuraMetadata {
   // Creates the given action in the hasura engine
   public async createAction(action: IAction): Promise<any> {
     // Reads the action.setting file
-    const setting = readFileSync(action.setting_path, 'utf8');
+    const setting = readFileSync(action.setting_path, "utf8");
 
     const regex = /execution="(.*)"/g;
     const match = regex.exec(setting);
 
-    const kind = match && match[1] && match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+    const kind =
+      match && match[1] && match[1] === "sync" ? "synchronous" : "asynchronous";
 
     const forwardRegex = /forward_client_headers="(.*)"/g;
     const forwardMatch = forwardRegex.exec(setting);
 
-    const forward_client_headers = forwardMatch && forwardMatch[1] && forwardMatch[1] === 'true' ? true : false;
+    const forward_client_headers =
+      forwardMatch && forwardMatch[1] && forwardMatch[1] === "true"
+        ? true
+        : false;
 
     // Reads the action.graphql file
-    const schema = readFileSync(action.grapqhl_path, 'utf8');
+    const schema = readFileSync(action.grapqhl_path, "utf8");
 
     let actionData: any = {};
 
     try {
       // Generates the custom types & action data
-      actionData = await generateActionOrCustomType(schema, kind, 'action', forward_client_headers, action);
+      actionData = await generateActionOrCustomType(
+        schema,
+        kind,
+        "action",
+        forward_client_headers,
+        action,
+      );
     } catch (error) {
-      console.log(`> Action Instance ${action.name} has invalid graphql schema. Skipping...`);
-      return Promise.resolve('failed');
+      console.log(
+        `> Action Instance ${action.name} has invalid graphql schema. Skipping...`,
+      );
+      return Promise.resolve("failed");
     }
 
     // creating action
@@ -79,15 +93,15 @@ export default class HasuraMetadata implements IHasuraMetadata {
   // Creates the given action in the hasura engine
   public async createActionPermission(action: IAction): Promise<any> {
     // Reads the action.setting file
-    const setting = readFileSync(action.setting_path, 'utf8');
+    const setting = readFileSync(action.setting_path, "utf8");
 
     const regex = /roles="(.*)"/g;
     const match = regex.exec(setting);
     if (match?.[1]) {
-      const roles = match[1].split(",")
+      const roles = match[1].split(",");
 
       // Reads the action.graphql file
-      const schema = readFileSync(action.grapqhl_path, 'utf8');
+      const schema = readFileSync(action.grapqhl_path, "utf8");
 
       let actionData: any = {};
 
@@ -95,8 +109,10 @@ export default class HasuraMetadata implements IHasuraMetadata {
         // Generates the custom types & action data
         actionData = await generateActionPermission(schema, roles);
       } catch (error) {
-        console.log(`> Action Instance ${action.name} has invalid graphql schema. Skipping...`);
-        return Promise.resolve('failed');
+        console.log(
+          `> Action Instance ${action.name} has invalid graphql schema. Skipping...`,
+        );
+        return Promise.resolve("failed");
       }
 
       // creating action
@@ -109,40 +125,71 @@ export default class HasuraMetadata implements IHasuraMetadata {
   // Creates the given custom-types against all the actions in the hasura engine
   public async createCustomTypes(actions: IAction[]): Promise<any> {
     const customTypes: any = {
-      type: 'set_custom_types',
+      type: "set_custom_types",
       args: {
         scalars: [],
         enums: [],
         objects: [],
-        input_objects: []
-      }
+        input_objects: [],
+      },
     };
 
     // prepares custom types for actions
     for await (const action of actions) {
       // Reads the action.setting file
-      const setting = readFileSync(action.setting_path, 'utf8');
+      const setting = readFileSync(action.setting_path, "utf8");
 
       const regex = /execution="(.*)"/g;
       const match = regex.exec(setting);
 
-      const kind = match && match[1] && match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+      const kind =
+        match && match[1] && match[1] === "sync"
+          ? "synchronous"
+          : "asynchronous";
 
       // Reads the action.graphql file
-      const schema: string = readFileSync(action.grapqhl_path, 'utf8');
+      const schema: string = readFileSync(action.grapqhl_path, "utf8");
+      
+      let relationships = [];
+      // Reads the action.yaml file
+      const _yaml: string = action.yaml_path
+        ? readFileSync(action.yaml_path, "utf8")
+        : null;
+
+      if (_yaml) {
+        relationships = yaml.parse(_yaml).relationships || [];
+      }
 
       try {
         // Generates the custom types & action data
-        const _tmp: any = await generateActionOrCustomType(schema, kind, 'custom_types');
+        const _tmp: any = await generateActionOrCustomType(
+          schema,
+          kind,
+          "custom_types",
+        );
 
         customTypes.type = _tmp.type;
-        customTypes.args.scalars = [...customTypes.args.scalars, ..._tmp.args.scalars];
-        customTypes.args.enums = [...customTypes.args.enums, ..._tmp.args.enums];
-        customTypes.args.objects = [...customTypes.args.objects, ..._tmp.args.objects];
-        customTypes.args.input_objects = [...customTypes.args.input_objects, ..._tmp.args.input_objects];
-
+        customTypes.args.scalars = [
+          ...customTypes.args.scalars,
+          ..._tmp.args.scalars,
+        ];
+        customTypes.args.enums = [
+          ...customTypes.args.enums,
+          ..._tmp.args.enums,
+        ];
+        _tmp.args.objects[0].relationships = relationships;
+        customTypes.args.objects = [
+          ...customTypes.args.objects,
+          ..._tmp.args.objects,
+        ];
+        customTypes.args.input_objects = [
+          ...customTypes.args.input_objects,
+          ..._tmp.args.input_objects,
+        ];
       } catch (error) {
-        console.log(`> Action Instance ${action.name} has invalid graphql schema. Skipping...`);
+        console.log(
+          `> Action Instance ${action.name} has invalid graphql schema. Skipping...`,
+        );
         continue;
       }
 
@@ -158,7 +205,11 @@ export default class HasuraMetadata implements IHasuraMetadata {
     const hasuraEnvs: any = this.hasuraEnvs;
     const { HASURA_GRAPHQL_DB_NAME } = hasuraEnvs;
 
-    const payload: any = await generateEvent(tableName, HASURA_GRAPHQL_DB_NAME, events);
+    const payload: any = await generateEvent(
+      tableName,
+      HASURA_GRAPHQL_DB_NAME,
+      events,
+    );
 
     // creating event
     await this.makeRequest(payload, true);
@@ -170,11 +221,11 @@ export default class HasuraMetadata implements IHasuraMetadata {
     const { HASURA_GRAPHQL_DB_NAME } = hasuraEnvs;
 
     const payload: any = {
-      type: 'pg_delete_event_trigger',
+      type: "pg_delete_event_trigger",
       args: {
         name: `${tableName}_trigger`,
-        source: HASURA_GRAPHQL_DB_NAME
-      }
+        source: HASURA_GRAPHQL_DB_NAME,
+      },
     };
 
     // creating event
@@ -188,19 +239,20 @@ export default class HasuraMetadata implements IHasuraMetadata {
 
   // Make a request to the hasura engine with the available env vars
   private async makeRequest(
-    data: any, showError: boolean = false
+    data: any,
+    showError: boolean = false,
   ): Promise<any> {
     const hasuraEnvs: any = this.hasuraEnvs;
 
     const options = {
-      method: 'POST',
+      method: "POST",
       url: `${hasuraEnvs.HASURA_GRAPHQL_URL}/v1/metadata`,
       headers: {
-        'Content-Type': 'application/json',
-        'x-hasura-role': 'admin',
-        'x-hasura-admin-secret': hasuraEnvs.HASURA_GRAPHQL_ADMIN_SECRET
+        "Content-Type": "application/json",
+        "x-hasura-role": "admin",
+        "x-hasura-admin-secret": hasuraEnvs.HASURA_GRAPHQL_ADMIN_SECRET,
       },
-      data: data
+      data: data,
     };
 
     try {
@@ -208,7 +260,7 @@ export default class HasuraMetadata implements IHasuraMetadata {
       return response;
     } catch (error) {
       if (showError && error.response && error.response.data.error) {
-        console.log('> Error:', error.response.data.error);
+        console.log("> Error:", error.response.data.error);
       }
     }
   }
@@ -216,7 +268,11 @@ export default class HasuraMetadata implements IHasuraMetadata {
   // Capture the hasura envs from the .env file
   private captureEnvVars(): any {
     const envPath = join(
-      process.cwd(), getConfig('backendInstancePath'), 'services', this.pluginName, '.env.generated'
+      process.cwd(),
+      getConfig("backendInstancePath"),
+      "services",
+      this.pluginName,
+      ".env.generated",
     );
 
     return dotenv.config({ path: envPath }).parsed;

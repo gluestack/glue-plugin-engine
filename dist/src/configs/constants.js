@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.daprServices = exports.noDockerfiles = exports.ignorePlugins = exports.backendPlugins = void 0;
 exports.backendPlugins = [
     '@gluestack/glue-plugin-*'

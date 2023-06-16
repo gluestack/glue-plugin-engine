@@ -17,6 +17,7 @@ interface IServiceBase {
     restart: string;
     healthcheck?: IHealthCheck;
     entrypoint?: any;
+    extra_hosts?: any[];
 }
 interface IServiceWithBuild extends IServiceBase {
     build: string;

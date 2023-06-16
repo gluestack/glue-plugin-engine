@@ -1,5 +1,5 @@
-import { IAction } from '../core/types/IHasuraEngine';
-import { IHasuraMetadata } from './types/IHasuraMetadata';
+import { IAction } from "../core/types/IHasuraEngine";
+import { IHasuraMetadata } from "./types/IHasuraMetadata";
 export default class HasuraMetadata implements IHasuraMetadata {
     hasuraEnvs: any;
     private pluginName;

@@ -56,7 +56,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var path_1 = require("path");
 var promises_1 = require("node:fs/promises");
 var spawn_1 = require("../helpers/spawn");
@@ -68,6 +68,7 @@ var HasuraEngine = (function () {
     function HasuraEngine(actionPlugins) {
         this.actionGQLFile = "action.graphql";
         this.actionSettingFile = "action.setting";
+        this.actionYamlFile = "action.yaml";
         this.actions = [];
         this.payload = {
             resource_version: 509,
@@ -80,8 +81,8 @@ var HasuraEngine = (function () {
         };
         this.pluginName = (0, GluestackConfig_1.getConfig)("hasuraInstancePath");
         this.actionPlugins = actionPlugins;
-        this.metadata = new HasuraMetadata_1.default(this.pluginName);
-        this.events = new GluestackEvent_1.default(this.pluginName);
+        this.metadata = new HasuraMetadata_1["default"](this.pluginName);
+        this.events = new GluestackEvent_1["default"](this.pluginName);
     }
     HasuraEngine.prototype.exportMetadata = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -99,7 +100,7 @@ var HasuraEngine = (function () {
                             ], {
                                 cwd: filepath,
                                 stdio: "inherit",
-                                shell: true,
+                                shell: true
                             })];
                     case 1:
                         _a.sent();
@@ -124,7 +125,7 @@ var HasuraEngine = (function () {
                             ], {
                                 cwd: filepath,
                                 stdio: "inherit",
-                                shell: true,
+                                shell: true
                             })];
                     case 1:
                         _a.sent();
@@ -154,7 +155,7 @@ var HasuraEngine = (function () {
                             ], {
                                 cwd: filepath,
                                 stdio: "inherit",
-                                shell: true,
+                                shell: true
                             })];
                     case 2:
                         _a.sent();
@@ -194,7 +195,7 @@ var HasuraEngine = (function () {
                             ], {
                                 cwd: filepath,
                                 stdio: "inherit",
-                                shell: true,
+                                shell: true
                             })];
                     case 3:
                         _a.sent();
@@ -238,7 +239,7 @@ var HasuraEngine = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4, this.metadata.makeRequest({
-                            type: 'export_metadata',
+                            type: "export_metadata",
                             version: 2,
                             args: {}
                         })];
@@ -262,7 +263,7 @@ var HasuraEngine = (function () {
             return __generator(this, function (_f) {
                 switch (_f.label) {
                     case 0: return [4, this.metadata.makeRequest({
-                            type: 'replace_metadata',
+                            type: "replace_metadata",
                             version: 2,
                             args: {
                                 allow_inconsistent_metadata: true,
@@ -274,8 +275,8 @@ var HasuraEngine = (function () {
                         response = _f.sent();
                         inconsistentObjects = ((_d = response === null || response === void 0 ? void 0 : response.data) === null || _d === void 0 ? void 0 : _d.inconsistent_objects) || [];
                         if (!(inconsistentObjects.length > 0)) return [3, 15];
-                        console.log('> Some inconsistent objects found in the hasura engine...');
-                        head = ['Type', 'Name', 'Reason'];
+                        console.log("> Some inconsistent objects found in the hasura engine...");
+                        head = ["Type", "Name", "Reason"];
                         rows = [];
                         _f.label = 2;
                     case 2:
@@ -290,9 +291,9 @@ var HasuraEngine = (function () {
                         try {
                             inconsistentObject = _c;
                             rows.push([
-                                inconsistentObject.type || 'NA',
-                                inconsistentObject.name || 'NA',
-                                inconsistentObject.reason || 'NA',
+                                inconsistentObject.type || "NA",
+                                inconsistentObject.name || "NA",
+                                inconsistentObject.reason || "NA",
                             ]);
                         }
                         finally {
@@ -307,7 +308,7 @@ var HasuraEngine = (function () {
                         return [3, 13];
                     case 8:
                         _f.trys.push([8, , 11, 12]);
-                        if (!(!_e && !_a && (_b = inconsistentObjects_1.return))) return [3, 10];
+                        if (!(!_e && !_a && (_b = inconsistentObjects_1["return"]))) return [3, 10];
                         return [4, _b.call(inconsistentObjects_1)];
                     case 9:
                         _f.sent();
@@ -372,7 +373,7 @@ var HasuraEngine = (function () {
                         return [3, 18];
                     case 13:
                         _g.trys.push([13, , 16, 17]);
-                        if (!(!_d && !_a && (_b = _e.return))) return [3, 15];
+                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 15];
                         return [4, _b.call(_e)];
                     case 14:
                         _g.sent();
@@ -453,7 +454,7 @@ var HasuraEngine = (function () {
                         return [3, 21];
                     case 16:
                         _e.trys.push([16, , 19, 20]);
-                        if (!(!_d && !_a && (_b = dirents_1.return))) return [3, 18];
+                        if (!(!_d && !_a && (_b = dirents_1["return"]))) return [3, 18];
                         return [4, _b.call(dirents_1)];
                     case 17:
                         _e.sent();
@@ -471,119 +472,128 @@ var HasuraEngine = (function () {
     HasuraEngine.prototype.scanActions = function () {
         var _a, e_4, _b, _c, _d, e_5, _e, _f;
         return __awaiter(this, void 0, void 0, function () {
-            var _g, _h, _j, plugin, functionsDirectory, exist, dirents, _k, dirents_2, dirents_2_1, dirent, actionGQLFile, actionSettingFile, _l, _m, e_5_1, e_4_1;
-            return __generator(this, function (_o) {
-                switch (_o.label) {
+            var _g, _h, _j, plugin, functionsDirectory, exist, dirents, _k, dirents_2, dirents_2_1, dirent, actionGQLFile, actionSettingFile, actionYamlFile, _l, _m, _o, _p, e_5_1, e_4_1;
+            var _q;
+            return __generator(this, function (_r) {
+                switch (_r.label) {
                     case 0:
-                        _o.trys.push([0, 27, 28, 33]);
+                        _r.trys.push([0, 29, 30, 35]);
                         _g = true, _h = __asyncValues(this.actionPlugins);
-                        _o.label = 1;
+                        _r.label = 1;
                     case 1: return [4, _h.next()];
                     case 2:
-                        if (!(_j = _o.sent(), _a = _j.done, !_a)) return [3, 26];
+                        if (!(_j = _r.sent(), _a = _j.done, !_a)) return [3, 28];
                         _c = _j.value;
                         _g = false;
-                        _o.label = 3;
+                        _r.label = 3;
                     case 3:
-                        _o.trys.push([3, , 24, 25]);
+                        _r.trys.push([3, , 26, 27]);
                         plugin = _c;
                         functionsDirectory = (0, path_1.join)(plugin.path, "functions");
                         return [4, (0, helpers_1.fileExists)(functionsDirectory)];
                     case 4:
-                        exist = _o.sent();
+                        exist = _r.sent();
                         if (!exist) {
                             console.log("> Action Instance ".concat(plugin.instance, " is missing. Skipping..."));
-                            return [3, 25];
+                            return [3, 27];
                         }
                         return [4, (0, promises_1.readdir)(functionsDirectory, {
-                                withFileTypes: true,
+                                withFileTypes: true
                             })];
                     case 5:
-                        dirents = _o.sent();
-                        _o.label = 6;
+                        dirents = _r.sent();
+                        _r.label = 6;
                     case 6:
-                        _o.trys.push([6, 17, 18, 23]);
+                        _r.trys.push([6, 19, 20, 25]);
                         _k = true, dirents_2 = (e_5 = void 0, __asyncValues(dirents));
-                        _o.label = 7;
+                        _r.label = 7;
                     case 7: return [4, dirents_2.next()];
                     case 8:
-                        if (!(dirents_2_1 = _o.sent(), _d = dirents_2_1.done, !_d)) return [3, 16];
+                        if (!(dirents_2_1 = _r.sent(), _d = dirents_2_1.done, !_d)) return [3, 18];
                         _f = dirents_2_1.value;
                         _k = false;
-                        _o.label = 9;
+                        _r.label = 9;
                     case 9:
-                        _o.trys.push([9, , 14, 15]);
+                        _r.trys.push([9, , 16, 17]);
                         dirent = _f;
                         actionGQLFile = (0, path_1.join)(functionsDirectory, dirent.name, this.actionGQLFile);
                         actionSettingFile = (0, path_1.join)(functionsDirectory, dirent.name, this.actionSettingFile);
+                        actionYamlFile = (0, path_1.join)(functionsDirectory, dirent.name, this.actionYamlFile);
                         _m = dirent.isDirectory();
                         if (!_m) return [3, 11];
                         return [4, (0, helpers_1.fileExists)(actionGQLFile)];
                     case 10:
-                        _m = (_o.sent());
-                        _o.label = 11;
+                        _m = (_r.sent());
+                        _r.label = 11;
                     case 11:
                         _l = _m;
                         if (!_l) return [3, 13];
                         return [4, (0, helpers_1.fileExists)(actionSettingFile)];
                     case 12:
-                        _l = (_o.sent());
-                        _o.label = 13;
+                        _l = (_r.sent());
+                        _r.label = 13;
                     case 13:
-                        if (_l) {
-                            this.actions.push({
-                                name: (0, helpers_1.removeSpecialChars)(dirent.name),
-                                handler: (0, helpers_1.removeSpecialChars)(plugin.instance),
-                                path: (0, path_1.join)(functionsDirectory, dirent.name),
-                                grapqhl_path: actionGQLFile,
-                                setting_path: actionSettingFile,
-                            });
-                        }
-                        return [3, 15];
+                        if (!_l) return [3, 15];
+                        _p = (_o = this.actions).push;
+                        _q = {
+                            name: (0, helpers_1.removeSpecialChars)(dirent.name),
+                            handler: (0, helpers_1.removeSpecialChars)(plugin.instance),
+                            path: (0, path_1.join)(functionsDirectory, dirent.name),
+                            grapqhl_path: actionGQLFile,
+                            setting_path: actionSettingFile
+                        };
+                        return [4, (0, helpers_1.fileExists)(actionYamlFile)];
                     case 14:
+                        _p.apply(_o, [(_q.yaml_path = (_r.sent())
+                                ? actionYamlFile
+                                : null,
+                                _q)]);
+                        _r.label = 15;
+                    case 15: return [3, 17];
+                    case 16:
                         _k = true;
                         return [7];
-                    case 15: return [3, 7];
-                    case 16: return [3, 23];
-                    case 17:
-                        e_5_1 = _o.sent();
-                        e_5 = { error: e_5_1 };
-                        return [3, 23];
-                    case 18:
-                        _o.trys.push([18, , 21, 22]);
-                        if (!(!_k && !_d && (_e = dirents_2.return))) return [3, 20];
-                        return [4, _e.call(dirents_2)];
+                    case 17: return [3, 7];
+                    case 18: return [3, 25];
                     case 19:
-                        _o.sent();
-                        _o.label = 20;
-                    case 20: return [3, 22];
+                        e_5_1 = _r.sent();
+                        e_5 = { error: e_5_1 };
+                        return [3, 25];
+                    case 20:
+                        _r.trys.push([20, , 23, 24]);
+                        if (!(!_k && !_d && (_e = dirents_2["return"]))) return [3, 22];
+                        return [4, _e.call(dirents_2)];
                     case 21:
+                        _r.sent();
+                        _r.label = 22;
+                    case 22: return [3, 24];
+                    case 23:
                         if (e_5) throw e_5.error;
                         return [7];
-                    case 22: return [7];
-                    case 23: return [3, 25];
-                    case 24:
+                    case 24: return [7];
+                    case 25: return [3, 27];
+                    case 26:
                         _g = true;
                         return [7];
-                    case 25: return [3, 1];
-                    case 26: return [3, 33];
-                    case 27:
-                        e_4_1 = _o.sent();
-                        e_4 = { error: e_4_1 };
-                        return [3, 33];
-                    case 28:
-                        _o.trys.push([28, , 31, 32]);
-                        if (!(!_g && !_a && (_b = _h.return))) return [3, 30];
-                        return [4, _b.call(_h)];
+                    case 27: return [3, 1];
+                    case 28: return [3, 35];
                     case 29:
-                        _o.sent();
-                        _o.label = 30;
-                    case 30: return [3, 32];
+                        e_4_1 = _r.sent();
+                        e_4 = { error: e_4_1 };
+                        return [3, 35];
+                    case 30:
+                        _r.trys.push([30, , 33, 34]);
+                        if (!(!_g && !_a && (_b = _h["return"]))) return [3, 32];
+                        return [4, _b.call(_h)];
                     case 31:
+                        _r.sent();
+                        _r.label = 32;
+                    case 32: return [3, 34];
+                    case 33:
                         if (e_4) throw e_4.error;
                         return [7];
-                    case 32: return [7];
-                    case 33: return [2];
+                    case 34: return [7];
+                    case 35: return [2];
                 }
             });
         });
@@ -638,7 +648,7 @@ var HasuraEngine = (function () {
                         return [3, 16];
                     case 11:
                         _g.trys.push([11, , 14, 15]);
-                        if (!(!_d && !_a && (_b = _e.return))) return [3, 13];
+                        if (!(!_d && !_a && (_b = _e["return"]))) return [3, 13];
                         return [4, _b.call(_e)];
                     case 12:
                         _g.sent();
@@ -673,5 +683,5 @@ var HasuraEngine = (function () {
     };
     return HasuraEngine;
 }());
-exports.default = HasuraEngine;
+exports["default"] = HasuraEngine;
 //# sourceMappingURL=HasuraEngine.js.map

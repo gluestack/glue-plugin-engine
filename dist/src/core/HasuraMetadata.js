@@ -74,10 +74,11 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-var axios = require("axios").default;
+exports.__esModule = true;
+var axios = require("axios")["default"];
 var path_1 = require("path");
 var dotenv = __importStar(require("dotenv"));
+var yaml = __importStar(require("yaml"));
 var node_fs_1 = require("node:fs");
 var GluestackConfig_1 = require("./GluestackConfig");
 var generate_events_1 = require("../helpers/generate-events");
@@ -86,17 +87,17 @@ var HasuraMetadata = (function () {
     function HasuraMetadata(pluginName) {
         this.pluginName = pluginName;
         this.hasuraEnvs = this.captureEnvVars();
-        (0, GluestackConfig_1.setConfig)('hasuraEnvs', this.hasuraEnvs);
+        (0, GluestackConfig_1.setConfig)("hasuraEnvs", this.hasuraEnvs);
     }
     HasuraMetadata.prototype.dropAction = function (actionName) {
         return __awaiter(this, void 0, void 0, function () {
             var data;
             return __generator(this, function (_a) {
                 data = {
-                    "type": "drop_action",
-                    "args": {
-                        "name": actionName,
-                        "clear_data": true
+                    type: "drop_action",
+                    args: {
+                        name: actionName,
+                        clear_data: true
                     }
                 };
                 return [2, data];
@@ -109,26 +110,28 @@ var HasuraMetadata = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        setting = (0, node_fs_1.readFileSync)(action.setting_path, 'utf8');
+                        setting = (0, node_fs_1.readFileSync)(action.setting_path, "utf8");
                         regex = /execution="(.*)"/g;
                         match = regex.exec(setting);
-                        kind = match && match[1] && match[1] === 'sync' ? 'synchronous' : 'asynchronous';
+                        kind = match && match[1] && match[1] === "sync" ? "synchronous" : "asynchronous";
                         forwardRegex = /forward_client_headers="(.*)"/g;
                         forwardMatch = forwardRegex.exec(setting);
-                        forward_client_headers = forwardMatch && forwardMatch[1] && forwardMatch[1] === 'true' ? true : false;
-                        schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, 'utf8');
+                        forward_client_headers = forwardMatch && forwardMatch[1] && forwardMatch[1] === "true"
+                            ? true
+                            : false;
+                        schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, "utf8");
                         actionData = {};
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4, (0, generate_action_custom_types_1.generate)(schema, kind, 'action', forward_client_headers, action)];
+                        return [4, (0, generate_action_custom_types_1.generate)(schema, kind, "action", forward_client_headers, action)];
                     case 2:
                         actionData = _a.sent();
                         return [3, 4];
                     case 3:
                         error_1 = _a.sent();
                         console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
-                        return [2, Promise.resolve('failed')];
+                        return [2, Promise.resolve("failed")];
                     case 4: return [2, actionData];
                 }
             });
@@ -140,12 +143,12 @@ var HasuraMetadata = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        setting = (0, node_fs_1.readFileSync)(action.setting_path, 'utf8');
+                        setting = (0, node_fs_1.readFileSync)(action.setting_path, "utf8");
                         regex = /roles="(.*)"/g;
                         match = regex.exec(setting);
                         if (!(match === null || match === void 0 ? void 0 : match[1])) return [3, 5];
                         roles = match[1].split(",");
-                        schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, 'utf8');
+                        schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, "utf8");
                         actionData = {};
                         _a.label = 1;
                     case 1:
@@ -157,7 +160,7 @@ var HasuraMetadata = (function () {
                     case 3:
                         error_2 = _a.sent();
                         console.log("> Action Instance ".concat(action.name, " has invalid graphql schema. Skipping..."));
-                        return [2, Promise.resolve('failed')];
+                        return [2, Promise.resolve("failed")];
                     case 4: return [2, actionData];
                     case 5: return [2, null];
                 }
@@ -168,12 +171,12 @@ var HasuraMetadata = (function () {
         var _a, actions_1, actions_1_1;
         var _b, e_1, _c, _d;
         return __awaiter(this, void 0, void 0, function () {
-            var customTypes, action, setting, regex, match, kind, schema, _tmp, error_3, e_1_1;
+            var customTypes, action, setting, regex, match, kind, schema, relationships, _yaml, _tmp, error_3, e_1_1;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
                         customTypes = {
-                            type: 'set_custom_types',
+                            type: "set_custom_types",
                             args: {
                                 scalars: [],
                                 enums: [],
@@ -195,20 +198,30 @@ var HasuraMetadata = (function () {
                     case 4:
                         _e.trys.push([4, , 9, 10]);
                         action = _d;
-                        setting = (0, node_fs_1.readFileSync)(action.setting_path, 'utf8');
+                        setting = (0, node_fs_1.readFileSync)(action.setting_path, "utf8");
                         regex = /execution="(.*)"/g;
                         match = regex.exec(setting);
-                        kind = match && match[1] && match[1] === 'sync' ? 'synchronous' : 'asynchronous';
-                        schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, 'utf8');
+                        kind = match && match[1] && match[1] === "sync"
+                            ? "synchronous"
+                            : "asynchronous";
+                        schema = (0, node_fs_1.readFileSync)(action.grapqhl_path, "utf8");
+                        relationships = [];
+                        _yaml = action.yaml_path
+                            ? (0, node_fs_1.readFileSync)(action.yaml_path, "utf8")
+                            : null;
+                        if (_yaml) {
+                            relationships = yaml.parse(_yaml).relationships || [];
+                        }
                         _e.label = 5;
                     case 5:
                         _e.trys.push([5, 7, , 8]);
-                        return [4, (0, generate_action_custom_types_1.generate)(schema, kind, 'custom_types')];
+                        return [4, (0, generate_action_custom_types_1.generate)(schema, kind, "custom_types")];
                     case 6:
                         _tmp = _e.sent();
                         customTypes.type = _tmp.type;
                         customTypes.args.scalars = __spreadArray(__spreadArray([], customTypes.args.scalars, true), _tmp.args.scalars, true);
                         customTypes.args.enums = __spreadArray(__spreadArray([], customTypes.args.enums, true), _tmp.args.enums, true);
+                        _tmp.args.objects[0].relationships = relationships;
                         customTypes.args.objects = __spreadArray(__spreadArray([], customTypes.args.objects, true), _tmp.args.objects, true);
                         customTypes.args.input_objects = __spreadArray(__spreadArray([], customTypes.args.input_objects, true), _tmp.args.input_objects, true);
                         return [3, 8];
@@ -228,7 +241,7 @@ var HasuraMetadata = (function () {
                         return [3, 18];
                     case 13:
                         _e.trys.push([13, , 16, 17]);
-                        if (!(!_a && !_b && (_c = actions_1.return))) return [3, 15];
+                        if (!(!_a && !_b && (_c = actions_1["return"]))) return [3, 15];
                         return [4, _c.call(actions_1)];
                     case 14:
                         _e.sent();
@@ -271,7 +284,7 @@ var HasuraMetadata = (function () {
                         hasuraEnvs = this.hasuraEnvs;
                         HASURA_GRAPHQL_DB_NAME = hasuraEnvs.HASURA_GRAPHQL_DB_NAME;
                         payload = {
-                            type: 'pg_delete_event_trigger',
+                            type: "pg_delete_event_trigger",
                             args: {
                                 name: "".concat(tableName, "_trigger"),
                                 source: HASURA_GRAPHQL_DB_NAME
@@ -306,12 +319,12 @@ var HasuraMetadata = (function () {
                     case 0:
                         hasuraEnvs = this.hasuraEnvs;
                         options = {
-                            method: 'POST',
+                            method: "POST",
                             url: "".concat(hasuraEnvs.HASURA_GRAPHQL_URL, "/v1/metadata"),
                             headers: {
-                                'Content-Type': 'application/json',
-                                'x-hasura-role': 'admin',
-                                'x-hasura-admin-secret': hasuraEnvs.HASURA_GRAPHQL_ADMIN_SECRET
+                                "Content-Type": "application/json",
+                                "x-hasura-role": "admin",
+                                "x-hasura-admin-secret": hasuraEnvs.HASURA_GRAPHQL_ADMIN_SECRET
                             },
                             data: data
                         };
@@ -325,7 +338,7 @@ var HasuraMetadata = (function () {
                     case 3:
                         error_4 = _a.sent();
                         if (showError && error_4.response && error_4.response.data.error) {
-                            console.log('> Error:', error_4.response.data.error);
+                            console.log("> Error:", error_4.response.data.error);
                         }
                         return [3, 4];
                     case 4: return [2];
@@ -334,10 +347,10 @@ var HasuraMetadata = (function () {
         });
     };
     HasuraMetadata.prototype.captureEnvVars = function () {
-        var envPath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)('backendInstancePath'), 'services', this.pluginName, '.env.generated');
+        var envPath = (0, path_1.join)(process.cwd(), (0, GluestackConfig_1.getConfig)("backendInstancePath"), "services", this.pluginName, ".env.generated");
         return dotenv.config({ path: envPath }).parsed;
     };
     return HasuraMetadata;
 }());
-exports.default = HasuraMetadata;
+exports["default"] = HasuraMetadata;
 //# sourceMappingURL=HasuraMetadata.js.map

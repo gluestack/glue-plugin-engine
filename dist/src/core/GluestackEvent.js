@@ -42,7 +42,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var path_1 = require("path");
 var lodash_1 = require("lodash");
 var promises_1 = require("node:fs/promises");
@@ -150,7 +150,7 @@ var GluestackEvent = (function () {
                         return [3, 18];
                     case 13:
                         _g.trys.push([13, , 16, 17]);
-                        if (!(!_d && !_a && (_b = dirents_1.return))) return [3, 15];
+                        if (!(!_d && !_a && (_b = dirents_1["return"]))) return [3, 15];
                         return [4, _b.call(dirents_1)];
                     case 14:
                         _g.sent();
@@ -233,7 +233,7 @@ var GluestackEvent = (function () {
                         return [3, 22];
                     case 17:
                         _s.trys.push([17, , 20, 21]);
-                        if (!(!_o && !_d && (_e = _p.return))) return [3, 19];
+                        if (!(!_o && !_d && (_e = _p["return"]))) return [3, 19];
                         return [4, _e.call(_p)];
                     case 18:
                         _s.sent();
@@ -255,7 +255,7 @@ var GluestackEvent = (function () {
                         return [3, 32];
                     case 27:
                         _s.trys.push([27, , 30, 31]);
-                        if (!(!_k && !_a && (_b = _l.return))) return [3, 29];
+                        if (!(!_k && !_a && (_b = _l["return"]))) return [3, 29];
                         return [4, _b.call(_l)];
                     case 28:
                         _s.sent();
@@ -302,7 +302,7 @@ var GluestackEvent = (function () {
                         return [3, 49];
                     case 44:
                         _s.trys.push([44, , 47, 48]);
-                        if (!(!_r && !_g && (_h = app_1.return))) return [3, 46];
+                        if (!(!_r && !_g && (_h = app_1["return"]))) return [3, 46];
                         return [4, _h.call(app_1)];
                     case 45:
                         _s.sent();
@@ -396,7 +396,7 @@ var GluestackEvent = (function () {
                         return [3, 15];
                     case 10:
                         _e.trys.push([10, , 13, 14]);
-                        if (!(!_a && !_b && (_c = _events_1.return))) return [3, 12];
+                        if (!(!_a && !_b && (_c = _events_1["return"]))) return [3, 12];
                         return [4, _c.call(_events_1)];
                     case 11:
                         _e.sent();
@@ -413,5 +413,5 @@ var GluestackEvent = (function () {
     };
     return GluestackEvent;
 }());
-exports.default = GluestackEvent;
+exports["default"] = GluestackEvent;
 //# sourceMappingURL=GluestackEvent.js.map

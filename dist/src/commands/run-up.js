@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.runner = exports.runUp = void 0;
 var GluestackEngine_1 = __importDefault(require("../core/GluestackEngine"));
 function runUp(program, glueStackPlugin) {
@@ -60,7 +60,7 @@ function runner(glueStackPlugin, args) {
                 case 1:
                     _a.trys.push([1, 3, , 4]);
                     noCache = args.cache === false ? true : false;
-                    engine = new GluestackEngine_1.default(app, 'backend');
+                    engine = new GluestackEngine_1["default"](app, 'backend');
                     return [4, engine.start(true, noCache)];
                 case 2:
                     _a.sent();

@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.generateActionPermission = exports.generate = void 0;
 var graphqlToJsonSchema = require("@gluestack/graphql-sdl-to-json");
 var _a = require("lodash"), replace = _a.replace, has = _a.has, get = _a.get, objectKeys = _a.keys, capitalize = _a.capitalize;
@@ -31,8 +31,8 @@ var createCustomTypes = function (definitions) {
             scalars: [],
             enums: [],
             objects: [],
-            input_objects: [],
-        },
+            input_objects: []
+        }
     };
     objectKeys(definitions).forEach(function (defKey) {
         var object = { name: defKey, fields: [] };
@@ -44,7 +44,7 @@ var createCustomTypes = function (definitions) {
                 name: propKey,
                 type: (!requiresReplaceTypeDefinition(property)
                     ? capitalize(property.type)
-                    : replaceTypeDefinition(property)) + (property.required ? "!" : ""),
+                    : replaceTypeDefinition(property)) + (property.required ? "!" : "")
             });
         });
         if (type === "object") {
@@ -56,16 +56,16 @@ var createCustomTypes = function (definitions) {
         if (type === "GRAPHQL_ENUM") {
             body.args.enums.push({
                 name: definition.title,
-                values: definition.enum.map(function (value) {
+                values: definition["enum"].map(function (value) {
                     return {
-                        value: value,
+                        value: value
                     };
-                }),
+                })
             });
         }
         if (type === "GRAPHQL_SCALAR") {
             body.args.scalars.push({
-                name: definition.title,
+                name: definition.title
             });
         }
     });
@@ -97,9 +97,9 @@ var createAction = function (query, type, kind, forward_client_headers, action) 
                 kind: kind,
                 forward_client_headers: forward_client_headers,
                 output_type: output_type,
-                type: type,
-            },
-        },
+                type: type
+            }
+        }
     };
     return body;
 };
@@ -112,8 +112,8 @@ var createActionPermission = function (query, roles) {
             type: "create_action_permission",
             args: {
                 action: action,
-                role: role,
-            },
+                role: role
+            }
         });
     }
     return body;

@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var spawn_1 = require("../helpers/spawn");
 var GluestackConfig_1 = require("./GluestackConfig");
 var GluestackRouter = (function () {
@@ -77,5 +77,5 @@ var GluestackRouter = (function () {
     };
     return GluestackRouter;
 }());
-exports.default = GluestackRouter;
+exports["default"] = GluestackRouter;
 //# sourceMappingURL=GluestackRouter.js.map

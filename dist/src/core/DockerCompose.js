@@ -69,7 +69,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var path_1 = require("path");
 var yaml = __importStar(require("yaml"));
 var spawn_1 = require("../helpers/spawn");
@@ -87,6 +87,9 @@ var DockerCompose = (function () {
         });
     };
     DockerCompose.prototype.addService = function (name, service) {
+        service.extra_hosts = [
+            "host.docker.internal:host-gateway"
+        ];
         this.services[(0, helpers_1.removeSpecialChars)(name)] = service;
     };
     DockerCompose.prototype.generate = function () {
@@ -317,7 +320,7 @@ var DockerCompose = (function () {
                                 interval: '5s',
                                 timeout: '2s',
                                 retries: 20
-                            },
+                            }
                         };
                         this.addService(plugin.instance, minio);
                         return [4, this.addMinioCreatebuckets(plugin)];
@@ -347,9 +350,9 @@ var DockerCompose = (function () {
                             command: "-c \"mc config host add myminio http://".concat((0, helpers_1.removeSpecialChars)(plugin.instance), ":9000 ").concat(minio_credentials.MINIO_ACCESS_KEY, " ").concat(minio_credentials.MINIO_SECRET_KEY, " && if ! mc ls myminio/").concat(minio_credentials.MINIO_PUBLIC_BUCKET, " ; then mc mb myminio/").concat(minio_credentials.MINIO_PUBLIC_BUCKET, " && mc anonymous set public myminio/").concat(minio_credentials.MINIO_PUBLIC_BUCKET, "; fi && if ! mc ls myminio/").concat(minio_credentials.MINIO_PRIVATE_BUCKET, " ; then mc mb myminio/").concat(minio_credentials.MINIO_PRIVATE_BUCKET, "; fi\""),
                             depends_on: (_a = {},
                                 _a[(0, helpers_1.removeSpecialChars)(plugin.instance)] = {
-                                    condition: "service_healthy",
+                                    condition: "service_healthy"
                                 },
-                                _a),
+                                _a)
                         };
                         this.addService(createBuckets.container_name, createBuckets);
                         return [2];
@@ -542,5 +545,5 @@ var DockerCompose = (function () {
     };
     return DockerCompose;
 }());
-exports.default = DockerCompose;
+exports["default"] = DockerCompose;
 //# sourceMappingURL=DockerCompose.js.map

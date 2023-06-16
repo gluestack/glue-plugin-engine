@@ -2,7 +2,12 @@ import { extname, join } from "path";
 import { readFile, readdir } from "node:fs/promises";
 
 import { execute } from "../helpers/spawn";
-import { ConsoleTable, getFiles, fileExists, removeSpecialChars } from "@gluestack/helpers";
+import {
+  ConsoleTable,
+  getFiles,
+  fileExists,
+  removeSpecialChars,
+} from "@gluestack/helpers";
 
 import { IStatelessPlugin } from "./types/IStatelessPlugin";
 import { IAction, IHasuraEngine } from "./types/IHasuraEngine";
@@ -26,6 +31,7 @@ export default class HasuraEngine implements IHasuraEngine {
   private actions: IAction[];
   private actionGQLFile: string = "action.graphql";
   private actionSettingFile: string = "action.setting";
+  private actionYamlFile: string = "action.yaml";
   private payload: any;
 
   constructor(actionPlugins: IStatelessPlugin[]) {
@@ -37,8 +43,8 @@ export default class HasuraEngine implements IHasuraEngine {
         version: 2,
         sources: [],
         actions: [],
-        custom_types: {}
-      }
+        custom_types: {},
+      },
     };
 
     this.pluginName = getConfig("hasuraInstancePath");
@@ -199,9 +205,9 @@ export default class HasuraEngine implements IHasuraEngine {
   // get hdb_catalog hasura metadata
   private async getMetadata(): Promise<void> {
     const metadata = await this.metadata.makeRequest({
-      type: 'export_metadata',
+      type: "export_metadata",
       version: 2,
-      args: {}
+      args: {},
     });
 
     this.payload.resource_version = metadata.data.resource_version;
@@ -213,27 +219,30 @@ export default class HasuraEngine implements IHasuraEngine {
 
   // get hdb_catalog hasura metadata
   private async replaceMetadata(): Promise<void> {
-    const response = await this.metadata.makeRequest({
-      type: 'replace_metadata',
-      version: 2,
-      args: {
-        allow_inconsistent_metadata: true,
-        allow_warnings: true,
-        metadata: this.payload.metadata
-      }
-    }, true);
+    const response = await this.metadata.makeRequest(
+      {
+        type: "replace_metadata",
+        version: 2,
+        args: {
+          allow_inconsistent_metadata: true,
+          allow_warnings: true,
+          metadata: this.payload.metadata,
+        },
+      },
+      true,
+    );
 
     const inconsistentObjects = response?.data?.inconsistent_objects || [];
     if (inconsistentObjects.length > 0) {
-      console.log('> Some inconsistent objects found in the hasura engine...');
-      const head: string[] = ['Type', 'Name', 'Reason'];
+      console.log("> Some inconsistent objects found in the hasura engine...");
+      const head: string[] = ["Type", "Name", "Reason"];
       const rows: any = [];
 
       for await (const inconsistentObject of inconsistentObjects) {
         rows.push([
-          inconsistentObject.type || 'NA',
-          inconsistentObject.name || 'NA',
-          inconsistentObject.reason || 'NA',
+          inconsistentObject.type || "NA",
+          inconsistentObject.name || "NA",
+          inconsistentObject.reason || "NA",
         ]);
       }
 
@@ -275,7 +284,7 @@ export default class HasuraEngine implements IHasuraEngine {
       this.pluginName,
       "tracks",
     );
-    if (!await fileExists(tracksPath)) {
+    if (!(await fileExists(tracksPath))) {
       console.log("> Nothing to track into hasura engine...");
       return Promise.resolve("No tracks folder found. Skipping...");
     }
@@ -330,6 +339,11 @@ export default class HasuraEngine implements IHasuraEngine {
           dirent.name,
           this.actionSettingFile,
         );
+        const actionYamlFile: string = join(
+          functionsDirectory,
+          dirent.name,
+          this.actionYamlFile,
+        );
 
         // Check if the action.graphql & action.setting files exists
         if (
@@ -344,6 +358,9 @@ export default class HasuraEngine implements IHasuraEngine {
             path: join(functionsDirectory, dirent.name),
             grapqhl_path: actionGQLFile,
             setting_path: actionSettingFile,
+            yaml_path: (await fileExists(actionYamlFile))
+              ? actionYamlFile
+              : null,
           });
         }
       }
@@ -370,7 +387,7 @@ export default class HasuraEngine implements IHasuraEngine {
 
       this.payload.metadata.actions.push({
         ..._action.args,
-        permissions
+        permissions,
       });
     }
   }
@@ -381,6 +398,8 @@ export default class HasuraEngine implements IHasuraEngine {
       return Promise.resolve(false);
     }
 
-    this.payload.metadata.custom_types = await this.metadata.createCustomTypes(this.actions);
+    this.payload.metadata.custom_types = await this.metadata.createCustomTypes(
+      this.actions,
+    );
   }
 }
