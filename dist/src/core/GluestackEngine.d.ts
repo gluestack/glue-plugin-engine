@@ -2,6 +2,7 @@ import IApp from "@gluestack/framework/types/app/interface/IApp";
 import { IGlueEngine } from "./types/IGlueEngine";
 import { IStatelessPlugin } from "./types/IStatelessPlugin";
 export default class GluestackEngine implements IGlueEngine {
+    private isProd;
     private isUpdate;
     private shouldRestart;
     private backendPlugins;
@@ -10,7 +11,7 @@ export default class GluestackEngine implements IGlueEngine {
     statelessPlugins: IStatelessPlugin[];
     devonlyPlugins: IStatelessPlugin[];
     constructor(app: IApp, backendInstancePath: string);
-    start(isRun?: boolean, noCache?: boolean): Promise<void>;
+    start(isRun?: boolean, noCache?: boolean, isProd?: boolean): Promise<void>;
     update(): Promise<void>;
     stop(isRun?: boolean): Promise<void>;
     collectPlugins(pluginType?: "stateless" | "devonly", status?: "up" | "down"): Promise<void>;

@@ -41,6 +41,7 @@ import { execute } from "../helpers/spawn";
  * plugins and their instances.
  */
 export default class GluestackEngine implements IGlueEngine {
+  private isProd: boolean;
   private isUpdate: boolean;
   private shouldRestart: boolean;
   private backendPlugins: string[];
@@ -55,6 +56,7 @@ export default class GluestackEngine implements IGlueEngine {
     this.devonlyPlugins = [];
     this.statelessPlugins = [];
 
+    this.isProd = false;
     this.isUpdate = false;
     this.shouldRestart = false;
 
@@ -65,7 +67,10 @@ export default class GluestackEngine implements IGlueEngine {
   }
 
   // Starts the engine for the backend instance
-  async start(isRun: boolean = false, noCache: boolean = false): Promise<void> {
+  async start(isRun: boolean = false, noCache: boolean = false, isProd: boolean = false): Promise<void> {
+    // setting production flag
+    this.isProd = isProd;
+
     // 1. Gets all the instances and sets some config variables
     // 2. Collects their dockerfiles from instances' assets directory
     await this.collectPlugins("stateless", "up");
@@ -493,12 +498,25 @@ export default class GluestackEngine implements IGlueEngine {
     instance: IInstance,
   ): Promise<void> {
     // @ts-ignore
-    const dockerfile = join(
+    let dockerfile = join(
       process.cwd(),
       "node_modules",
       instance.callerPlugin.getName(),
-      "src/assets/Dockerfile",
+      this.isProd ? "src/assets/Dockerfile.prod" : "src/assets/Dockerfile",
     );
+
+    if (this.isProd && !(await fileExists(dockerfile))) {
+      console.log(
+        `> Could not find Dockerfile [Since UP MODE required PRODUCTION Dockerfile] for plugin "${instance.callerPlugin.getName()}" instance "${instance.getName()}". Looking back for Dockerfile...`,
+      );
+
+      dockerfile = join(
+        process.cwd(),
+        "node_modules",
+        instance.callerPlugin.getName(),
+        "src/assets/Dockerfile",
+      );
+    }
 
     if (!(await fileExists(dockerfile))) {
       console.log(

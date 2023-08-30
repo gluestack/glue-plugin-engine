@@ -38,13 +38,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.runner = exports.developUp = void 0;
 var GluestackEngine_1 = __importDefault(require("../core/GluestackEngine"));
 function developUp(program, glueStackPlugin) {
     var command = program
         .command("develop:up")
         .option("--no-cache", "build docker with --no-cache")
+        .option("--prod", "run project with production commands ie. start:prod", false)
         .description("Starts all the containers for the project.")
         .action(function (args) { return runner(glueStackPlugin, args); });
 }
@@ -60,8 +61,8 @@ function runner(glueStackPlugin, args) {
                 case 1:
                     _a.trys.push([1, 3, , 4]);
                     noCache = args.cache === false ? true : false;
-                    engine = new GluestackEngine_1["default"](app, "backend");
-                    return [4, engine.start(false, noCache)];
+                    engine = new GluestackEngine_1.default(app, "backend");
+                    return [4, engine.start(false, noCache, args.prod)];
                 case 2:
                     _a.sent();
                     return [3, 4];

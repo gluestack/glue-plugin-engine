@@ -74,8 +74,8 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-exports.__esModule = true;
-var axios = require("axios")["default"];
+Object.defineProperty(exports, "__esModule", { value: true });
+var axios = require("axios").default;
 var path_1 = require("path");
 var dotenv = __importStar(require("dotenv"));
 var yaml = __importStar(require("yaml"));
@@ -97,8 +97,8 @@ var HasuraMetadata = (function () {
                     type: "drop_action",
                     args: {
                         name: actionName,
-                        clear_data: true
-                    }
+                        clear_data: true,
+                    },
                 };
                 return [2, data];
             });
@@ -181,8 +181,8 @@ var HasuraMetadata = (function () {
                                 scalars: [],
                                 enums: [],
                                 objects: [],
-                                input_objects: []
-                            }
+                                input_objects: [],
+                            },
                         };
                         _e.label = 1;
                     case 1:
@@ -241,7 +241,7 @@ var HasuraMetadata = (function () {
                         return [3, 18];
                     case 13:
                         _e.trys.push([13, , 16, 17]);
-                        if (!(!_a && !_b && (_c = actions_1["return"]))) return [3, 15];
+                        if (!(!_a && !_b && (_c = actions_1.return))) return [3, 15];
                         return [4, _c.call(actions_1)];
                     case 14:
                         _e.sent();
@@ -287,8 +287,8 @@ var HasuraMetadata = (function () {
                             type: "pg_delete_event_trigger",
                             args: {
                                 name: "".concat(tableName, "_trigger"),
-                                source: HASURA_GRAPHQL_DB_NAME
-                            }
+                                source: HASURA_GRAPHQL_DB_NAME,
+                            },
                         };
                         return [4, this.makeRequest(payload)];
                     case 1:
@@ -324,9 +324,9 @@ var HasuraMetadata = (function () {
                             headers: {
                                 "Content-Type": "application/json",
                                 "x-hasura-role": "admin",
-                                "x-hasura-admin-secret": hasuraEnvs.HASURA_GRAPHQL_ADMIN_SECRET
+                                "x-hasura-admin-secret": hasuraEnvs.HASURA_GRAPHQL_ADMIN_SECRET,
                             },
-                            data: data
+                            data: data,
                         };
                         _a.label = 1;
                     case 1:
@@ -352,5 +352,5 @@ var HasuraMetadata = (function () {
     };
     return HasuraMetadata;
 }());
-exports["default"] = HasuraMetadata;
+exports.default = HasuraMetadata;
 //# sourceMappingURL=HasuraMetadata.js.map

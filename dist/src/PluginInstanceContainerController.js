@@ -68,7 +68,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.PluginInstanceContainerController = void 0;
 var colors_1 = __importDefault(require("colors"));
 var path_1 = require("path");
@@ -166,7 +166,8 @@ var PluginInstanceContainerController = (function () {
                             ports.push(port);
                             _this.callerInstance.callerPlugin.gluePluginStore.set("ports", ports);
                             return resolve(_this.portNumber);
-                        })["catch"](function (e) {
+                        })
+                            .catch(function (e) {
                             reject(e);
                         });
                     })];
@@ -207,7 +208,7 @@ var PluginInstanceContainerController = (function () {
                         if (response.length <= 0) {
                             throw new Error("No routes found");
                         }
-                        console.log(colors_1["default"].cyan('\n> Generating Domain Mapping...'));
+                        console.log(colors_1.default.cyan('\n> Generating Domain Mapping...'));
                         return [4, this.consoleTable(response)];
                     case 4:
                         _a.sent();
@@ -237,7 +238,8 @@ var PluginInstanceContainerController = (function () {
                                                         return [2, resolve(true)];
                                                     });
                                                 });
-                                            })["catch"](function (e) {
+                                            })
+                                                .catch(function (e) {
                                                 return reject(e);
                                             });
                                             return [2];
@@ -294,7 +296,7 @@ var PluginInstanceContainerController = (function () {
                         }
                         return [4, (0, spawn_1.execute)('node', args, {
                                 cwd: process.cwd(),
-                                shell: true
+                                shell: true,
                             })];
                     case 1:
                         response = _a.sent();
@@ -326,7 +328,7 @@ var PluginInstanceContainerController = (function () {
                         }
                         return [4, (0, spawn_1.execute)('node', args, {
                                 cwd: process.cwd(),
-                                shell: true
+                                shell: true,
                             })];
                     case 1:
                         _a.sent();
@@ -363,9 +365,9 @@ var PluginInstanceContainerController = (function () {
                         try {
                             mapping = _d;
                             rows.push([
-                                colors_1["default"].yellow("".concat(i++)),
-                                colors_1["default"].yellow("http://localhost:".concat(mapping.port)),
-                                colors_1["default"].yellow("http://".concat(mapping.domain, ":").concat(mapping.port))
+                                colors_1.default.yellow("".concat(i++)),
+                                colors_1.default.yellow("http://localhost:".concat(mapping.port)),
+                                colors_1.default.yellow("http://".concat(mapping.domain, ":").concat(mapping.port))
                             ]);
                         }
                         finally {
@@ -380,7 +382,7 @@ var PluginInstanceContainerController = (function () {
                         return [3, 12];
                     case 7:
                         _e.trys.push([7, , 10, 11]);
-                        if (!(!_a && !_b && (_c = mappings_1["return"]))) return [3, 9];
+                        if (!(!_a && !_b && (_c = mappings_1.return))) return [3, 9];
                         return [4, _c.call(mappings_1)];
                     case 8:
                         _e.sent();
